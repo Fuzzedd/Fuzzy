@@ -15,7 +15,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: #161616; color: #e7e7e7; display: flex; height: 100vh; overflow: hidden;
     }
-    /* --- Smooth hover/click animations on all buttons --- */
     button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .follow-btn,
     .post-btn, .back-btn, .list-row, .msg-convo, .notif-item, .stat-link, .pfp-opt,
     .emoji-opt, .messages, .user, .del-chat, .status-opt, .cancel, .p-name, .l-name, .c-name {
@@ -53,7 +52,6 @@
     .user:hover { background: #1d1d1d; }
     .avatar { width: 48px; height: 48px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    /* --- Status badge over avatars --- */
     .status-badge {
       position: absolute; bottom: 0; right: 0; width: 15px; height: 15px; border-radius: 50%;
       border: 2px solid #161616; display: flex; align-items: center; justify-content: center; z-index: 2;
@@ -64,7 +62,6 @@
     .status-badge.dnd { background: #ef4444; }
     .status-badge img { width: 10px; height: 10px; }
     .status-badge .dnd-bar { width: 7px; height: 2px; background: #fff; border-radius: 2px; }
-    /* --- Verified check --- */
     .verified-check { width: 20px; height: 20px; vertical-align: -4px; margin-left: 3px; }
     .logout { margin-left: auto; background: none; border: none; color: #717171; font-size: 16px; cursor: pointer; }
     .logout:hover { color: #f91880; }
@@ -144,7 +141,6 @@
     .bio-edit textarea { width: 100%; height: 80px; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 12px; padding: 10px; color: #e7e7e7; font-size: 15px; resize: none; outline: none; font-family: inherit; }
     .bio-edit textarea:focus { border-color: #555; }
     .bio-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-    /* --- Status picker --- */
     .status-picker { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
     .status-label { font-size: 14px; color: #717171; }
     .status-opt { background: #2a2a2a; border: 1px solid #2f2f2f; color: #e7e7e7; border-radius: 9999px; padding: 6px 14px; font-size: 14px; cursor: pointer; }
@@ -231,7 +227,6 @@
     .emoji-opt:hover { background: #2a2a2a; }
     .emoji-opt.selected { background: #2a2a2a; outline: 2px solid #ec8106; }
     .emoji-opt img { width: 28px; height: 28px; }
-    /* --- Mobile layout: sidebar becomes a bottom nav bar --- */
     @media (max-width: 768px) {
       .right { display: none; }
       .mobile-msg { display: flex; }
@@ -453,13 +448,11 @@
     const DEFAULT_FACE = TW + "1f642.png";
     const WAVE = TW + "1f44b.png";
 
-    // --- Verified users get check.png beside their name ---
     const VERIFIED = ["matu", "matu67"];
     function verifiedBadge(username) {
       return VERIFIED.includes((username || "").toLowerCase()) ? '<img class="verified-check" src="check.png" alt="verified" />' : "";
     }
 
-    // --- Twemoji rendering for user text ---
     function escapeHtml(s) {
       return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
@@ -503,14 +496,14 @@
     let myUsername = "";
     let myEmoji = DEFAULT_FACE;
     let myBio = "";
-    let myStatus = null;   // null = auto (online/offline), "online" | "sleep" | "dnd"
+    let myStatus = null;
     let activeTab = "foryou";
     let activeView = "feed";
     let lastPosts = [];
     let myFollowing = new Set();
     let myFollowers = new Set();
     let profileUid = null;
-    let profListMode = null;      // null | "following" | "followers"
+    let profListMode = null;
     let activeChatUid = null;
     let chatUnsub = null;
     let commentUnsubs = [];
@@ -519,20 +512,18 @@
     let usersSig = "";
     let prevUnreadCount = 0;
     let searchMode = "posts";
-    const userCache = new Map(); // uid -> latest user doc, so a pfp change shows everywhere
+    const userCache = new Map();
     function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
 
-    // --- Notification sound: plays Notification.mp3 when a new notification arrives ---
     let notifSound = null;
     function playNotifSound() {
       try {
         if (!notifSound) notifSound = new Audio("Notification.mp3");
         notifSound.currentTime = 0;
         notifSound.play().catch(() => {});
-      } catch (e) { /* audio not available; ignore */ }
+      } catch (e) { /* ignore */ }
     }
 
-    // --- Presence: lastSeen drives auto Online/Offline when no status is selected ---
     function touchLastSeen() {
       if (!auth || !auth.currentUser || !db) return;
       db.collection("users").doc(auth.currentUser.uid)
@@ -545,13 +536,12 @@
     function isOnline(uid) {
       const u = userCache.get(uid);
       if (!u) return false;
-      if (u.status) return true; // explicit status always counts as active
+      if (u.status) return true;
       const ls = u.lastSeen;
       if (!ls) return false;
-      return Date.now() - ls.toMillis() < 5 * 60 * 1000; // online = active within 5 min
+      return Date.now() - ls.toMillis() < 5 * 60 * 1000;
     }
 
-    // --- Status badge markup (Online / Sleep / DND / Offline) over avatars ---
     function statusBadgeHtml(uid) {
       const u = userCache.get(uid);
       let cls, inner = "";
@@ -564,7 +554,6 @@
       }
       return '<span class="status-badge ' + cls + '">' + inner + '</span>';
     }
-    // Adds a status badge to every .avatar that has data-uid (skips ones already badged)
     function decorateAvatars(root) {
       if (!root) return;
       root.querySelectorAll(".avatar[data-uid]").forEach(av => {
@@ -572,7 +561,6 @@
         av.insertAdjacentHTML("beforeend", statusBadgeHtml(av.dataset.uid));
       });
     }
-    // Live-refreshes existing badges (cheap DOM update, no re-render)
     function refreshStatusDots() {
       document.querySelectorAll(".avatar[data-uid] > .status-badge").forEach(b => {
         const uid = b.parentElement.dataset.uid;
@@ -583,7 +571,6 @@
       });
     }
 
-    // --- Live users listener: avatars/names/status update everywhere (old posts, DMs, notifs) ---
     function setupUsersListener() {
       if (usersUnsub) { usersUnsub(); usersUnsub = null; }
       if (!db) return;
@@ -961,7 +948,6 @@
       }
     }
 
-    // --- Status picker: auto / online / sleep / dnd ---
     document.querySelectorAll(".status-opt").forEach(b => b.addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
       const s = b.dataset.status || null;
@@ -1017,7 +1003,6 @@
       }
     });
 
-    // --- Followers / following lists (click the stats on any profile) ---
     function openProfList(mode) {
       if (!profileUid) return;
       profListMode = mode;
@@ -1091,7 +1076,6 @@
     document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
     document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
 
-    // --- Profile picture picker: click the big avatar on your own profile ---
     const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png"];
     const pfpModal = document.getElementById("pfpModal");
     function openPfpModal() {
@@ -1194,7 +1178,7 @@
         if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
         const uid = auth.currentUser.uid;
         const liked = this.classList.contains("active");
-        this.classList.toggle("active", !liked); // instant red heart
+        this.classList.toggle("active", !liked);
         const newLikes = { ...(data.likes || {}) };
         if (liked) delete newLikes[uid]; else newLikes[uid] = true;
         try {
@@ -1206,7 +1190,6 @@
         const c = this.closest(".post").querySelector(".comments");
         c.style.display = c.style.display === "none" ? "block" : "none";
       });
-      // Delete own post (also removes its comments)
       if (isMyPost) {
         article.querySelector(".del-post").addEventListener("click", async () => {
           if (!confirm("Delete this post? This cannot be undone.")) return;
@@ -1268,7 +1251,7 @@
           const uid = auth.currentUser.uid;
           const newLikes = { ...(cd.likes || {}) };
           const wasLiked = !!newLikes[uid];
-          this.classList.toggle("active", !wasLiked); // instant red heart
+          this.classList.toggle("active", !wasLiked);
           if (newLikes[uid]) delete newLikes[uid]; else newLikes[uid] = true;
           try {
             await db.collection("posts").doc(postId).collection("comments").doc(c.id).update({ likes: newLikes });
@@ -1361,4 +1344,308 @@
 
     document.querySelectorAll("#feedView .tab").forEach(tab => {
       tab.addEventListener("click", () => {
-        document.querySelectorAll("#feedView .tab").forEach(t
+        document.querySelectorAll("#feedView .tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        activeTab = tab.dataset.tab;
+        renderPosts();
+      });
+    });
+
+    document.querySelectorAll(".stab").forEach(stab => {
+      stab.addEventListener("click", () => {
+        document.querySelectorAll(".stab").forEach(s => s.classList.remove("active"));
+        stab.classList.add("active");
+        searchMode = stab.dataset.stab;
+        renderSearch(document.getElementById("searchInput").value);
+      });
+    });
+    document.getElementById("searchInput").addEventListener("input", function() { renderSearch(this.value); });
+
+    function renderSearch(raw) {
+      const box = document.getElementById("searchResults");
+      box.innerHTML = "";
+      if (!db) return;
+      const q = (raw || "").trim().toLowerCase();
+      if (!q) { box.innerHTML = '<div class="empty">Type to search ' + (searchMode === "posts" ? "posts" : "accounts") + ".</div>"; return; }
+      if (searchMode === "posts") {
+        const posts = lastPosts.filter(p => (p.data().text || "").toLowerCase().includes(q));
+        if (posts.length === 0) { box.innerHTML = '<div class="empty">No posts match "' + q + '".</div>'; return; }
+        posts.forEach(p => box.appendChild(buildPost(p.id, p.data(), null)));
+        decorateAvatars(box);
+      } else {
+        db.collection("users").get().then(snap => {
+          const users = snap.docs.map(d => ({ id: d.id, data: d.data() }))
+            .filter(u => (u.data.username || "").toLowerCase().includes(q));
+          if (users.length === 0) { box.innerHTML = '<div class="empty">No accounts match "' + q + '".</div>'; return; }
+          const me = auth && auth.currentUser ? auth.currentUser.uid : null;
+          users.forEach(u => {
+            cacheUser(u.id, u.data);
+            const row = document.createElement("div");
+            row.className = "list-row";
+            row.innerHTML =
+              '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || DEFAULT_FACE) + '" alt="" /></div>' +
+              '<span class="l-name"></span><span class="l-handle">@' + (u.data.username || "user") + "</span>";
+            row.querySelector(".l-name").textContent = u.data.username || "user";
+            row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
+            row.addEventListener("click", () => openProfile(u.id));
+            if (u.id !== me) {
+              const btn = document.createElement("button");
+              btn.className = "follow-btn" + (myFollowing.has(u.id) ? " following" : "");
+              btn.textContent = myFollowing.has(u.id) ? "Unfollow" : "Follow";
+              btn.addEventListener("click", async e => {
+                e.stopPropagation();
+                if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+                const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + u.id);
+                try {
+                  const fs = await ref.get();
+                  if (fs.exists) { await ref.delete(); status("Unfollowed."); }
+                  else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: u.id }); status("Following."); notify(u.id, "follow"); }
+                  renderSearch(document.getElementById("searchInput").value);
+                } catch (err) { status("Follow failed: " + err.code, true); }
+              });
+              row.appendChild(btn);
+            }
+            box.appendChild(row);
+          });
+          decorateAvatars(box);
+        });
+      }
+    }
+
+    function notifText(d) {
+      const name = d.fromUsername || "Someone";
+      switch (d.type) {
+        case "follow": return name + " followed you";
+        case "like_post": return name + " liked your post";
+        case "comment": return name + " commented on your post";
+        case "like_comment": return name + " liked your reply";
+        case "reply": return name + " replied to your comment";
+        case "dm": return name + " sent you a message";
+        default: return name + " did something";
+      }
+    }
+
+    async function renderNotifications() {
+      const list = document.getElementById("notifList");
+      if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in to see notifications.</div>'; return; }
+      const me = auth.currentUser.uid;
+      try {
+        const snap = await db.collection("notifications").where("targetUid", "==", me).get();
+        const items = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+        items.sort((a, b) => (b.data.createdAt ? b.data.createdAt.toMillis() : 0) - (a.data.createdAt ? a.data.createdAt.toMillis() : 0));
+        if (items.length === 0) { list.innerHTML = '<div class="empty">No notifications yet.</div>'; return; }
+        list.innerHTML = "";
+        const batch = db.batch();
+        items.forEach(i => {
+          const row = document.createElement("div");
+          row.className = "notif-item" + (i.data.read ? "" : " unread");
+          row.innerHTML = '<div class="avatar" data-uid="' + i.data.fromUid + '"><img src="' + (i.data.fromEmoji || DEFAULT_FACE) + '" alt="" /></div><div class="n-body"><div class="n-text"></div><div class="n-time">' + timeAgo(i.data.createdAt) + "</div></div>";
+          row.querySelector(".n-text").textContent = notifText(i.data);
+          row.addEventListener("click", () => {
+            if (i.data.type === "dm") {
+              db.collection("users").doc(i.data.fromUid).get().then(s => {
+                if (!s.exists) { openProfile(i.data.fromUid); return; }
+                showView("messages");
+                openChat(s.id, s.data());
+              });
+            } else {
+              openProfile(i.data.fromUid);
+            }
+          });
+          list.appendChild(row);
+          if (!i.data.read) batch.update(db.collection("notifications").doc(i.id), { read: true });
+        });
+        batch.commit();
+        decorateAvatars(list);
+        setNotifBadge(0);
+      } catch (err) { toast("Notifications error: " + err.code, true); }
+    }
+
+    function renderConversations() {
+      document.getElementById("msgListWrap").style.display = "block";
+      chatWrap.classList.remove("open");
+      delete chatWrap.dataset.uid;
+      activeChatUid = null;
+      if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+      const list = document.getElementById("msgList");
+      if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in to see your messages.</div>'; return; }
+      const mutuals = [...myFollowing].filter(u => myFollowers.has(u));
+      if (mutuals.length === 0) {
+        list.innerHTML = '<div class="empty">No conversations yet.<br>Follow someone who follows you back to start a DM.</div>';
+        return;
+      }
+      Promise.all(mutuals.map(u => db.collection("users").doc(u).get())).then(snaps => {
+        list.innerHTML = "";
+        snaps.forEach(s => {
+          if (!s.exists) return;
+          const u = s.data();
+          cacheUser(s.id, u);
+          const row = document.createElement("div");
+          row.className = "msg-convo";
+          row.innerHTML = '<div class="avatar" data-uid="' + s.id + '"><img src="' + (u.emoji || DEFAULT_FACE) + '" alt="" /></div><span class="m-name"></span>';
+          row.querySelector(".m-name").textContent = u.username;
+          row.querySelector(".m-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
+          row.addEventListener("click", () => openChat(s.id, u));
+          list.appendChild(row);
+        });
+        decorateAvatars(list);
+      });
+    }
+
+    function drawChatMessages(snap, me) {
+      const body = document.getElementById("chatBody");
+      body.innerHTML = "";
+      const msgs = [];
+      snap.forEach(m => msgs.push({ id: m.id, data: m.data() }));
+      msgs.sort((a, b) => {
+        const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+        const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+        if (ta !== tb) return ta - tb;
+        return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+      });
+      if (msgs.length === 0) {
+        body.innerHTML = '<div class="empty">Say hi <img class="tw-emoji" src="' + WAVE + '" alt="" /></div>';
+        return;
+      }
+      msgs.forEach(m => {
+        const d = m.data;
+        const div = document.createElement("div");
+        div.className = "chat-msg " + (d.uid === me ? "me" : "them");
+        div.innerHTML = twEmojiHtml(d.text);
+        body.appendChild(div);
+      });
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function openChat(uid, userDoc) {
+      if (!uid || uid === "undefined") { toast("Could not open chat — no valid user.", true); return; }
+      activeChatUid = uid;
+      chatWrap.dataset.uid = uid;
+      document.getElementById("msgListWrap").style.display = "none";
+      chatWrap.classList.add("open");
+      cacheUser(uid, userDoc);
+      const chatName = document.getElementById("chatName");
+      chatName.textContent = userDoc.username;
+      chatName.insertAdjacentHTML("beforeend", verifiedBadge(userDoc.username));
+      const chatAvatar = document.getElementById("chatAvatar");
+      chatAvatar.dataset.uid = uid;
+      document.querySelector("#chatAvatar img").src = userDoc.emoji || DEFAULT_FACE;
+      decorateAvatars(chatWrap);
+      const me = auth.currentUser.uid;
+      const dmId = [me, uid].sort().join("_");
+      if (chatUnsub) chatUnsub();
+      chatUnsub = db.collection("dms").doc(dmId).collection("messages")
+        .onSnapshot(snap => drawChatMessages(snap, me), err => {
+          if (!auth || !auth.currentUser) return;
+          toast("Messages error: " + (err.code || err.message) +
+            (err.code === "permission-denied" ? " — fix your Firestore rules" : ""), true);
+        });
+      document.getElementById("chatInput").focus();
+    }
+
+    document.getElementById("chatBack").addEventListener("click", renderConversations);
+    document.getElementById("chatName").addEventListener("click", () => { if (activeChatUid) openProfile(activeChatUid); });
+    document.getElementById("chatAvatar").addEventListener("click", () => { if (activeChatUid) openProfile(activeChatUid); });
+
+    document.getElementById("delChat").addEventListener("click", async () => {
+      const partnerUid = chatWrap.dataset.uid || activeChatUid;
+      if (!partnerUid) return;
+      if (!confirm("Delete this conversation and all its messages? This cannot be undone.")) return;
+      try {
+        const snap = await db.collection("dms").doc([auth.currentUser.uid, partnerUid].sort().join("_")).collection("messages").get();
+        if (snap.size) {
+          const batch = db.batch();
+          snap.forEach(m => batch.delete(m.ref));
+          await batch.commit();
+        }
+        status("Conversation deleted.");
+        renderConversations();
+      } catch (err) { toast("Delete failed: " + err.code, true); }
+    });
+
+    async function sendChat() {
+      if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+      const partnerUid = chatWrap.dataset.uid || activeChatUid;
+      if (!partnerUid || partnerUid === "undefined") { toast("No conversation open — click a friend in the list first.", true); return; }
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text) { toast("Type something first bro.", true); return; }
+      const me = auth.currentUser.uid;
+      const dmId = [me, partnerUid].sort().join("_");
+      try {
+        await db.collection("dms").doc(dmId).collection("messages").add({
+          uid: me, username: myUsername, emoji: myEmoji, text: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        input.value = "";
+        notify(partnerUid, "dm", {});
+      } catch (err) {
+        if (err.code === "permission-denied") toast("DM blocked: your Firestore rules don't allow logged-in users to write. Fix the rules.", true);
+        else toast("Message failed: " + err.code, true);
+      }
+    }
+    document.getElementById("chatSend").addEventListener("click", sendChat);
+    document.getElementById("chatInput").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+        const nav = item.dataset.nav;
+        if (nav === "home") goHome();
+        else if (nav === "search") { showView("search"); renderSearch(document.getElementById("searchInput").value); document.getElementById("searchInput").focus(); }
+        else if (nav === "account") {
+          if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+          openProfile(auth.currentUser.uid);
+        }
+        else if (nav === "notifications") {
+          if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+          showView("notifications");
+          renderNotifications();
+        }
+        else if (nav === "messages") {
+          if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+          showView("messages");
+          renderConversations();
+        }
+      });
+    });
+
+    document.getElementById("messagesBtn").addEventListener("click", () => {
+      if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+      showView("messages");
+      renderConversations();
+    });
+
+    const modal = document.getElementById("postModal");
+    document.getElementById("openPost").addEventListener("click", () => {
+      if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+      modal.classList.add("open");
+      document.getElementById("postText").focus();
+    });
+    document.getElementById("cancelPost").addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
+
+    document.getElementById("submitPost").addEventListener("click", async () => {
+      if (!auth || !auth.currentUser) return;
+      const text = document.getElementById("postText").value.trim();
+      if (!text) return;
+      status("Posting...");
+      try {
+        await db.collection("posts").add({
+          text: text, uid: auth.currentUser.uid, username: myUsername, emoji: myEmoji,
+          likes: {}, commentCount: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("postText").value = "";
+        modal.classList.remove("open");
+        status("Post published.");
+      } catch (err) {
+        if (err.code === "permission-denied") status("Post blocked: fix your Firestore rules.", true);
+        else status("Post failed: " + err.code, true);
+      }
+    });
+  </script>
+</body>
+</html>
