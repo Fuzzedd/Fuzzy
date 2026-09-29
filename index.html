@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fuzzy</title>
+  <link rel="icon" type="image/png" href="icon.png" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #000 transparent; }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -167,6 +168,27 @@
     .tw-emoji { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.25em; }
     .fuzzed-modal { text-align: center; }
     .fuzzed-modal h3 { font-size: 30px; margin-bottom: 20px; }
+    .avatar img { object-fit: cover; }
+    .stat-link { cursor: pointer; }
+    .stat-link:hover b { text-decoration: underline; }
+    .list-row { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #2f2f2f; cursor: pointer; }
+    .list-row:hover { background: #1d1d1d; }
+    .list-row .avatar { width: 44px; height: 44px; }
+    .list-row .avatar img { width: 32px; height: 32px; }
+    .list-row .l-name { font-size: 18px; color: #fff; }
+    .list-row:hover .l-name { text-decoration: underline; }
+    .list-row .l-handle { color: #717171; font-size: 14px; }
+    .list-row .follow-btn { margin-top: 0; margin-left: auto; padding: 6px 16px; font-size: 14px; }
+    .pfp-section-label { font-size: 14px; color: #717171; margin-bottom: 8px; }
+    .pfp-grid { display: flex; gap: 10px; }
+    .pfp-opt { width: 72px; height: 72px; border-radius: 12px; background: #2a2a2a; border: 2px solid #2f2f2f; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .pfp-opt img { width: 100%; height: 100%; object-fit: cover; }
+    .pfp-opt.selected { border-color: #f91880; }
+    .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 220px; overflow-y: auto; padding: 4px; }
+    .emoji-opt { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .emoji-opt:hover { background: #2a2a2a; }
+    .emoji-opt.selected { background: #2a2a2a; outline: 2px solid #f91880; }
+    .emoji-opt img { width: 28px; height: 28px; }
   </style>
 </head>
 <body>
@@ -203,8 +225,8 @@
             <div class="profile-handle" id="profHandle"></div>
             <div class="profile-bio" id="profBio"></div>
             <div class="profile-stats">
-              <span><b id="profFollowing">0</b> following</span>
-              <span><b id="profFollowers">0</b> followers</span>
+              <span class="stat-link" id="statFollowing"><b id="profFollowing">0</b> following</span>
+              <span class="stat-link" id="statFollowers"><b id="profFollowers">0</b> followers</span>
             </div>
             <button class="follow-btn" id="followBtn" style="display:none">Follow</button>
             <button class="change-bio-btn" id="changeBioBtn" style="display:none">Change bio</button>
@@ -218,6 +240,7 @@
           </div>
         </div>
       </div>
+      <div id="profList" style="display:none"></div>
       <div id="profPosts"></div>
     </div>
 
@@ -288,6 +311,19 @@
     <div class="modal fuzzed-modal">
       <h3>You have been FUZZED!</h3>
       <button class="btn btn-primary" id="fuzzedLogout">log out</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="pfpModal">
+    <div class="modal">
+      <h3>Change profile picture</h3>
+      <div class="pfp-section-label">Pick an image</div>
+      <div class="pfp-grid" id="pfpImages"></div>
+      <div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div>
+      <div class="emoji-grid" id="pfpEmojis"></div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" id="pfpClose">Close</button>
+      </div>
     </div>
   </div>
 
@@ -379,6 +415,7 @@
     let myFollowing = new Set();
     let myFollowers = new Set();
     let profileUid = null;
+    let profListMode = null;      // null | "following" | "followers" (list open on the profile)
     let activeChatUid = null;
     let chatUnsub = null;
     let commentUnsubs = [];   // every live comments subscription, so we can kill them
@@ -668,6 +705,7 @@
     function openProfile(uid) {
       if (!uid) return;
       profileUid = uid;
+      profListMode = null;
       showView("profile");
       profileView.scrollTop = 0;
       renderProfile();
@@ -706,6 +744,11 @@
         ]);
         document.getElementById("profFollowers").textContent = folSnap.size;
         document.getElementById("profFollowing").textContent = follSnap.size;
+        // If a followers/following list is open, re-render it instead of the
+        // posts (live follow changes call renderProfile, keeping it in sync).
+        if (profListMode) { renderProfList(); return; }
+        document.getElementById("profList").style.display = "none";
+        document.getElementById("profPosts").style.display = "block";
         const postsSnap = await db.collection("posts").where("uid", "==", profileUid).get();
         const posts = postsSnap.docs.map(d => ({ id: d.id, data: d.data() }));
         posts.sort((a, b) => (b.data.createdAt ? b.data.createdAt.toMillis() : 0) - (a.data.createdAt ? a.data.createdAt.toMillis() : 0));
@@ -755,6 +798,123 @@
         else status("Bio save failed: " + err.code, true);
       }
     });
+
+    // --- Followers / following lists (click the stats on any profile) ---
+    function openProfList(mode) {
+      if (!profileUid) return;
+      profListMode = mode;
+      renderProfList();
+    }
+    function closeProfList() {
+      profListMode = null;
+      document.getElementById("profList").style.display = "none";
+      document.getElementById("profPosts").style.display = "block";
+      if (profileUid) renderProfile();
+    }
+    async function renderProfList() {
+      const box = document.getElementById("profList");
+      if (!profileUid || !db) return;
+      document.getElementById("profPosts").style.display = "none";
+      box.style.display = "block";
+      const me = auth && auth.currentUser ? auth.currentUser.uid : null;
+      const q = profListMode === "following"
+        ? db.collection("follows").where("followerUid", "==", profileUid)
+        : db.collection("follows").where("followeeUid", "==", profileUid);
+      try {
+        const snap = await q.get();
+        const uids = snap.docs.map(d => (profListMode === "following" ? d.data().followeeUid : d.data().followerUid));
+        box.innerHTML =
+          '<div style="padding:16px 20px;border-bottom:1px solid #2f2f2f">' +
+          '<button class="back-btn" id="listBack">← back</button> ' +
+          '<span style="font-size:18px;font-weight:700">' + (profListMode === "following" ? "Following" : "Followers") + "</span></div>";
+        box.querySelector("#listBack").addEventListener("click", closeProfList);
+        if (uids.length === 0) {
+          box.innerHTML += '<div class="empty">Nobody here yet.</div>';
+          return;
+        }
+        const snaps = await Promise.all(uids.map(u => db.collection("users").doc(u).get()));
+        snaps.forEach(s => {
+          if (!s.exists) return;
+          const u = s.data();
+          const uid = s.id;
+          const row = document.createElement("div");
+          row.className = "list-row";
+          row.innerHTML =
+            '<div class="avatar"><img src="' + (u.emoji || DEFAULT_FACE) + '" alt="" /></div>' +
+            '<span class="l-name"></span><span class="l-handle">@' + (u.username || "user") + "</span>";
+          row.querySelector(".l-name").textContent = u.username || "user";
+          row.addEventListener("click", () => openProfile(uid));
+          // Follow / unfollow button next to the name (never shown for yourself)
+          if (uid !== me) {
+            const btn = document.createElement("button");
+            btn.className = "follow-btn" + (myFollowing.has(uid) ? " following" : "");
+            btn.textContent = myFollowing.has(uid) ? "Unfollow" : "Follow";
+            btn.addEventListener("click", async e => {
+              e.stopPropagation();
+              if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+              const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + uid);
+              try {
+                const fs = await ref.get();
+                if (fs.exists) { await ref.delete(); status("Unfollowed."); }
+                else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: uid }); status("Following."); notify(uid, "follow"); }
+                renderProfList();
+              } catch (err) { status("Follow failed: " + err.code, true); }
+            });
+            row.appendChild(btn);
+          }
+          box.appendChild(row);
+        });
+      } catch (err) {
+        box.innerHTML += '<div class="empty">Could not load list: ' + err.code + "</div>";
+      }
+    }
+    document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
+    document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
+
+    // --- Profile picture picker: click your avatar in the sidebar ---
+    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png"];
+    const pfpModal = document.getElementById("pfpModal");
+    function openPfpModal() {
+      if (!auth || !auth.currentUser) return;
+      const imgGrid = document.getElementById("pfpImages");
+      const emoGrid = document.getElementById("pfpEmojis");
+      imgGrid.innerHTML = "";
+      AVATARS.forEach(src => {
+        const b = document.createElement("button");
+        b.className = "pfp-opt" + (myEmoji === src ? " selected" : "");
+        b.innerHTML = '<img src="' + src + '" alt="" />';
+        b.addEventListener("click", () => setMyPfp(src));
+        imgGrid.appendChild(b);
+      });
+      emoGrid.innerHTML = "";
+      FACES.forEach(f => {
+        const url = TW + f + ".png";
+        const b = document.createElement("button");
+        b.className = "emoji-opt" + (myEmoji === url ? " selected" : "");
+        b.innerHTML = '<img src="' + url + '" alt="" />';
+        b.addEventListener("click", () => setMyPfp(url));
+        emoGrid.appendChild(b);
+      });
+      pfpModal.classList.add("open");
+    }
+    async function setMyPfp(src) {
+      try {
+        await db.collection("users").doc(auth.currentUser.uid).update({ emoji: src });
+        myEmoji = src;
+        updateSidebar();
+        pfpModal.classList.remove("open");
+        if (profileUid === auth.currentUser.uid) renderProfile();
+        status("Profile picture updated.");
+      } catch (err) {
+        toast("Could not save picture: " + err.code, true);
+      }
+    }
+    document.getElementById("myAvatar").addEventListener("click", e => {
+      e.stopPropagation();
+      openPfpModal();
+    });
+    document.getElementById("pfpClose").addEventListener("click", () => pfpModal.classList.remove("open"));
+    pfpModal.addEventListener("click", e => { if (e.target === pfpModal) pfpModal.classList.remove("open"); });
 
     function timeAgo(ts) {
       if (!ts) return "now";
