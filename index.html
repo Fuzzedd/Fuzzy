@@ -31,7 +31,7 @@
     .notif-badge {
       margin-left: auto; display: none; align-items: center; justify-content: center;
       min-width: 22px; height: 22px; padding: 0 7px; border-radius: 9999px;
-      background: #f91880; color: #fff; font-size: 13px; font-weight: 700; line-height: 1;
+      background: #f91818; color: #fff; font-size: 13px; font-weight: 700; line-height: 1;
     }
     .post-btn { margin: 20px 14px; background: #e7e7e7; color: #000; font-size: 20px; font-weight: 500; text-align: center; padding: 13px 0; border-radius: 9999px; cursor: pointer; border: none; }
     .post-btn:hover { background: #d9d9d9; }
@@ -57,7 +57,7 @@
     .action { display: flex; align-items: center; gap: 8px; background: none; border: none; color: #717171; font-size: 18px; cursor: pointer; }
     .action img { width: 24px; height: 24px; transition: transform 0.1s; }
     .action:hover img { transform: scale(1.15); }
-    .action.like.active { color: #f91880; }
+    .action.like.active { color: #f91818; }
     .action.like:not(.active) img { filter: grayscale(1) brightness(1.6); }
     .comments { margin-top: 12px; }
     .comment-row { display: flex; gap: 10px; align-items: center; }
@@ -75,14 +75,14 @@
     .c-actions { display: flex; gap: 14px; margin-top: 4px; }
     .c-like { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
     .c-like img { width: 16px; height: 16px; filter: grayscale(1) brightness(1.6); }
-    .c-like.active { color: #f91880; }
+    .c-like.active { color: #ff0b0b; }
     .c-like.active img { filter: none; }
     .c-reply { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; }
     .c-reply:hover { color: #fff; }
     .reply-chip { display: none; align-items: center; gap: 6px; font-size: 13px; color: #717171; margin-bottom: 8px; }
     .reply-chip b { color: #fff; }
     .reply-chip .cancel { cursor: pointer; color: #717171; }
-    .reply-chip .cancel:hover { color: #f91880; }
+    .reply-chip .cancel:hover { color: #ff0000; }
     .empty { padding: 60px 20px; text-align: center; color: #717171; font-size: 18px; }
     #profileView, #searchView, #messagesView, #notificationsView { display: none; }
     .profile-head { padding: 20px; border-bottom: 1px solid #2f2f2f; }
@@ -102,8 +102,8 @@
     .follow-btn { background: #e7e7e7; color: #000; border: none; border-radius: 9999px; padding: 8px 20px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
     .follow-btn:hover { background: #d9d9d9; }
     .follow-btn.following { background: none; border: 1px solid #555; color: #e7e7e7; }
-    .follow-btn.following:hover { border-color: #f91880; color: #f91880; }
-    .change-bio-btn { background: none; border: 1px solid #555; color: #e7e7e7; border-radius: 9999px; padding: 8px 20px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+    .follow-btn.following:hover { border-color: #ff0000; color: #ff4800; }
+    .change-bio-btn { background: none; border: 4px solid #555; color: #e7e7e7; border-radius: 9999px; padding: 8px 20px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
     .change-bio-btn:hover { border-color: #e7e7e7; }
     .bio-edit { margin-top: 14px; display: none; }
     .bio-edit.open { display: block; }
@@ -171,7 +171,7 @@
     #toasts { position: fixed; top: 16px; right: 16px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
     .toast { background: #2a2a2a; color: #fff; border: 1px solid #3a3a3a; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateX(20px); transition: all 0.3s ease; }
     .toast.show { opacity: 1; transform: translateX(0); }
-    .toast.error { background: #3a1a2a; border-color: #f91880; color: #ff9ec4; }
+    .toast.error { background: #3a1a2a; border-color: #f97218; color: #ca890f; }
     .tw-emoji { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.25em; }
     .fuzzed-modal { text-align: center; }
     .fuzzed-modal h3 { font-size: 30px; margin-bottom: 20px; }
@@ -179,13 +179,13 @@
     .pfp-grid { display: flex; gap: 10px; flex-wrap: wrap; }
     .pfp-opt { width: 72px; height: 72px; border-radius: 12px; background: #2a2a2a; border: 2px solid #2f2f2f; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0; }
     .pfp-opt img { width: 100%; height: 100%; object-fit: cover; }
-    .pfp-opt.selected { border-color: #f91880; }
+    .pfp-opt.selected { border-color: #f96a18; }
     .pfp-opt.pfp-clear { width: 72px; height: 72px; border-radius: 12px; background: #161616; border: 2px solid #2f2f2f; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #717171; font-size: 12px; }
-    .pfp-opt.pfp-clear:hover { border-color: #f91880; color: #f91880; }
+    .pfp-opt.pfp-clear:hover { border-color: #f96a18; color: #f94c18; }
     .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 220px; overflow-y: auto; padding: 4px; }
     .emoji-opt { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
     .emoji-opt:hover { background: #2a2a2a; }
-    .emoji-opt.selected { background: #2a2a2a; outline: 2px solid #f91880; }
+    .emoji-opt.selected { background: #2a2a2a; outline: 2px solid #ec8106; }
     .emoji-opt img { width: 28px; height: 28px; }
     /* --- Mobile layout: sidebar becomes a bottom nav bar --- */
     @media (max-width: 768px) {
