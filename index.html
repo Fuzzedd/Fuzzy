@@ -427,7 +427,7 @@
       firebase.initializeApp(firebaseConfig);
       auth = firebase.auth();
       db = firebase.firestore();
-      status("Fuzzy loaded — all buttons wired.");
+      status("Fuzzy fuzz fuzzzzzz.");
     } catch (err) {
       status("Firebase FAILED to load: " + err.message, true);
     }
@@ -1330,7 +1330,7 @@
       if (!partnerUid || partnerUid === "undefined") { toast("No conversation open — click a friend in the list first.", true); return; }
       const input = document.getElementById("chatInput");
       const text = input.value.trim();
-      if (!text) { toast("Type a message first.", true); return; }
+      if (!text) { toast("Type something first bro.", true); return; }
       const me = auth.currentUser.uid;
       const dmId = [me, partnerUid].sort().join("_");
       try {
