@@ -103,7 +103,7 @@
     .follow-btn:hover { background: #d9d9d9; }
     .follow-btn.following { background: none; border: 1px solid #555; color: #e7e7e7; }
     .follow-btn.following:hover { border-color: #ff0000; color: #ff4800; }
-    .change-bio-btn { background: none; border: 4px solid #555; color: #e7e7e7; border-radius: 9999px; padding: 8px 20px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+    .change-bio-btn { background: none; border: 3px solid #555; color: #e7e7e7; border-radius: 9999px; padding: 8px 20px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
     .change-bio-btn:hover { border-color: #e7e7e7; }
     .bio-edit { margin-top: 14px; display: none; }
     .bio-edit.open { display: block; }
@@ -564,7 +564,7 @@
           await fuzzUser();
           return;
         }
-        status("Signed in as " + myUsername + " — all systems go.");
+        status("Signed in as " + myUsername + " — hi there boyo");
       } catch (err) {
         if (err.code === "permission-denied") {
           status("BLOCKED: Firebase won't let you save your profile. Fix your Firestore rules.", true);
