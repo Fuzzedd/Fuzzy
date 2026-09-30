@@ -920,6 +920,10 @@
       status("Logged out.");
     });
 
+    // Site base path (handles GitHub Pages subpaths like /my-repo/). Captured at load,
+    // so a profile URL like /my-repo/user/5 resolves back to /my-repo/.
+    const BASE_PATH = (location.pathname.replace(/\/user\/\d+\/?$/, "") || "/");
+
     function openProfile(uid) {
       if (!uid) return;
       profileUid = uid;
@@ -928,14 +932,14 @@
       profileView.scrollTop = 0;
       const num = userNumMap.get(uid);
       if (num && location.pathname.indexOf("/user/") === -1) {
-        history.pushState({}, "", "user/" + num);
+        history.pushState({}, "", BASE_PATH + "user/" + num);
       }
       renderProfile();
     }
     function closeProfile() {
       profileUid = null;
       showView("feed");
-      if (location.pathname.indexOf("/user/") !== -1) history.pushState({}, "", ".");
+      if (location.pathname.indexOf("/user/") !== -1) history.pushState({}, "", BASE_PATH);
     }
     document.getElementById("backBtn").addEventListener("click", closeProfile);
 
@@ -1126,7 +1130,7 @@
     document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
     document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
 
-    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png", "avatar4.png"];
+    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png"];
     const pfpModal = document.getElementById("pfpModal");
     function openPfpModal() {
       if (!auth || !auth.currentUser) return;
