@@ -501,6 +501,27 @@
     }
     function setEmojiText(el, text) { el.innerHTML = twEmojiHtml(text); }
 
+    // Cache-buster for local avatar files (avatar1.png, avatar2.png, ...).
+    // Appends ?v=<load-time> so browsers and the GitHub Pages CDN refetch the
+    // latest file on each page load instead of showing a cached copy. Only
+    // touches local files, never the twemoji CDN images.
+    const AVATAR_BUST = "?v=" + Date.now();
+    function bustAvatarSrc(img) {
+      const s = img.getAttribute("src") || "";
+      if (/^avatar\d+\.png$/.test(s)) img.src = s + AVATAR_BUST;
+    }
+    (function bustAvatars() {
+      document.querySelectorAll("img").forEach(bustAvatarSrc);
+      const mo = new MutationObserver(muts => {
+        muts.forEach(m => m.addedNodes.forEach(n => {
+          if (!n || n.nodeType !== 1) return;
+          if (n.tagName === "IMG") bustAvatarSrc(n);
+          else if (n.querySelectorAll) n.querySelectorAll("img").forEach(bustAvatarSrc);
+        }));
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    })();
+
     const firebaseConfig = {
       apiKey: "AIzaSyCisYa7HGIqKuBXH3VaywwmdSjcOgGhSyA",
       authDomain: "fuzzy-c18ec.firebaseapp.com",
@@ -641,6 +662,15 @@
         }
         refreshStatusDots();
         if (activeView === "messages" && chatWrap.classList.contains("open")) updateChatTicks();
+        if (auth && auth.currentUser) {
+          const me = userCache.get(auth.currentUser.uid);
+          if (me) {
+            if (me.emoji) myEmoji = me.emoji;
+            if (me.username) myUsername = me.username;
+            if (me.bio !== undefined) myBio = me.bio;
+            myStatus = me.status || null;
+          }
+        }
         updateSidebar();
       }, () => {});
     }
@@ -920,26 +950,17 @@
       status("Logged out.");
     });
 
-    // Site base path (handles GitHub Pages subpaths like /my-repo/). Captured at load,
-    // so a profile URL like /my-repo/user/5 resolves back to /my-repo/.
-    const BASE_PATH = (location.pathname.replace(/\/user\/\d+\/?$/, "") || "/");
-
     function openProfile(uid) {
       if (!uid) return;
       profileUid = uid;
       profListMode = null;
       showView("profile");
       profileView.scrollTop = 0;
-      const num = userNumMap.get(uid);
-      if (num && location.pathname.indexOf("/user/") === -1) {
-        history.pushState({}, "", BASE_PATH + "user/" + num);
-      }
       renderProfile();
     }
     function closeProfile() {
       profileUid = null;
       showView("feed");
-      if (location.pathname.indexOf("/user/") !== -1) history.pushState({}, "", BASE_PATH);
     }
     document.getElementById("backBtn").addEventListener("click", closeProfile);
 
@@ -957,7 +978,8 @@
         const pn = document.getElementById("profName");
         pn.textContent = u.username || "user";
         pn.insertAdjacentHTML("beforeend", verifiedBadge(u.username));
-        document.getElementById("profHandle").textContent = "@" + (u.username || "user");
+        const num = userNumMap.get(profileUid);
+        document.getElementById("profHandle").textContent = "@" + (u.username || "user") + (num ? " | #" + num : "");
         setEmojiText(document.getElementById("profBio"), u.bio || (isMe ? "No bio yet." : "No bio."));
         const followBtn = document.getElementById("followBtn");
         const changeBioBtn = document.getElementById("changeBioBtn");
@@ -1130,18 +1152,33 @@
     document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
     document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
 
-    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png"];
+    const AVATAR_MAX = 100;
+    function findAvatars() {
+      return new Promise(resolve => {
+        const found = [];
+        let pending = AVATAR_MAX;
+        for (let i = 1; i <= AVATAR_MAX; i++) {
+          const src = "avatar" + i + ".png";
+          const img = new Image();
+          img.onload = () => { found.push(src); if (--pending === 0) resolve(found); };
+          img.onerror = () => { if (--pending === 0) resolve(found); };
+          img.src = src;
+        }
+      });
+    }
     const pfpModal = document.getElementById("pfpModal");
     function openPfpModal() {
       if (!auth || !auth.currentUser) return;
       const imgGrid = document.getElementById("pfpImages");
       imgGrid.innerHTML = "";
-      AVATARS.forEach(src => {
-        const b = document.createElement("button");
-        b.className = "pfp-opt" + (myEmoji === src ? " selected" : "");
-        b.innerHTML = '<img src="' + src + '" alt="" />';
-        b.addEventListener("click", () => setMyPfp(src));
-        imgGrid.appendChild(b);
+      findAvatars().then(avatars => {
+        avatars.forEach(src => {
+          const b = document.createElement("button");
+          b.className = "pfp-opt" + (myEmoji === src ? " selected" : "");
+          b.innerHTML = '<img src="' + src + '" alt="" />';
+          b.addEventListener("click", () => setMyPfp(src));
+          imgGrid.appendChild(b);
+        });
       });
       const clearBtn = document.createElement("button");
       clearBtn.className = "pfp-opt pfp-clear";
@@ -1746,33 +1783,7 @@
     document.getElementById("cancelPost").addEventListener("click", () => modal.classList.remove("open"));
     modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
 
-    window.addEventListener("popstate", () => {
-      if (location.pathname.indexOf("/user/") !== -1) closeProfile();
-    });
-    (function () {
-      const m = location.pathname.match(/\/user\/(\d+)$/);
-      if (m) {
-        const num = parseInt(m[1], 10);
-        if (db) {
-          db.collection("users").onSnapshot(snap => {
-            if (!userNumMap.size) {
-              const docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
-              docs.sort((a, b) => {
-                const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
-                const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
-                if (ta !== tb) return ta - tb;
-                return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
-              });
-              const map = new Map();
-              docs.forEach((d, i) => map.set(d.id, i + 1));
-              userNumMap = map;
-            }
-            const uid = [...userNumMap.entries()].find(([, n]) => n === num);
-            if (uid) openProfile(uid[0]);
-          }, () => {});
-        }
-      }
-    })();
+
 
     document.getElementById("submitPost").addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
