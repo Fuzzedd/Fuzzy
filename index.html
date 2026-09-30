@@ -21,9 +21,9 @@
       transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
                   transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
     }
-    button:active, .action:active, .c-like:active, .c-reply:active, .c-del:active,
+    button:active, .action:active, .c-like:active, .c-del:active,
     .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active,
-    .pfp-opt:active, .emoji-opt:active, .del-chat:active { transform: scale(0.95); }
+    .pfp-opt:active, .emoji-opt:active { transform: scale(0.95); }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
     .btn-ghost:hover { transform: translateY(-1px); }
 
@@ -85,10 +85,10 @@
     .heart-shape { width: 24px; height: 24px; display: inline-block; }
     .heart-shape svg { width: 100%; height: 100%; display: block; }
     .action .heart-shape svg { fill: #717171; transition: fill 0.18s ease; }
-    .action.like.active .heart-shape svg { fill: #ff0000; }
+    .action.like.active .heart-shape svg { fill: rgb(218, 51, 51); }
     .c-like .heart-shape { width: 16px; height: 16px; }
     .c-like .heart-shape svg { fill: #717171; transition: fill 0.18s ease; }
-    .c-like.active .heart-shape svg { fill: #ff0000; }
+    .c-like.active .heart-shape svg { fill: rgb(218, 51, 51); }
     .action.like:not(.active) img { filter: grayscale(1) brightness(1.6); }
     .action.like.active img { filter: none; }
     @keyframes heartPop { 0% { transform: scale(1); } 40% { transform: scale(1.45); } 100% { transform: scale(1); } }
@@ -186,14 +186,19 @@
     .chat-head .c-name { font-size: 18px; font-weight: 600; cursor: pointer; }
     .chat-head .c-name:hover { text-decoration: underline; }
     .chat-head .back-btn { margin-bottom: 0; }
-    .del-chat { margin-left: auto; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
-    .del-chat img { width: 20px; height: 20px; filter: grayscale(1) brightness(1.6); }
-    .del-chat:hover { background: #2a2a2a; }
-    .del-chat:hover img { filter: none; }
-    .chat-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .chat-msg { max-width: 75%; padding: 10px 14px; border-radius: 16px; font-size: 16px; line-height: 1.4; word-break: break-word; }
-    .chat-msg.me { background: #2f2f2f; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .chat-msg.them { background: #1d1d1d; border: 1px solid #2f2f2f; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .chat-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+    .msg-wrap { display: flex; flex-direction: column; max-width: 75%; }
+    .msg-wrap.me { align-self: flex-end; align-items: flex-end; }
+    .msg-wrap.them { align-self: flex-start; align-items: flex-start; }
+    .chat-msg { padding: 10px 14px; border-radius: 16px; font-size: 16px; line-height: 1.4; word-break: break-word; }
+    .chat-msg.me { background: #2f2f2f; border-bottom-right-radius: 4px; }
+    .chat-msg.them { background: #1d1d1d; border: 1px solid #2f2f2f; border-bottom-left-radius: 4px; }
+    .msg-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 12px; color: #9a9a9a; }
+    .msg-time { color: #9a9a9a; }
+    .msg-ticks { font-size: 13px; letter-spacing: -1px; color: #9a9a9a; line-height: 1; }
+    .msg-ticks.read { color: #3b82f6; }
+    .msg-del { background: none; border: none; color: #717171; font-size: 12px; cursor: pointer; padding: 0 4px; border-radius: 4px; }
+    .msg-del:hover { color: #ff4800; background: #2a2a2a; }
     .chat-input { display: flex; gap: 10px; padding: 10px 14px; border-top: 1px solid #2f2f2f; background: #161616; }
     .chat-input input { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 15px; outline: none; }
     .chat-input input:focus { border-color: #555; }
@@ -213,8 +218,13 @@
     .btn { border: none; border-radius: 9999px; padding: 10px 22px; font-size: 16px; cursor: pointer; }
     .btn-primary { background: #e7e7e7; color: #000; font-weight: 600; }
     .btn-primary:hover { background: #d9d9d9; }
+    .btn-danger { background: #f91818; color: #fff; font-weight: 600; }
+    .btn-danger:hover { background: #d91212; }
     .btn-ghost { background: none; color: #9a9a9a; }
     .btn-ghost:hover { color: #fff; }
+    .confirm-modal { width: 380px; text-align: center; }
+    .confirm-modal h3 { font-size: 22px; margin-bottom: 8px; }
+    .confirm-msg { color: #9a9a9a; font-size: 15px; line-height: 1.4; margin-bottom: 4px; }
     #toasts { position: fixed; top: 16px; right: 16px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
     .toast { background: #2a2a2a; color: #fff; border: 1px solid #3a3a3a; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateX(20px); transition: all 0.3s ease; }
     .toast.show { opacity: 1; transform: translateX(0); }
@@ -251,6 +261,7 @@
       .user { gap: 6px; padding: 4px; }
       .user .avatar { width: 36px; height: 36px; }
       .user span { display: none; }
+      .user:not(:has(.logout)) span { display: inline; font-size: 12px; color: #e7e7e7; }
       .logout { font-size: 10px; }
       .feed { padding-bottom: 64px; }
       .feed-inner { border-left: none; border-right: none; max-width: 100%; }
@@ -261,7 +272,7 @@
       .profile-top .avatar { width: 72px; height: 72px; }
       .profile-head { padding: 12px; }
       .modal { width: 92%; }
-      .chat-msg { max-width: 85%; }
+      .msg-wrap { max-width: 85%; }
       .chat-body { padding: 10px; }
       .chat-input { padding: 8px 10px; }
       .chat-input input { padding: 10px 14px; font-size: 16px; }
@@ -298,7 +309,7 @@
 
     <div class="feed-inner" id="profileView">
       <div class="profile-head">
-        <button class="back-btn" id="backBtn">← back</button>
+        <button class="back-btn" id="backBtn">&larr; back</button>
         <div class="profile-top">
           <div class="avatar" id="profAvatar"><img src="" alt="" /></div>
           <div class="profile-info">
@@ -355,10 +366,9 @@
       </div>
       <div id="chatWrap">
         <div class="chat-head">
-          <button class="back-btn" id="chatBack">←</button>
+          <button class="back-btn" id="chatBack">&larr;</button>
           <div class="avatar" id="chatAvatar"><img src="" alt="" /></div>
           <span class="c-name" id="chatName"></span>
-          <button class="del-chat" id="delChat" title="Delete conversation"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f5d1.png" alt="delete" /></button>
         </div>
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-input">
@@ -418,6 +428,17 @@
       <div class="emoji-grid" id="pfpEmojis"></div>
       <div class="modal-btns">
         <button class="btn btn-ghost" id="pfpClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal confirm-modal">
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p class="confirm-msg" id="confirmMsg"></p>
+      <div class="modal-btns" style="justify-content:center">
+        <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmOk">Delete</button>
       </div>
     </div>
   </div>
@@ -519,8 +540,11 @@
     let usersSig = "";
     let prevUnreadCount = 0;
     let searchMode = "posts";
+    let userNumMap = new Map();
     const userCache = new Map();
     function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
+
+    let currentChatMsgs = [];
 
     let notifSound = null;
     function playNotifSound() {
@@ -583,10 +607,20 @@
       if (!db) return;
       usersUnsub = db.collection("users").onSnapshot(snap => {
         snap.forEach(d => cacheUser(d.id, d.data()));
+        const docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+        docs.sort((a, b) => {
+          const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+          const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+          if (ta !== tb) return ta - tb;
+          return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+        });
+        const m = new Map();
+        docs.forEach((d, i) => m.set(d.id, i + 1));
+        userNumMap = m;
         let sig = "";
         snap.forEach(d => {
           const u = d.data();
-          sig += d.id + ":" + (u.emoji || "") + ":" + (u.username || "") + ":" + (u.status || "") + ";";
+          sig += d.id + ":" + (u.emoji || "") + ":" + (u.username || "") + ":" + (u.status || "") + ":" + (u.lastSeen ? u.lastSeen.toMillis() : 0) + ";";
         });
         if (sig !== usersSig) {
           usersSig = sig;
@@ -606,6 +640,7 @@
           }
         }
         refreshStatusDots();
+        if (activeView === "messages" && chatWrap.classList.contains("open")) updateChatTicks();
         updateSidebar();
       }, () => {});
     }
@@ -891,9 +926,17 @@
       profListMode = null;
       showView("profile");
       profileView.scrollTop = 0;
+      const num = userNumMap.get(uid);
+      if (num && location.pathname.indexOf("/user/") === -1) {
+        history.pushState({}, "", "user/" + num);
+      }
       renderProfile();
     }
-    function closeProfile() { profileUid = null; showView("feed"); }
+    function closeProfile() {
+      profileUid = null;
+      showView("feed");
+      if (location.pathname.indexOf("/user/") !== -1) history.pushState({}, "", ".");
+    }
     document.getElementById("backBtn").addEventListener("click", closeProfile);
 
     async function renderProfile() {
@@ -1035,7 +1078,7 @@
         const uids = snap.docs.map(d => (profListMode === "following" ? d.data().followeeUid : d.data().followerUid));
         box.innerHTML =
           '<div style="padding:16px 20px;border-bottom:1px solid #2f2f2f">' +
-          '<button class="back-btn" id="listBack">← back</button> ' +
+          '<button class="back-btn" id="listBack">&larr; back</button> ' +
           '<span style="font-size:18px;font-weight:700">' + (profListMode === "following" ? "Following" : "Followers") + "</span></div>";
         box.querySelector("#listBack").addEventListener("click", closeProfList);
         if (uids.length === 0) {
@@ -1083,7 +1126,7 @@
     document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
     document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
 
-    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png"];
+    const AVATARS = ["avatar1.png", "avatar2.png", "avatar3.png", "avatar4.png"];
     const pfpModal = document.getElementById("pfpModal");
     function openPfpModal() {
       if (!auth || !auth.currentUser) return;
@@ -1198,18 +1241,19 @@
         c.style.display = c.style.display === "none" ? "block" : "none";
       });
       if (isMyPost) {
-        article.querySelector(".del-post").addEventListener("click", async () => {
-          if (!confirm("Delete this post? This cannot be undone.")) return;
-          try {
-            const cSnap = await db.collection("posts").doc(postId).collection("comments").get();
-            if (cSnap.size) {
-              const batch = db.batch();
-              cSnap.forEach(c => batch.delete(c.ref));
-              await batch.commit();
-            }
-            await db.collection("posts").doc(postId).delete();
-            status("Post deleted.");
-          } catch (err) { toast("Delete failed: " + err.code, true); }
+        article.querySelector(".del-post").addEventListener("click", () => {
+          showConfirm("Delete this post?", "This cannot be undone.", async () => {
+            try {
+              const cSnap = await db.collection("posts").doc(postId).collection("comments").get();
+              if (cSnap.size) {
+                const batch = db.batch();
+                cSnap.forEach(c => batch.delete(c.ref));
+                await batch.commit();
+              }
+              await db.collection("posts").doc(postId).delete();
+              status("Post deleted.");
+            } catch (err) { toast("Delete failed: " + err.code, true); }
+          });
         });
       }
       let replyTarget = null;
@@ -1267,11 +1311,13 @@
         });
         item.querySelector(".c-reply").addEventListener("click", () => setReply({ id: c.id, uid: cd.uid, username: cd.username }));
         if (isMine) {
-          item.querySelector(".c-del").addEventListener("click", async () => {
-            if (!confirm("Delete this comment?")) return;
-            try {
-              await db.collection("posts").doc(postId).collection("comments").doc(c.id).delete();
-            } catch (err) { toast("Delete failed: " + err.code, true); }
+          item.querySelector(".c-del").addEventListener("click", () => {
+            showConfirm("Delete this comment?", "This cannot be undone.", async () => {
+              try {
+                await db.collection("posts").doc(postId).collection("comments").doc(c.id).delete();
+                await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(-1) });
+              } catch (err) { toast("Delete failed: " + err.code, true); }
+            });
           });
         }
         return item;
@@ -1287,6 +1333,7 @@
             parentId: rt ? rt.id : null,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
+          await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
           cInput.value = "";
           setReply(null);
           if (rt) { if (rt.uid !== auth.currentUser.uid) notify(rt.uid, "reply", { postId: postId }); }
@@ -1499,8 +1546,36 @@
       });
     }
 
+    function msgTime(ts) {
+      if (!ts) return "";
+      const d = new Date(ts.toMillis());
+      const now = new Date();
+      const timeStr = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+      if (d.toDateString() === now.toDateString()) return timeStr;
+      return d.toLocaleDateString([], { month: "short", day: "numeric" }) + ", " + timeStr;
+    }
+
+    function tickStatus(msg, partnerUid) {
+      if (msg.readBy && msg.readBy[partnerUid]) return "read";
+      if (isOnline(partnerUid)) return "delivered";
+      return "sent";
+    }
+    function updateChatTicks() {
+      const partnerUid = chatWrap.dataset.uid;
+      if (!partnerUid) return;
+      currentChatMsgs.forEach(m => {
+        if (m.data.uid !== auth.currentUser.uid) return;
+        const el = document.querySelector('.msg-ticks[data-mid="' + m.id + '"]');
+        if (!el) return;
+        const st = tickStatus(m.data, partnerUid);
+        el.textContent = st === "read" ? "✓✓" : (st === "delivered" ? "✓✓" : "✓");
+        el.classList.toggle("read", st === "read");
+      });
+    }
+
     function drawChatMessages(snap, me) {
       const body = document.getElementById("chatBody");
+      const nearBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 120;
       body.innerHTML = "";
       const msgs = [];
       snap.forEach(m => msgs.push({ id: m.id, data: m.data() }));
@@ -1510,18 +1585,52 @@
         if (ta !== tb) return ta - tb;
         return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
       });
+      currentChatMsgs = msgs;
       if (msgs.length === 0) {
         body.innerHTML = '<div class="empty">Say hi <img class="tw-emoji" src="' + WAVE + '" alt="" /></div>';
         return;
       }
+      const partnerUid = chatWrap.dataset.uid;
       msgs.forEach(m => {
         const d = m.data;
-        const div = document.createElement("div");
-        div.className = "chat-msg " + (d.uid === me ? "me" : "them");
-        div.innerHTML = twEmojiHtml(d.text);
-        body.appendChild(div);
+        const mine = d.uid === me;
+        const wrap = document.createElement("div");
+        wrap.className = "msg-wrap " + (mine ? "me" : "them");
+        const bubble = document.createElement("div");
+        bubble.className = "chat-msg " + (mine ? "me" : "them");
+        bubble.innerHTML = twEmojiHtml(d.text);
+        wrap.appendChild(bubble);
+        const meta = document.createElement("div");
+        meta.className = "msg-meta";
+        const time = document.createElement("span");
+        time.className = "msg-time";
+        time.textContent = msgTime(d.createdAt);
+        meta.appendChild(time);
+        if (mine && partnerUid) {
+          const ticks = document.createElement("span");
+          ticks.className = "msg-ticks";
+          ticks.dataset.mid = m.id;
+          const st = tickStatus(d, partnerUid);
+          ticks.textContent = st === "read" ? "✓✓" : (st === "delivered" ? "✓✓" : "✓");
+          if (st === "read") ticks.classList.add("read");
+          meta.appendChild(ticks);
+          const del = document.createElement("button");
+          del.className = "msg-del";
+          del.textContent = "\u2715";
+          del.title = "Delete message";
+          del.addEventListener("click", () => {
+            showConfirm("Delete this message?", "This cannot be undone.", async () => {
+              try {
+                await db.collection("dms").doc([me, partnerUid].sort().join("_")).collection("messages").doc(m.id).delete();
+              } catch (err) { toast("Delete failed: " + err.code, true); }
+            });
+          });
+          meta.appendChild(del);
+        }
+        wrap.appendChild(meta);
+        body.appendChild(wrap);
       });
-      body.scrollTop = body.scrollHeight;
+      if (nearBottom) body.scrollTop = body.scrollHeight;
     }
 
     function openChat(uid, userDoc) {
@@ -1542,7 +1651,21 @@
       const dmId = [me, uid].sort().join("_");
       if (chatUnsub) chatUnsub();
       chatUnsub = db.collection("dms").doc(dmId).collection("messages")
-        .onSnapshot(snap => drawChatMessages(snap, me), err => {
+        .onSnapshot(snap => {
+          drawChatMessages(snap, me);
+          const msgs = [];
+          snap.forEach(m => msgs.push({ id: m.id, data: m.data() }));
+          const toMark = msgs.filter(m => m.data.uid === uid && !(m.data.readBy && m.data.readBy[me]));
+          if (toMark.length) {
+            const batch = db.batch();
+            toMark.forEach(m => {
+              const rb = { ...(m.data.readBy || {}) };
+              rb[me] = true;
+              batch.update(db.collection("dms").doc(dmId).collection("messages").doc(m.id), { readBy: rb });
+            });
+            batch.commit().catch(() => {});
+          }
+        }, err => {
           if (!auth || !auth.currentUser) return;
           toast("Messages error: " + (err.code || err.message) +
             (err.code === "permission-denied" ? " — fix your Firestore rules" : ""), true);
@@ -1553,22 +1676,6 @@
     document.getElementById("chatBack").addEventListener("click", renderConversations);
     document.getElementById("chatName").addEventListener("click", () => { if (activeChatUid) openProfile(activeChatUid); });
     document.getElementById("chatAvatar").addEventListener("click", () => { if (activeChatUid) openProfile(activeChatUid); });
-
-    document.getElementById("delChat").addEventListener("click", async () => {
-      const partnerUid = chatWrap.dataset.uid || activeChatUid;
-      if (!partnerUid) return;
-      if (!confirm("Delete this conversation and all its messages? This cannot be undone.")) return;
-      try {
-        const snap = await db.collection("dms").doc([auth.currentUser.uid, partnerUid].sort().join("_")).collection("messages").get();
-        if (snap.size) {
-          const batch = db.batch();
-          snap.forEach(m => batch.delete(m.ref));
-          await batch.commit();
-        }
-        status("Conversation deleted.");
-        renderConversations();
-      } catch (err) { toast("Delete failed: " + err.code, true); }
-    });
 
     async function sendChat() {
       if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
@@ -1582,6 +1689,7 @@
       try {
         await db.collection("dms").doc(dmId).collection("messages").add({
           uid: me, username: myUsername, emoji: myEmoji, text: text,
+          readBy: {},
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         input.value = "";
@@ -1634,6 +1742,34 @@
     document.getElementById("cancelPost").addEventListener("click", () => modal.classList.remove("open"));
     modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
 
+    window.addEventListener("popstate", () => {
+      if (location.pathname.indexOf("/user/") !== -1) closeProfile();
+    });
+    (function () {
+      const m = location.pathname.match(/\/user\/(\d+)$/);
+      if (m) {
+        const num = parseInt(m[1], 10);
+        if (db) {
+          db.collection("users").onSnapshot(snap => {
+            if (!userNumMap.size) {
+              const docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+              docs.sort((a, b) => {
+                const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+                const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+                if (ta !== tb) return ta - tb;
+                return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+              });
+              const map = new Map();
+              docs.forEach((d, i) => map.set(d.id, i + 1));
+              userNumMap = map;
+            }
+            const uid = [...userNumMap.entries()].find(([, n]) => n === num);
+            if (uid) openProfile(uid[0]);
+          }, () => {});
+        }
+      }
+    })();
+
     document.getElementById("submitPost").addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
       const text = document.getElementById("postText").value.trim();
@@ -1651,6 +1787,34 @@
       } catch (err) {
         if (err.code === "permission-denied") status("Post blocked: fix your Firestore rules.", true);
         else status("Post failed: " + err.code, true);
+      }
+    });
+
+    const confirmModal = document.getElementById("confirmModal");
+    let confirmOkCb = null;
+    function showConfirm(title, msg, onOk) {
+      document.getElementById("confirmTitle").textContent = title;
+      document.getElementById("confirmMsg").textContent = msg;
+      confirmOkCb = onOk;
+      confirmModal.classList.add("open");
+    }
+    document.getElementById("confirmCancel").addEventListener("click", () => {
+      confirmModal.classList.remove("open");
+      confirmOkCb = null;
+    });
+    document.getElementById("confirmOk").addEventListener("click", () => {
+      const cb = confirmOkCb;
+      confirmModal.classList.remove("open");
+      confirmOkCb = null;
+      if (cb) cb();
+    });
+    confirmModal.addEventListener("click", e => {
+      if (e.target === confirmModal) { confirmModal.classList.remove("open"); confirmOkCb = null; }
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && confirmModal.classList.contains("open")) {
+        confirmModal.classList.remove("open");
+        confirmOkCb = null;
       }
     });
   </script>
