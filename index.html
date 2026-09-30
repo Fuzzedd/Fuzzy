@@ -470,6 +470,14 @@
       "1f62d","1f624","1f620","1f621","1f628","1f630","1f61e","1f61f","1f629","1f62b"
     ];
     function randomFace() { return TW + FACES[Math.floor(Math.random() * FACES.length)] + ".png"; }
+    // Deterministic fallback face: same uid always gets the same face, so
+    // refreshing or opening another tab never changes the avatar.
+    function faceForUid(uid) {
+      let h = 0;
+      const s = String(uid || "");
+      for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+      return TW + FACES[h % FACES.length] + ".png";
+    }
     const HEART_SVG = '<span class="heart-shape"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>';
     const COMMENT = TW + "1f4ac.png";
     const TRASH = TW + "1f5d1.png";
@@ -655,7 +663,7 @@
               if (u) {
                 document.getElementById("chatName").textContent = u.username || "user";
                 document.getElementById("chatName").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
-                document.querySelector("#chatAvatar img").src = u.emoji || DEFAULT_FACE;
+                document.querySelector("#chatAvatar img").src = u.emoji || faceForUid(u.id);
               }
             } else renderConversations();
           }
@@ -766,14 +774,14 @@
         const snap = await db.collection("users").doc(user.uid).get();
         if (snap.exists) {
           myUsername = snap.data().username || fallbackName(user);
-          myEmoji = snap.data().emoji || randomFace();
+          myEmoji = snap.data().emoji || faceForUid(user.uid);
           myBio = snap.data().bio || "";
           myStatus = snap.data().status || null;
           cacheUser(user.uid, snap.data());
           if (!snap.data().emoji) await db.collection("users").doc(user.uid).update({ emoji: myEmoji });
         } else {
           myUsername = fallbackName(user);
-          myEmoji = randomFace();
+          myEmoji = faceForUid(user.uid);
           await db.collection("users").doc(user.uid).set({
             username: myUsername, emoji: myEmoji, bio: "",
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -901,7 +909,7 @@
         status(isSignup ? "Creating account..." : "Logging in...");
         if (isSignup) {
           const cred = await auth.createUserWithEmailAndPassword(email, password);
-          myEmoji = randomFace();
+          myEmoji = faceForUid(cred.user.uid);
           myStatus = null;
           await db.collection("users").doc(cred.user.uid).set({
             username: username, emoji: myEmoji, bio: "",
@@ -916,13 +924,13 @@
           const snap = await db.collection("users").doc(cred.user.uid).get();
           if (snap.exists) {
             myUsername = snap.data().username || username;
-            myEmoji = snap.data().emoji || randomFace();
+            myEmoji = snap.data().emoji || faceForUid(cred.user.uid);
             myBio = snap.data().bio || "";
             myStatus = snap.data().status || null;
             cacheUser(cred.user.uid, snap.data());
             if (!snap.data().emoji) await db.collection("users").doc(cred.user.uid).update({ emoji: myEmoji });
           } else {
-            myEmoji = randomFace();
+            myEmoji = faceForUid(cred.user.uid);
             await db.collection("users").doc(cred.user.uid).set({
               username: myUsername, emoji: myEmoji, bio: "",
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -974,7 +982,7 @@
         cacheUser(profileUid, u);
         const profAvatar = document.getElementById("profAvatar");
         profAvatar.dataset.uid = profileUid;
-        document.querySelector("#profAvatar img").src = u.emoji || DEFAULT_FACE;
+        document.querySelector("#profAvatar img").src = u.emoji || faceForUid(profileUid);
         const pn = document.getElementById("profName");
         pn.textContent = u.username || "user";
         pn.insertAdjacentHTML("beforeend", verifiedBadge(u.username));
@@ -1120,7 +1128,7 @@
           const row = document.createElement("div");
           row.className = "list-row";
           row.innerHTML =
-            '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || DEFAULT_FACE) + '" alt="" /></div>' +
+            '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || faceForUid(uid)) + '" alt="" /></div>' +
             '<span class="l-name"></span><span class="l-handle">@' + (u.username || "user") + "</span>";
           row.querySelector(".l-name").textContent = u.username || "user";
           row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
@@ -1135,7 +1143,7 @@
               const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + uid);
               try {
                 const fs = await ref.get();
-                if (fs.exists) { await ref.delete(); status("Unfollowed."); }
+                if (fs.exists) { await fs.delete(); await ref.delete(); status("Unfollowed."); }
                 else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: uid }); status("Following."); notify(uid, "follow"); }
                 renderProfList();
               } catch (err) { status("Follow failed: " + err.code, true); }
@@ -1183,7 +1191,7 @@
       const clearBtn = document.createElement("button");
       clearBtn.className = "pfp-opt pfp-clear";
       clearBtn.textContent = "clear";
-      clearBtn.addEventListener("click", () => setMyPfp(randomFace()));
+      clearBtn.addEventListener("click", () => setMyPfp(faceForUid(auth.currentUser.uid)));
       imgGrid.appendChild(clearBtn);
       const emoGrid = document.getElementById("pfpEmojis");
       emoGrid.innerHTML = "";
@@ -1238,7 +1246,9 @@
       const iLiked = auth && auth.currentUser && data.likes && data.likes[auth.currentUser.uid];
       const isMyPost = auth && auth.currentUser && data.uid === auth.currentUser.uid;
       const cachedUser = userCache.get(data.uid);
-      const emoji = (cachedUser && cachedUser.emoji) || data.emoji || DEFAULT_FACE;
+      // Always prefer the user's CURRENT avatar (live user doc / cache) over
+      // the copy frozen into the post at creation time.
+      const emoji = (cachedUser && cachedUser.emoji) || (userDoc && userDoc.emoji) || data.emoji || faceForUid(data.uid);
       const name = (cachedUser && cachedUser.username) || data.username || (userDoc && userDoc.username) || "user";
       const postUid = data.uid;
       article.innerHTML =
@@ -1324,7 +1334,7 @@
         item.style.marginLeft = (Math.min(depth, 3) * 24) + "px";
         const cachedC = userCache.get(cd.uid);
         item.innerHTML =
-          '<div class="avatar" data-uid="' + cd.uid + '"><img src="' + ((cachedC && cachedC.emoji) || cd.emoji || DEFAULT_FACE) + '" alt="" /></div>' +
+          '<div class="avatar" data-uid="' + cd.uid + '"><img src="' + ((cachedC && cachedC.emoji) || cd.emoji || faceForUid(cd.uid)) + '" alt="" /></div>' +
           '<div class="c-body">' +
             '<div class="c-head"><b></b>' + verifiedBadge(cd.username) + '<span class="time">' + timeAgo(cd.createdAt) + "</span></div>" +
             '<div class="c-text"></div>' +
@@ -1478,7 +1488,7 @@
             const row = document.createElement("div");
             row.className = "list-row";
             row.innerHTML =
-              '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || DEFAULT_FACE) + '" alt="" /></div>' +
+              '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div>' +
               '<span class="l-name"></span><span class="l-handle">@' + (u.data.username || "user") + "</span>";
             row.querySelector(".l-name").textContent = u.data.username || "user";
             row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
@@ -1534,7 +1544,7 @@
         items.forEach(i => {
           const row = document.createElement("div");
           row.className = "notif-item" + (i.data.read ? "" : " unread");
-          row.innerHTML = '<div class="avatar" data-uid="' + i.data.fromUid + '"><img src="' + (i.data.fromEmoji || DEFAULT_FACE) + '" alt="" /></div><div class="n-body"><div class="n-text"></div><div class="n-time">' + timeAgo(i.data.createdAt) + "</div></div>";
+          row.innerHTML = '<div class="avatar" data-uid="' + i.data.fromUid + '"><img src="' + (i.data.fromEmoji || faceForUid(i.data.fromUid)) + '" alt="" /></div><div class="n-body"><div class="n-text"></div><div class="n-time">' + timeAgo(i.data.createdAt) + "</div></div>";
           row.querySelector(".n-text").textContent = notifText(i.data);
           row.addEventListener("click", () => {
             if (i.data.type === "dm") {
@@ -1556,7 +1566,42 @@
       } catch (err) { toast("Notifications error: " + err.code, true); }
     }
 
-    function renderConversations() {
+    // ---- DM thread auto-delete: threads whose last message is older than
+    // 24 hours get wiped (all messages + the thread doc). ----
+    const THREAD_TTL = 24 * 60 * 60 * 1000; // 24h in ms
+    let threadCleanupRunning = false;
+    async function cleanupOldThreads() {
+      if (threadCleanupRunning) return;
+      if (!auth || !auth.currentUser || !db) return;
+      threadCleanupRunning = true;
+      try {
+        const me = auth.currentUser.uid;
+        const mutuals = [...myFollowing].filter(u => myFollowers.has(u));
+        const cutoff = Date.now() - THREAD_TTL;
+        for (const u of mutuals) {
+          const dmId = [me, u].sort().join("_");
+          try {
+            const lastSnap = await db.collection("dms").doc(dmId).collection("messages")
+              .orderBy("createdAt", "desc").limit(1).get();
+            if (lastSnap.empty) continue;
+            const lastTs = lastSnap.docs[0].data().createdAt;
+            if (!lastTs || lastTs.toMillis() >= cutoff) continue;
+            const allSnap = await db.collection("dms").doc(dmId).collection("messages").get();
+            if (allSnap.size) {
+              const batch = db.batch();
+              allSnap.forEach(m => batch.delete(m.ref));
+              await batch.commit();
+            }
+            await db.collection("dms").doc(dmId).delete();
+          } catch (e) { /* ignore per-thread errors */ }
+        }
+      } finally {
+        threadCleanupRunning = false;
+      }
+    }
+    setInterval(cleanupOldThreads, 5 * 60 * 1000); // sweep every 5 min
+
+    async function renderConversations() {
       document.getElementById("msgListWrap").style.display = "block";
       chatWrap.classList.remove("open");
       delete chatWrap.dataset.uid;
@@ -1564,23 +1609,32 @@
       if (chatUnsub) { chatUnsub(); chatUnsub = null; }
       const list = document.getElementById("msgList");
       if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in to see your messages.</div>'; return; }
+      await cleanupOldThreads(); // drop expired threads before listing
       const mutuals = [...myFollowing].filter(u => myFollowers.has(u));
       if (mutuals.length === 0) {
         list.innerHTML = '<div class="empty">No conversations yet.<br>Follow someone who follows you back to start a DM.</div>';
         return;
       }
-      Promise.all(mutuals.map(u => db.collection("users").doc(u).get())).then(snaps => {
+      const me = auth.currentUser.uid;
+      Promise.all(mutuals.map(u => {
+        const dmId = [me, u].sort().join("_");
+        return Promise.all([
+          db.collection("users").doc(u).get(),
+          db.collection("dms").doc(dmId).get()
+        ]);
+      })).then(results => {
         list.innerHTML = "";
-        snaps.forEach(s => {
-          if (!s.exists) return;
-          const u = s.data();
-          cacheUser(s.id, u);
+        results.forEach(([userSnap, dmSnap]) => {
+          if (!userSnap.exists) return;
+          if (!dmSnap.exists) return; // no thread yet, or already auto-deleted
+          const u = userSnap.data();
+          cacheUser(userSnap.id, u);
           const row = document.createElement("div");
           row.className = "msg-convo";
-          row.innerHTML = '<div class="avatar" data-uid="' + s.id + '"><img src="' + (u.emoji || DEFAULT_FACE) + '" alt="" /></div><span class="m-name"></span>';
+          row.innerHTML = '<div class="avatar" data-uid="' + userSnap.id + '"><img src="' + (u.emoji || faceForUid(userSnap.id)) + '" alt="" /></div><span class="m-name"></span>';
           row.querySelector(".m-name").textContent = u.username;
           row.querySelector(".m-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
-          row.addEventListener("click", () => openChat(s.id, u));
+          row.addEventListener("click", () => openChat(userSnap.id, u));
           list.appendChild(row);
         });
         decorateAvatars(list);
@@ -1686,7 +1740,7 @@
       chatName.insertAdjacentHTML("beforeend", verifiedBadge(userDoc.username));
       const chatAvatar = document.getElementById("chatAvatar");
       chatAvatar.dataset.uid = uid;
-      document.querySelector("#chatAvatar img").src = userDoc.emoji || DEFAULT_FACE;
+      document.querySelector("#chatAvatar img").src = userDoc.emoji || faceForUid(uid);
       decorateAvatars(chatWrap);
       const me = auth.currentUser.uid;
       const dmId = [me, uid].sort().join("_");
@@ -1782,8 +1836,6 @@
     });
     document.getElementById("cancelPost").addEventListener("click", () => modal.classList.remove("open"));
     modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
-
-
 
     document.getElementById("submitPost").addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
