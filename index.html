@@ -81,7 +81,7 @@
     .action { display: flex; align-items: center; gap: 8px; background: none; border: none; color: #717171; font-size: 18px; cursor: pointer; }
     .action img { width: 24px; height: 24px; transition: transform 0.1s; }
     .action:hover img { transform: scale(1.15); }
-    .action.like.active { color: #f91818; }
+    .action.like.active { color: #ffffff; }
     .action.like:not(.active) img { filter: grayscale(1) brightness(1.6); }
     .action.like.active img { filter: none; }
     @keyframes heartPop { 0% { transform: scale(1); } 40% { transform: scale(1.45); } 100% { transform: scale(1); } }
@@ -103,7 +103,7 @@
     .c-actions { display: flex; gap: 14px; margin-top: 4px; align-items: center; }
     .c-like { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
     .c-like img { width: 16px; height: 16px; filter: grayscale(1) brightness(1.6); }
-    .c-like.active { color: #ff0b0b; }
+    .c-like.active { color: #fdfcfc; }
     .c-reply { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; }
     .c-reply:hover { color: #fff; }
     .c-del { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
@@ -442,7 +442,7 @@
       "1f62d","1f624","1f620","1f621","1f628","1f630","1f61e","1f61f","1f629","1f62b"
     ];
     function randomFace() { return TW + FACES[Math.floor(Math.random() * FACES.length)] + ".png"; }
-    const HEART = TW + "1f499.png";
+    const HEART = TW + "1f495.png";
     const COMMENT = TW + "1f4ac.png";
     const TRASH = TW + "1f5d1.png";
     const DEFAULT_FACE = TW + "1f642.png";
