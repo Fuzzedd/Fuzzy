@@ -50,7 +50,7 @@
     .post-btn:hover { background: #d9d9d9; }
     .user { display: flex; align-items: center; gap: 14px; font-size: 24px; padding: 8px 12px; border-radius: 9999px; cursor: pointer; }
     .user:hover { background: #1d1d1d; }
-    .avatar { width: 48px; height: 48px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
+    .avatar { width: 69px; height: 50px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .status-badge {
       position: absolute; bottom: 0; right: 0; width: 15px; height: 15px; border-radius: 50%;
@@ -470,8 +470,6 @@
       "1f62d","1f624","1f620","1f621","1f628","1f630","1f61e","1f61f","1f629","1f62b"
     ];
     function randomFace() { return TW + FACES[Math.floor(Math.random() * FACES.length)] + ".png"; }
-    // Deterministic fallback face: same uid always gets the same face, so
-    // refreshing or opening another tab never changes the avatar.
     function faceForUid(uid) {
       let h = 0;
       const s = String(uid || "");
@@ -483,6 +481,8 @@
     const TRASH = TW + "1f5d1.png";
     const DEFAULT_FACE = TW + "1f642.png";
     const WAVE = TW + "1f44b.png";
+
+    const POST_TTL = 24 * 60 * 60 * 1000;
 
     const VERIFIED = ["matu", "matu67"];
     function verifiedBadge(username) {
@@ -509,10 +509,6 @@
     }
     function setEmojiText(el, text) { el.innerHTML = twEmojiHtml(text); }
 
-    // Cache-buster for local avatar files (avatar1.png, avatar2.png, ...).
-    // Appends ?v=<load-time> so browsers and the GitHub Pages CDN refetch the
-    // latest file on each page load instead of showing a cached copy. Only
-    // touches local files, never the twemoji CDN images.
     const AVATAR_BUST = "?v=" + Date.now();
     function bustAvatarSrc(img) {
       const s = img.getAttribute("src") || "";
@@ -694,6 +690,23 @@
     const notificationsView = document.getElementById("notificationsView");
     const profPosts = document.getElementById("profPosts");
     const chatWrap = document.getElementById("chatWrap");
+
+    const chatBodyEl = document.getElementById("chatBody");
+    let chatPinned = true;
+    chatBodyEl.addEventListener("scroll", () => {
+      chatPinned = chatBodyEl.scrollHeight - chatBodyEl.scrollTop - chatBodyEl.clientHeight < 60;
+    });
+    new ResizeObserver(() => {
+      if (chatWrap.classList.contains("open") && chatPinned) {
+        chatBodyEl.scrollTop = chatBodyEl.scrollHeight;
+      }
+    }).observe(chatBodyEl);
+    function scrollChatToBottom() {
+      chatPinned = true;
+      requestAnimationFrame(() => {
+        chatBodyEl.scrollTop = chatBodyEl.scrollHeight;
+      });
+    }
 
     function showView(name) {
       activeView = name;
@@ -1143,7 +1156,7 @@
               const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + uid);
               try {
                 const fs = await ref.get();
-                if (fs.exists) { await fs.delete(); await ref.delete(); status("Unfollowed."); }
+                if (fs.exists) { await ref.delete(); status("Unfollowed."); }
                 else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: uid }); status("Following."); notify(uid, "follow"); }
                 renderProfList();
               } catch (err) { status("Follow failed: " + err.code, true); }
@@ -1246,8 +1259,6 @@
       const iLiked = auth && auth.currentUser && data.likes && data.likes[auth.currentUser.uid];
       const isMyPost = auth && auth.currentUser && data.uid === auth.currentUser.uid;
       const cachedUser = userCache.get(data.uid);
-      // Always prefer the user's CURRENT avatar (live user doc / cache) over
-      // the copy frozen into the post at creation time.
       const emoji = (cachedUser && cachedUser.emoji) || (userDoc && userDoc.emoji) || data.emoji || faceForUid(data.uid);
       const name = (cachedUser && cachedUser.username) || data.username || (userDoc && userDoc.username) || "user";
       const postUid = data.uid;
@@ -1424,11 +1435,15 @@
       killCommentListeners();
       postsList.innerHTML = "";
       if (!db) { postsList.innerHTML = '<div class="empty">Firebase not loaded.</div>'; return; }
-      let posts = lastPosts;
+      const cutoff = Date.now() - POST_TTL;
+      let posts = lastPosts.filter(p => {
+        const ts = p.data().createdAt;
+        return ts && ts.toMillis() >= cutoff;
+      });
       if (activeTab === "following") posts = posts.filter(p => myFollowing.has(p.data().uid));
       if (posts.length === 0) {
         postsList.innerHTML = '<div class="empty">' +
-          (activeTab === "following" ? "Follow some people and their posts will show up here." : "No posts yet — be the first to post!") + "</div>";
+          (activeTab === "following" ? "Follow some people and their posts will show up here." : "No recent posts — be the first to post!") + "</div>";
         return;
       }
       posts.forEach(p => postsList.appendChild(buildPost(p.id, p.data(), null)));
@@ -1566,42 +1581,7 @@
       } catch (err) { toast("Notifications error: " + err.code, true); }
     }
 
-    // ---- DM thread auto-delete: threads whose last message is older than
-    // 24 hours get wiped (all messages + the thread doc). ----
-    const THREAD_TTL = 24 * 60 * 60 * 1000; // 24h in ms
-    let threadCleanupRunning = false;
-    async function cleanupOldThreads() {
-      if (threadCleanupRunning) return;
-      if (!auth || !auth.currentUser || !db) return;
-      threadCleanupRunning = true;
-      try {
-        const me = auth.currentUser.uid;
-        const mutuals = [...myFollowing].filter(u => myFollowers.has(u));
-        const cutoff = Date.now() - THREAD_TTL;
-        for (const u of mutuals) {
-          const dmId = [me, u].sort().join("_");
-          try {
-            const lastSnap = await db.collection("dms").doc(dmId).collection("messages")
-              .orderBy("createdAt", "desc").limit(1).get();
-            if (lastSnap.empty) continue;
-            const lastTs = lastSnap.docs[0].data().createdAt;
-            if (!lastTs || lastTs.toMillis() >= cutoff) continue;
-            const allSnap = await db.collection("dms").doc(dmId).collection("messages").get();
-            if (allSnap.size) {
-              const batch = db.batch();
-              allSnap.forEach(m => batch.delete(m.ref));
-              await batch.commit();
-            }
-            await db.collection("dms").doc(dmId).delete();
-          } catch (e) { /* ignore per-thread errors */ }
-        }
-      } finally {
-        threadCleanupRunning = false;
-      }
-    }
-    setInterval(cleanupOldThreads, 5 * 60 * 1000); // sweep every 5 min
-
-    async function renderConversations() {
+    function renderConversations() {
       document.getElementById("msgListWrap").style.display = "block";
       chatWrap.classList.remove("open");
       delete chatWrap.dataset.uid;
@@ -1609,32 +1589,23 @@
       if (chatUnsub) { chatUnsub(); chatUnsub = null; }
       const list = document.getElementById("msgList");
       if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in to see your messages.</div>'; return; }
-      await cleanupOldThreads(); // drop expired threads before listing
       const mutuals = [...myFollowing].filter(u => myFollowers.has(u));
       if (mutuals.length === 0) {
         list.innerHTML = '<div class="empty">No conversations yet.<br>Follow someone who follows you back to start a DM.</div>';
         return;
       }
-      const me = auth.currentUser.uid;
-      Promise.all(mutuals.map(u => {
-        const dmId = [me, u].sort().join("_");
-        return Promise.all([
-          db.collection("users").doc(u).get(),
-          db.collection("dms").doc(dmId).get()
-        ]);
-      })).then(results => {
+      Promise.all(mutuals.map(u => db.collection("users").doc(u).get())).then(snaps => {
         list.innerHTML = "";
-        results.forEach(([userSnap, dmSnap]) => {
-          if (!userSnap.exists) return;
-          if (!dmSnap.exists) return; // no thread yet, or already auto-deleted
-          const u = userSnap.data();
-          cacheUser(userSnap.id, u);
+        snaps.forEach(s => {
+          if (!s.exists) return;
+          const u = s.data();
+          cacheUser(s.id, u);
           const row = document.createElement("div");
           row.className = "msg-convo";
-          row.innerHTML = '<div class="avatar" data-uid="' + userSnap.id + '"><img src="' + (u.emoji || faceForUid(userSnap.id)) + '" alt="" /></div><span class="m-name"></span>';
+          row.innerHTML = '<div class="avatar" data-uid="' + s.id + '"><img src="' + (u.emoji || faceForUid(s.id)) + '" alt="" /></div><span class="m-name"></span>';
           row.querySelector(".m-name").textContent = u.username;
           row.querySelector(".m-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
-          row.addEventListener("click", () => openChat(userSnap.id, u));
+          row.addEventListener("click", () => openChat(s.id, u));
           list.appendChild(row);
         });
         decorateAvatars(list);
@@ -1670,16 +1641,10 @@
 
     function drawChatMessages(snap, me) {
       const body = document.getElementById("chatBody");
-      const nearBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 120;
       body.innerHTML = "";
       const msgs = [];
       snap.forEach(m => msgs.push({ id: m.id, data: m.data() }));
-      msgs.sort((a, b) => {
-        const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
-        const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
-        if (ta !== tb) return ta - tb;
-        return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
-      });
+      msgs.sort((a, b) => a.id < b.id ? -1 : (a.id > b.id ? 1 : 0));
       currentChatMsgs = msgs;
       if (msgs.length === 0) {
         body.innerHTML = '<div class="empty">Say hi <img class="tw-emoji" src="' + WAVE + '" alt="" /></div>';
@@ -1725,7 +1690,7 @@
         wrap.appendChild(meta);
         body.appendChild(wrap);
       });
-      if (nearBottom) body.scrollTop = body.scrollHeight;
+      scrollChatToBottom();
     }
 
     function openChat(uid, userDoc) {
@@ -1765,6 +1730,7 @@
           toast("Messages error: " + (err.code || err.message) +
             (err.code === "permission-denied" ? " — fix your Firestore rules" : ""), true);
         });
+      scrollChatToBottom();
       document.getElementById("chatInput").focus();
     }
 
@@ -1789,6 +1755,7 @@
         });
         input.value = "";
         notify(partnerUid, "dm", {});
+        scrollChatToBottom();
       } catch (err) {
         if (err.code === "permission-denied") toast("DM blocked: your Firestore rules don't allow logged-in users to write. Fix the rules.", true);
         else toast("Message failed: " + err.code, true);
