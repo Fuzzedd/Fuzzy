@@ -28,7 +28,7 @@
     const mediaBtn = document.createElement("button");
     mediaBtn.type = "button";
     mediaBtn.id = "fuzzyMediaBtn";
-    mediaBtn.innerHTML = "📷 / 🎥 <span style='font-size:14px; color:#e7e7e7;'>Add Image, GIF or Video</span>";
+    mediaBtn.innerHTML = "📷 / 🎥 <span style='font-size:14px; color:#e7e7e7;'>Upload media</span>";
     mediaBtn.style.cssText = "background: #2a2a2a; border: 1px solid #3a3a3a; color: #fff; padding: 6px 14px; border-radius: 9999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; transition: background 0.2s;";
     mediaBtn.onmouseover = () => mediaBtn.style.background = "#333";
     mediaBtn.onmouseout = () => mediaBtn.style.background = "#2a2a2a";
@@ -109,12 +109,12 @@
     throw new Error(data?.error?.message || "Image upload failed");
   }
 
-  // 3. Process Video locally into Base64 (100% Reliable, Zero Server/CORS Dependencies)
+  // 3. Process Video locally (No third-party CORS or Cloudinary API keys)
   function processVideoFile(file) {
     return new Promise((resolve, reject) => {
-      const maxMB = 25; // 25MB limit for smooth database saving
+      const maxMB = 25;
       if (file.size > maxMB * 1024 * 1024) {
-        return reject(new Error(`Video file is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Please choose a video under ${maxMB}MB.`));
+        return reject(new Error(`Video file is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Limit is ${maxMB}MB.`));
       }
 
       const reader = new FileReader();
@@ -140,7 +140,7 @@
 
         isSubmitting = true;
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = selectedFile.type.startsWith("video/") ? "Processing video..." : "Uploading media...";
+        submitBtn.textContent = selectedFile.type.startsWith("video/") ? "Uploading video..." : "Uploading media...";
         submitBtn.disabled = true;
 
         try {
