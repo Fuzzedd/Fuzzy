@@ -1,3 +1,8 @@
+// 0. Prevent "ReferenceError: Q is not defined" from crashing index.html
+if (typeof window.Q === "undefined") {
+  window.Q = function () { return null; };
+}
+
 (function () {
   const IMGBB_API_KEY = "38f5349bc38fbf6581e25c9bcd61e6d0";
   let selectedFile = null;
@@ -109,19 +114,45 @@
     throw new Error(data?.error?.message || "Image upload failed");
   }
 
-  // 3. Process Video locally (No third-party CORS or Cloudinary API keys)
-  function processVideoFile(file) {
-    return new Promise((resolve, reject) => {
-      const maxMB = 25;
-      if (file.size > maxMB * 1024 * 1024) {
-        return reject(new Error(`Video file is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Limit is ${maxMB}MB.`));
+  // 3. Reliable Video Upload Engine (Dual-Host Fallback + CORS + Native Streaming)
+  async function uploadVideoHost(file) {
+    // Primary: Uguu.se
+    try {
+      const formData = new FormData();
+      formData.append("files[]", file);
+      const res = await fetch("https://uguu.se/upload.php", {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.files && data.files[0]?.url) {
+          return data.files[0].url;
+        }
       }
+    } catch (e) {
+      console.warn("Uguu upload failed, switching to backup server...", e);
+    }
 
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = () => reject(new Error("Failed to read video file."));
-      reader.readAsDataURL(file);
-    });
+    // Backup: 0x0.st
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("https://0x0.st", {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        const url = (await res.text()).trim();
+        if (url.startsWith("http")) {
+          return url;
+        }
+      }
+    } catch (e) {
+      console.warn("0x0.st upload failed...", e);
+    }
+
+    throw new Error("Video upload failed. Please try a slightly smaller video clip.");
   }
 
   // 4. Intercept Post Submit
@@ -148,7 +179,7 @@
           if (selectedFile.type.startsWith("image/")) {
             mediaUrl = await uploadImageToImgBB(selectedFile);
           } else if (selectedFile.type.startsWith("video/")) {
-            mediaUrl = await processVideoFile(selectedFile);
+            mediaUrl = await uploadVideoHost(selectedFile);
           }
 
           const postTextEl = document.getElementById("postText");
@@ -165,7 +196,7 @@
           submitBtn.textContent = originalText;
           submitBtn.click();
         } catch (err) {
-          alert("Media Error: " + err.message);
+          alert("Media Upload Error: " + err.message);
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
         } finally {
@@ -175,7 +206,7 @@
     }, true);
   }
 
-  // 5. Render Feed Images, GIFs, and HTML5 Videos
+  // 5. Render Feed Images, GIFs, and HTML5 Videos (Supports Old & New Formats)
   function renderFeedMedia() {
     const posts = document.querySelectorAll(".post-body");
 
@@ -185,16 +216,16 @@
       let html = el.innerHTML;
       let modified = false;
 
-      // Video Links (.mp4, .webm, .mov, data:video/...) -> Player
-      const videoRegex = /(data:video\/[^;]+;base64,[^\s<"']+|https?:\/\/[^\s<"']+(?:\.(?:mp4|webm|mov|m4v))[^\s<"']*)/gi;
+      // Matches Base64, Pixeldrain, Tmpfiles, Cloudinary, Uguu, 0x0, & Direct Video Extensions
+      const videoRegex = /(data:video\/[^;]+;base64,[^\s<"']+|https?:\/\/[^\s<"']+(?:\.(?:mp4|webm|mov|m4v)|cloudinary\.com\/[^\s<"']+\/video\/|tmpfiles\.org\/|pixeldrain\.com\/|uguu\.se\/|0x0\.st\/)[^\s<"']*)/gi;
       if (videoRegex.test(html)) {
         html = html.replace(videoRegex, (url) => {
-          return `<div style="margin-top:10px;"><video src="${url}" controls style="max-width:100%; max-height:400px; border-radius:12px; border:1px solid #2f2f2f; display:block; background:#000;"></video></div>`;
+          return `<div style="margin-top:10px;"><video src="${url}" controls style="max-width:100%; max-height:400px; border-radius:12px; border:1px solid #2f2f2f; display:block; background:#000;" onerror="this.parentNode.innerHTML='<div style=\\'color:#ff5555; padding:8px; font-size:13px;\\'>Video unplayable</div>'"></video></div>`;
         });
         modified = true;
       }
 
-      // Images & GIFs (.gif, .png, .jpg, .webp, ImgBB) -> View
+      // Images & GIFs (.gif, .png, .jpg, .webp, ImgBB)
       const imgRegex = /(https?:\/\/(?:i\.ibb\.co|ibb\.co|[^\s<"']+?\.(?:png|jpg|jpeg|gif|webp|svg))[^\s<"']*)/gi;
       if (imgRegex.test(html)) {
         html = html.replace(imgRegex, (url) => {
