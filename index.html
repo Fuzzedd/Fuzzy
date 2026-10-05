@@ -155,8 +155,9 @@
     .search-box { position: sticky; top: 0; z-index: 10; background: rgba(22, 22, 22, 0.9); backdrop-filter: blur(8px); padding: 12px 16px; border-bottom: 1px solid #2f2f2f; }
     .search-box input { width: 100%; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 12px 20px; color: #e7e7e7; font-size: 16px; outline: none; }
     .search-box input:focus { border-color: #555; }
-    .search-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-    .stab { cursor: pointer; color: #717171; padding: 6px 16px; border-radius: 9999px; font-size: 15px; }
+    .search-tabs { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+    .search-tabs::-webkit-scrollbar { display: none; }
+    .stab { cursor: pointer; color: #717171; padding: 6px 16px; border-radius: 9999px; font-size: 15px; flex-shrink: 0; }
     .stab.active { background: #2a2a2a; color: #fff; }
     .list-row { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #2f2f2f; cursor: pointer; }
     .list-row:hover { background: #1d1d1d; }
@@ -173,7 +174,7 @@
     .notif-item .n-time { font-size: 13px; color: #717171; margin-top: 2px; }
     .notif-item.unread { background: #1d1d1d; }
     .notif-item.unread .n-text { font-weight: 600; }
-    .right { width: 400px; flex-shrink: 0; background: #161616; border-left: 1px solid #2f2f2f; padding: 16px; }
+    .right { width: 400px; flex-shrink: 0; background: #161616; border-left: 1px solid #2f2f2f; padding: 16px; overflow-y: auto; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal { background: #1d1d1d; border: 1px solid #2f2f2f; border-radius: 16px; width: 480px; max-width: 92%; max-height: 90vh; overflow-y: auto; padding: 20px; }
@@ -213,36 +214,260 @@
     .emoji-opt:hover { background: #2a2a2a; }
     .emoji-opt.selected { background: #2a2a2a; outline: 2px solid #ec8106; }
     .emoji-opt img { width: 28px; height: 28px; }
+
+    /* ---- media upload / post media ---- */
+    .post-media-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .post-media-btn { background: none; border: 1px solid #2f2f2f; color: #e7e7e7; border-radius: 9999px; padding: 8px 16px; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
+    .post-media-btn:hover { background: #2a2a2a; border-color: #555; }
+    .post-media-btn img { width: 20px; height: 20px; }
+    .post-media-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .media-preview { margin-top: 12px; position: relative; display: none; }
+    .media-preview.show { display: block; }
+    .media-preview img, .media-preview video { max-width: 100%; max-height: 320px; border-radius: 12px; display: block; background: transparent; }
+    .media-remove { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.75); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+    .media-remove:hover { background: rgba(220,30,30,0.9); }
+    .media-preview-label { font-size: 12px; color: #717171; margin-top: 6px; }
+    .post-media { margin-top: 10px; border-radius: 12px; overflow: hidden; max-width: 100%; background: transparent; }
+    .post-media img, .post-media video { max-width: 100%; max-height: 500px; display: block; border-radius: 12px; }
+
+    /* ---- music card (right sidebar) ---- */
+    .music-card {
+      background: linear-gradient(180deg, #1a1226 0%, #161616 70%);
+      border: 1px solid #2f2538;
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .music-card::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 0%, rgba(140, 70, 220, 0.18), transparent 60%);
+      pointer-events: none;
+    }
+    .music-title {
+      position: relative;
+      font-size: 16px; font-weight: 700;
+      color: #d8c9ff;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+      letter-spacing: 0.2px;
+    }
+    .music-title .spooky-glow {
+      display: inline-flex; align-items: center; justify-content: center;
+      filter: drop-shadow(0 0 8px rgba(150, 90, 240, 0.7));
+      animation: spookyFloat 3s ease-in-out infinite;
+    }
+    .music-title .spooky-glow img { width: 22px; height: 22px; }
+    @keyframes spookyFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .music-track {
+      position: relative;
+      display: flex; align-items: center; gap: 6px;
+      background: #0d0d0d;
+      border: 1px solid #2f2f2f;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .music-track.active {
+      border-color: #7a4dd6;
+      box-shadow: 0 0 0 1px rgba(122, 77, 214, 0.35), 0 0 22px rgba(122, 77, 214, 0.25);
+    }
+    .music-play-btn {
+      flex: 1; min-width: 0;
+      display: flex; align-items: center; gap: 10px;
+      background: none; border: none;
+      color: #e7e7e7;
+      padding: 8px 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      text-align: left;
+    }
+    .music-play-btn:hover { background: #1d1d1d; }
+    .music-emoji {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .music-emoji img {
+      width: 22px; height: 22px;
+      filter: drop-shadow(0 0 6px rgba(150, 90, 240, 0.55));
+    }
+    .music-name {
+      color: #d8c9ff; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .music-controls { display: flex; gap: 2px; flex-shrink: 0; }
+    .music-ctrl-btn {
+      background: none; border: none;
+      color: #6b6b6b;
+      padding: 7px 8px;
+      cursor: pointer;
+      border-radius: 8px;
+      line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .music-ctrl-btn:hover { background: #2a2a2a; }
+    .music-ctrl-btn img {
+      width: 18px; height: 18px;
+      opacity: 0.55;
+      transition: opacity 0.15s, filter 0.15s;
+    }
+    .music-ctrl-btn:hover img { opacity: 0.9; }
+    .music-ctrl-btn.on { background: #2a1f3d; }
+    .music-ctrl-btn.on img {
+      opacity: 1;
+      filter: drop-shadow(0 0 6px rgba(150, 90, 240, 0.7));
+    }
+    .music-add-btn {
+      position: relative;
+      width: 100%;
+      background: none;
+      border: 1px dashed #3a2f4a;
+      color: #9a8fb5;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 6px;
+      font-family: inherit;
+    }
+    .music-add-btn:hover:not(:disabled) { border-color: #7a4dd6; color: #d8c9ff; background: rgba(122, 77, 214, 0.06); }
+    .music-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .music-hint {
+      position: relative;
+      font-size: 11px;
+      color: #6b6b6b;
+      text-align: center;
+      margin-top: 8px;
+    }
+
     @media (max-width: 768px) {
       .right { display: none; }
+
+      /* ---- bottom nav ---- */
       .sidebar {
         position: fixed; bottom: 0; left: 0; right: 0; top: auto;
-        width: 100%; height: 64px; padding: 6px;
+        width: 100%; height: 68px; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
         flex-direction: row; align-items: center; justify-content: space-around;
-        border-right: none; border-top: 1px solid #2f2f2f; z-index: 50;
+        border-right: none; border-top: 1px solid #2f2f2f;
+        background: rgba(22, 22, 22, 0.98); backdrop-filter: blur(12px);
+        z-index: 50; gap: 0;
       }
       .logo { display: none; }
-      .nav-item { position: relative; flex-direction: column; gap: 2px; font-size: 10px; padding: 4px 8px; }
+
+      .nav-item {
+        position: relative;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 9px;
+        padding: 6px 8px;
+        justify-content: center; align-items: center;
+        min-width: 0;
+        flex: 1;
+        max-width: 76px;
+        border-radius: 10px;
+      }
       .nav-item img { width: 24px; height: 24px; }
-      .notif-badge { position: absolute; top: -2px; right: -2px; margin: 0; min-width: 16px; height: 16px; font-size: 10px; padding: 0 4px; }
-      .post-btn { margin: 0; padding: 8px 14px; font-size: 14px; }
-      .user { gap: 6px; padding: 4px; }
-      .user .avatar { width: 36px; height: 36px; }
-      .user span { display: none; }
-      .user:not(:has(.logout)) span { display: inline; font-size: 12px; color: #e7e7e7; }
-      .logout { font-size: 10px; }
-      .feed { padding-bottom: 64px; }
+      .notif-badge { position: absolute; top: 4px; right: 6px; min-width: 16px; height: 16px; font-size: 9px; padding: 0 4px; }
+
+      .sidebar .nav-item[data-nav="home"] { order: 1; }
+      .sidebar .nav-item[data-nav="search"] { order: 2; }
+      .post-btn { order: 3; }
+      .sidebar .nav-item[data-nav="notifications"] { order: 4; }
+      .sidebar .nav-item[data-nav="account"] { order: 5; }
+
+      .post-btn {
+        margin: 0;
+        flex: 0 0 auto;
+        width: 50px; height: 50px;
+        min-width: 50px;
+        border-radius: 50%;
+        font-size: 0;
+        padding: 0;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 14px rgba(231,231,231,0.22);
+        align-self: center;
+      }
+      .post-btn::before {
+        content: "+";
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      /* ---- floating user pill (top-right) ---- */
+      .sidebar .user {
+        position: fixed;
+        top: 10px; right: 10px;
+        left: auto; bottom: auto;
+        z-index: 60;
+        background: rgba(29,29,29,0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid #3a3a3a;
+        border-radius: 9999px;
+        padding: 4px 12px 4px 4px;
+        gap: 8px;
+        font-size: 14px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+        flex-direction: row !important;
+      }
+      .sidebar .user .avatar { width: 34px; height: 34px; border-radius: 10px; }
+      .sidebar .user span#userName {
+        display: inline !important;
+        font-size: 13px;
+        color: #e7e7e7;
+        font-weight: 500;
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .sidebar .user.logged-in span#userName { display: none !important; }
+      .sidebar .user .logout {
+        display: block !important;
+        font-size: 11px;
+        padding: 5px 10px;
+        background: #2f2f2f;
+        border-radius: 9999px;
+        color: #e7e7e7;
+        margin-left: 0;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .sidebar .user .logout:hover { background: #3f3f3f; color: #f91880; }
+
+      .feed { padding-bottom: 80px; }
       .feed-inner { border-left: none; border-right: none; max-width: 100%; }
-      .feed-header { font-size: 16px; padding: 8px 0; }
+      .feed-header {
+        font-size: 16px;
+        padding: 14px 12px;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .feed-header .tab { padding: 6px 12px; }
+
+      .search-box { padding: 14px 16px; }
+      .stab { padding: 6px 14px; font-size: 14px; }
+
       .post { padding: 12px; }
       .post-actions { gap: 24px; }
       .profile-top { gap: 14px; }
       .profile-top .avatar { width: 72px; height: 72px; }
       .profile-head { padding: 12px; }
+      .back-btn { padding: 8px 12px; font-size: 14px; }
       .modal { width: 92%; }
       .emoji-grid { grid-template-columns: repeat(6, 1fr); }
       .status-picker { gap: 6px; }
       .status-opt { padding: 5px 10px; font-size: 13px; }
+
+      /* push toasts below the user pill */
+      #toasts { top: 70px; }
     }
   </style>
 </head>
@@ -311,6 +536,7 @@
         <div class="search-tabs">
           <span class="stab active" data-stab="posts">posts</span>
           <span class="stab" data-stab="accounts">accounts</span>
+          <span class="stab" data-stab="all">all</span>
         </div>
         <input id="searchInput" placeholder="Search..." />
       </div>
@@ -323,12 +549,29 @@
     </div>
   </main>
 
-  <aside class="right"></aside>
+  <aside class="right">
+    <div class="music-card">
+      <div class="music-title">
+        <span class="spooky-glow"><img class="tw-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></span> music
+      </div>
+      <div id="musicTracksList"></div>
+      <button class="music-add-btn" id="addMusicBtn">+ add your own</button>
+      <input type="file" id="musicFileInput" accept="audio/*" style="display:none" />
+      <div class="music-hint" id="musicHint"></div>
+    </div>
+  </aside>
 
   <div class="modal-overlay" id="postModal">
     <div class="modal">
       <h3>Create a post</h3>
       <textarea id="postText" placeholder="What's happening?"></textarea>
+      <div class="post-media-row">
+        <button class="post-media-btn" id="uploadMediaBtn" type="button">
+          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload media
+        </button>
+        <input type="file" id="mediaInput" accept="image/*,video/mp4,video/webm,video/quicktime,video/*" style="display:none" />
+      </div>
+      <div class="media-preview" id="mediaPreview"></div>
       <div class="modal-btns">
         <button class="btn btn-ghost" id="cancelPost">Cancel</button>
         <button class="btn btn-primary" id="submitPost">Post</button>
@@ -359,7 +602,14 @@
   <div class="modal-overlay" id="pfpModal">
     <div class="modal">
       <h3>Change profile picture</h3>
-      <div class="pfp-section-label">Pick an image</div>
+      <div class="pfp-section-label">Upload your own (images only)</div>
+      <div class="post-media-row" style="margin-top:0">
+        <button class="post-media-btn" id="pfpUploadBtn" type="button">
+          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload image
+        </button>
+        <input type="file" id="pfpUploadInput" accept="image/*" style="display:none" />
+      </div>
+      <div class="pfp-section-label" style="margin-top:16px">Or pick an image</div>
       <div class="pfp-grid" id="pfpImages"></div>
       <div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div>
       <div class="emoji-grid" id="pfpEmojis"></div>
@@ -398,6 +648,25 @@
     function status(msg, isError) { toast(msg, isError); }
     window.onerror = (msg) => toast("ERROR: " + msg, true);
 
+    // ---- one video at a time: pause other videos when one plays ----
+    document.addEventListener("play", (e) => {
+      const v = e.target;
+      if (v && v.tagName === "VIDEO") {
+        document.querySelectorAll("video").forEach(other => {
+          if (other !== v && !other.paused) {
+            try { other.pause(); } catch (err) {}
+          }
+        });
+      }
+    }, true);
+
+    // ---- pause every video ----
+    function pauseAllVideos() {
+      document.querySelectorAll("video").forEach(v => {
+        try { if (!v.paused) v.pause(); } catch (e) {}
+      });
+    }
+
     const TW = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/";
     const FACES = [
       "1f600","1f601","1f602","1f923","1f605","1f604","1f609","1f60a","1f60b","1f60e",
@@ -418,6 +687,11 @@
     const TRASH = TW + "1f5d1.png";
     const DEFAULT_FACE = TW + "1f642.png";
 
+    // music icons
+    const MI_GHOST = TW + "1f47b.png";
+    const MI_HEADPHONES = TW + "1f3a7.png";
+    const MI_SPEAKER = TW + "1f50a.png";
+
     const POST_TTL = 24 * 60 * 60 * 1000;
 
     const VERIFIED = ["matu", "matu67"];
@@ -426,7 +700,7 @@
     }
 
     function escapeHtml(s) {
-      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
     function twEmojiHtml(text) {
       const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
@@ -502,6 +776,19 @@
     let userNumMap = new Map();
     const userCache = new Map();
     function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
+
+    const IMGBB_KEY = "38f5349bc38fbf6581e25c9bcd61e6d0";
+    const CLOUDINARY_CLOUD = "qn1sej7z";
+    const CLOUDINARY_PRESET = "ggmatu";
+    const MAX_MEDIA_BYTES = 50 * 1024 * 1024;
+    const MAX_PFP_BYTES = 10 * 1024 * 1024;
+    const MAX_MUSIC_BYTES = 25 * 1024 * 1024;
+    const MAX_MUSIC_TRACKS = 7;
+
+    let pendingMediaUrl = null;
+    let pendingMediaType = null;
+    let pendingLocalUrl = null;
+    let isUploadingMedia = false;
 
     let notifSound = null;
     function playNotifSound() {
@@ -611,6 +898,7 @@
     const profPosts = document.getElementById("profPosts");
 
     function showView(name) {
+      pauseAllVideos();
       activeView = name;
       feedView.style.display = name === "feed" ? "block" : "none";
       profileView.style.display = name === "profile" ? "block" : "none";
@@ -623,16 +911,19 @@
       const logoutBtn = document.getElementById("logoutBtn");
       const avatarImg = document.querySelector("#myAvatar img");
       const myAvatar = document.getElementById("myAvatar");
+      const userRow = document.getElementById("userRow");
       if (auth && auth.currentUser) {
         nameEl.textContent = myUsername || "you";
         avatarImg.src = myEmoji;
         logoutBtn.style.display = "block";
         myAvatar.dataset.uid = auth.currentUser.uid;
+        userRow.classList.add("logged-in");
       } else {
         nameEl.textContent = "sign in";
         avatarImg.src = DEFAULT_FACE;
         logoutBtn.style.display = "none";
         delete myAvatar.dataset.uid;
+        userRow.classList.remove("logged-in");
         const b = myAvatar.querySelector(".status-badge");
         if (b) b.remove();
       }
@@ -640,10 +931,7 @@
     }
 
     function fallbackName(user) { return user.email ? user.email.split("@")[0] : "you"; }
-
-    function validUsername(u) {
-      return /^[a-zA-Z0-9]{3,13}$/.test(u);
-    }
+    function validUsername(u) { return /^[a-zA-Z0-9]{3,13}$/.test(u); }
 
     function killCommentListeners() {
       commentUnsubs.forEach(u => { try { u(); } catch (e) {} });
@@ -703,10 +991,7 @@
         }
         touchLastSeen();
         updateSidebar();
-        if (!validUsername(myUsername)) {
-          await fuzzUser();
-          return;
-        }
+        if (!validUsername(myUsername)) { await fuzzUser(); return; }
         status("Signed in as " + myUsername + " — hi there boyo");
       } catch (err) {
         if (err.code === "permission-denied") {
@@ -736,8 +1021,7 @@
           setupNotifListener(user);
           setupUsersListener();
           renderPosts();
-        }
-        else {
+        } else {
           myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null;
           myFollowing = new Set(); myFollowers = new Set();
           killCommentListeners();
@@ -824,13 +1108,11 @@
       authError.textContent = "";
       if (!username) { authError.textContent = "Enter a username."; return; }
       if (password.length < 6) { authError.textContent = "Password must be at least 6 characters."; return; }
-
       if (!validUsername(username)) {
         authModal.classList.remove("open");
         fuzzedModal.classList.add("open");
         return;
       }
-
       const email = usernameToEmail(username);
       try {
         status(isSignup ? "Creating account..." : "Logging in...");
@@ -893,10 +1175,7 @@
       profileView.scrollTop = 0;
       renderProfile();
     }
-    function closeProfile() {
-      profileUid = null;
-      showView("feed");
-    }
+    function closeProfile() { profileUid = null; showView("feed"); }
     document.getElementById("backBtn").addEventListener("click", closeProfile);
 
     async function renderProfile() {
@@ -946,6 +1225,7 @@
         if (profListMode) { renderProfList(); return; }
         document.getElementById("profList").style.display = "none";
         document.getElementById("profPosts").style.display = "block";
+        // NOTE: no 24h TTL filter here — every post permanently saved on profile
         const postsSnap = await db.collection("posts").where("uid", "==", profileUid).get();
         const posts = postsSnap.docs.map(d => ({ id: d.id, data: d.data() }));
         posts.sort((a, b) => (b.data.createdAt ? b.data.createdAt.toMillis() : 0) - (a.data.createdAt ? a.data.createdAt.toMillis() : 0));
@@ -971,9 +1251,7 @@
         userCache.set(auth.currentUser.uid, { ...cached, status: s });
         refreshStatusDots();
         status(s ? "Status set to " + s + "." : "Status set to auto (online/offline).");
-      } catch (err) {
-        toast("Status failed: " + err.code, true);
-      }
+      } catch (err) { toast("Status failed: " + err.code, true); }
     }));
 
     document.getElementById("changeBioBtn").addEventListener("click", () => {
@@ -1042,10 +1320,7 @@
           '<button class="back-btn" id="listBack">&larr; back</button> ' +
           '<span style="font-size:18px;font-weight:700">' + (profListMode === "following" ? "Following" : "Followers") + "</span></div>";
         box.querySelector("#listBack").addEventListener("click", closeProfList);
-        if (uids.length === 0) {
-          box.innerHTML += '<div class="empty">Nobody here yet.</div>';
-          return;
-        }
+        if (uids.length === 0) { box.innerHTML += '<div class="empty">Nobody here yet.</div>'; return; }
         const snaps = await Promise.all(uids.map(u => db.collection("users").doc(u).get()));
         snaps.forEach(s => {
           if (!s.exists) return;
@@ -1080,9 +1355,7 @@
           box.appendChild(row);
         });
         decorateAvatars(box);
-      } catch (err) {
-        box.innerHTML += '<div class="empty">Could not load list: ' + err.code + "</div>";
-      }
+      } catch (err) { box.innerHTML += '<div class="empty">Could not load list: ' + err.code + "</div>"; }
     }
     document.getElementById("statFollowing").addEventListener("click", () => openProfList("following"));
     document.getElementById("statFollowers").addEventListener("click", () => openProfList("followers"));
@@ -1143,9 +1416,7 @@
         renderPosts();
         if (profileUid === auth.currentUser.uid) renderProfile();
         status("Profile picture updated.");
-      } catch (err) {
-        toast("Could not save picture: " + err.code, true);
-      }
+      } catch (err) { toast("Could not save picture: " + err.code, true); }
     }
     document.getElementById("profAvatar").addEventListener("click", () => {
       if (profileUid && auth && auth.currentUser && profileUid === auth.currentUser.uid) openPfpModal();
@@ -1156,6 +1427,31 @@
     });
     document.getElementById("pfpClose").addEventListener("click", () => pfpModal.classList.remove("open"));
     pfpModal.addEventListener("click", e => { if (e.target === pfpModal) pfpModal.classList.remove("open"); });
+
+    document.getElementById("pfpUploadBtn").addEventListener("click", () => {
+      document.getElementById("pfpUploadInput").click();
+    });
+    document.getElementById("pfpUploadInput").addEventListener("change", async function() {
+      const file = this.files && this.files[0];
+      this.value = "";
+      if (!file) return;
+      if (!file.type.startsWith("image/")) { toast("Only images can be used as a profile picture.", true); return; }
+      if (file.size > MAX_PFP_BYTES) { toast("Profile picture can't be more than 10MB.", true); return; }
+      const btn = document.getElementById("pfpUploadBtn");
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = "uploading...";
+      try {
+        const url = await uploadToImgBB(file);
+        await setMyPfp(url);
+      } catch (err) {
+        const msg = err && err.message ? err.message : String(err);
+        toast("Upload failed: " + msg, true);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    });
 
     function timeAgo(ts) {
       if (!ts) return "now";
@@ -1176,6 +1472,16 @@
       const emoji = (cachedUser && cachedUser.emoji) || (userDoc && userDoc.emoji) || data.emoji || faceForUid(data.uid);
       const name = (cachedUser && cachedUser.username) || data.username || (userDoc && userDoc.username) || "user";
       const postUid = data.uid;
+
+      let mediaHtml = "";
+      if (data.mediaUrl) {
+        if (data.mediaType === "video") {
+          mediaHtml = '<div class="post-media"><video src="' + escapeHtml(data.mediaUrl) + '" controls preload="metadata" playsinline></video></div>';
+        } else {
+          mediaHtml = '<div class="post-media"><img src="' + escapeHtml(data.mediaUrl) + '" alt="" loading="lazy" /></div>';
+        }
+      }
+
       article.innerHTML =
         '<div class="post-head">' +
           '<div class="avatar" data-uid="' + postUid + '"><img src="' + emoji + '" alt="" /></div>' +
@@ -1183,6 +1489,7 @@
           ' <span class="time">| ' + timeAgo(data.createdAt) + "</span>" +
         "</div>" +
         '<div class="post-body"></div>' +
+        mediaHtml +
         '<div class="post-actions">' +
           '<button class="action like ' + (iLiked ? "active" : "") + '">' + HEART_SVG + ' <span class="count">' + likeCount + "</span></button>" +
           '<button class="action comment-toggle"><img src="' + COMMENT + '" alt="comment" /> <span class="count">' + (data.commentCount || 0) + "</span></button>" +
@@ -1197,7 +1504,7 @@
           "</div>" +
         "</div>";
       article.querySelector(".p-name").textContent = name;
-      setEmojiText(article.querySelector(".post-body"), data.text);
+      setEmojiText(article.querySelector(".post-body"), data.text || "");
       article.querySelector(".p-name").addEventListener("click", () => openProfile(postUid));
       article.querySelector(".post-head .avatar").addEventListener("click", () => openProfile(postUid));
       article.querySelector(".like").addEventListener("click", async function() {
@@ -1205,6 +1512,11 @@
         const uid = auth.currentUser.uid;
         const liked = this.classList.contains("active");
         this.classList.toggle("active", !liked);
+        const countEl = this.querySelector(".count");
+        if (countEl) {
+          const cur = parseInt(countEl.textContent, 10) || 0;
+          countEl.textContent = liked ? Math.max(0, cur - 1) : cur + 1;
+        }
         const newLikes = { ...(data.likes || {}) };
         if (liked) delete newLikes[uid]; else newLikes[uid] = true;
         try {
@@ -1345,6 +1657,7 @@
       return article;
     }
 
+    // Home feed only — 24h TTL applied. Profile view does NOT filter, so all posts persist there.
     function renderPosts() {
       killCommentListeners();
       postsList.innerHTML = "";
@@ -1364,11 +1677,34 @@
       decorateAvatars(postsList);
     }
 
+    let prevPostDocs = new Map();
     if (db) {
       db.collection("posts").orderBy("createdAt", "desc")
         .onSnapshot(snap => {
           lastPosts = snap.docs;
-          renderPosts();
+          const nextMap = new Map();
+          let needsFullRender = false;
+          snap.docs.forEach(d => {
+            const data = d.data();
+            const sig = {
+              text: data.text || "",
+              mediaUrl: data.mediaUrl || "",
+              mediaType: data.mediaType || "",
+              createdAtMs: data.createdAt ? data.createdAt.toMillis() : 0
+            };
+            nextMap.set(d.id, sig);
+            const prev = prevPostDocs.get(d.id);
+            if (!prev) { needsFullRender = true; return; }
+            if (prev.text !== sig.text ||
+                prev.mediaUrl !== sig.mediaUrl ||
+                prev.mediaType !== sig.mediaType ||
+                prev.createdAtMs !== sig.createdAtMs) {
+              needsFullRender = true;
+            }
+          });
+          if (snap.docs.length !== prevPostDocs.size) needsFullRender = true;
+          prevPostDocs = nextMap;
+          if (needsFullRender) renderPosts();
           if (activeView === "search") renderSearch(document.getElementById("searchInput").value);
         }, err => {
           if (!auth || !auth.currentUser) return;
@@ -1395,55 +1731,121 @@
     });
     document.getElementById("searchInput").addEventListener("input", function() { renderSearch(this.value); });
 
+    function buildSearchUserRow(u, onFollowChange) {
+      cacheUser(u.id, u.data);
+      const num = userNumMap.get(u.id);
+      const row = document.createElement("div");
+      row.className = "list-row";
+      row.innerHTML =
+        '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="l-name"></div>' +
+          '<div class="l-handle">@' + (u.data.username || "user") + (num ? " · #" + num : "") + '</div>' +
+        '</div>';
+      row.querySelector(".l-name").textContent = u.data.username || "user";
+      row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
+      row.addEventListener("click", () => openProfile(u.id));
+      const me = auth && auth.currentUser ? auth.currentUser.uid : null;
+      if (u.id !== me) {
+        const btn = document.createElement("button");
+        btn.className = "follow-btn" + (myFollowing.has(u.id) ? " following" : "");
+        btn.textContent = myFollowing.has(u.id) ? "Unfollow" : "Follow";
+        btn.addEventListener("click", async e => {
+          e.stopPropagation();
+          if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
+          const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + u.id);
+          try {
+            const fs = await ref.get();
+            if (fs.exists) { await ref.delete(); status("Unfollowed."); }
+            else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: u.id }); status("Following."); notify(u.id, "follow"); }
+            if (onFollowChange) onFollowChange();
+          } catch (err) { status("Follow failed: " + err.code, true); }
+        });
+        row.appendChild(btn);
+      }
+      return row;
+    }
+
     function renderSearch(raw) {
       const box = document.getElementById("searchResults");
       box.innerHTML = "";
       if (!db) return;
       const q = (raw || "").trim().toLowerCase();
-      if (!q) { box.innerHTML = '<div class="empty">Type to search ' + (searchMode === "posts" ? "posts" : "accounts") + ".</div>"; return; }
-      if (searchMode === "posts") {
-        const posts = lastPosts.filter(p => (p.data().text || "").toLowerCase().includes(q));
-        if (posts.length === 0) { box.innerHTML = '<div class="empty">No posts match "' + q + '".</div>'; return; }
-        posts.forEach(p => box.appendChild(buildPost(p.id, p.data(), null)));
-        decorateAvatars(box);
-      } else {
+
+      if (searchMode === "all") {
+        box.innerHTML = '<div class="empty">Loading everyone...</div>';
+        db.collection("users").get().then(snap => {
+          const users = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+          users.sort((a, b) => {
+            const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+            const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+            if (ta !== tb) return ta - tb;
+            return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+          });
+          box.innerHTML = "";
+          if (users.length === 0) { box.innerHTML = '<div class="empty">No users yet.</div>'; return; }
+          users.forEach(u => box.appendChild(buildSearchUserRow(u, () => renderSearch(raw))));
+          decorateAvatars(box);
+        }).catch(err => { box.innerHTML = '<div class="empty">Could not load users: ' + err.code + "</div>"; });
+        return;
+      }
+
+      if (searchMode === "accounts") {
+        if (q.startsWith("#")) {
+          const numStr = q.slice(1).trim();
+          const num = parseInt(numStr, 10);
+          if (!isNaN(num) && num >= 1) {
+            let targetUid = null;
+            userNumMap.forEach((n, uid) => { if (n === num) targetUid = uid; });
+            if (!targetUid) {
+              db.collection("users").get().then(snap => {
+                const arr = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+                arr.sort((a, b) => {
+                  const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+                  const tb = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+                  if (ta !== tb) return ta - tb;
+                  return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+                });
+                const found = arr[num - 1];
+                box.innerHTML = "";
+                if (!found) { box.innerHTML = '<div class="empty">No user with #' + num + '.</div>'; return; }
+                box.appendChild(buildSearchUserRow(found, () => renderSearch(raw)));
+                decorateAvatars(box);
+              });
+              return;
+            }
+            const target = userCache.get(targetUid);
+            box.innerHTML = "";
+            if (!target) {
+              db.collection("users").doc(targetUid).get().then(s => {
+                if (!s.exists) { box.innerHTML = '<div class="empty">No user with #' + num + '.</div>'; return; }
+                box.appendChild(buildSearchUserRow({ id: s.id, data: s.data() }, () => renderSearch(raw)));
+                decorateAvatars(box);
+              });
+              return;
+            }
+            box.appendChild(buildSearchUserRow({ id: targetUid, data: target }, () => renderSearch(raw)));
+            decorateAvatars(box);
+            return;
+          }
+        }
+        if (!q) { box.innerHTML = '<div class="empty">Type to search accounts, or use #1, #2 ... for a number.</div>'; return; }
         db.collection("users").get().then(snap => {
           const users = snap.docs.map(d => ({ id: d.id, data: d.data() }))
             .filter(u => (u.data.username || "").toLowerCase().includes(q));
           if (users.length === 0) { box.innerHTML = '<div class="empty">No accounts match "' + q + '".</div>'; return; }
-          const me = auth && auth.currentUser ? auth.currentUser.uid : null;
-          users.forEach(u => {
-            cacheUser(u.id, u.data);
-            const row = document.createElement("div");
-            row.className = "list-row";
-            row.innerHTML =
-              '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div>' +
-              '<span class="l-name"></span><span class="l-handle">@' + (u.data.username || "user") + "</span>";
-            row.querySelector(".l-name").textContent = u.data.username || "user";
-            row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
-            row.addEventListener("click", () => openProfile(u.id));
-            if (u.id !== me) {
-              const btn = document.createElement("button");
-              btn.className = "follow-btn" + (myFollowing.has(u.id) ? " following" : "");
-              btn.textContent = myFollowing.has(u.id) ? "Unfollow" : "Follow";
-              btn.addEventListener("click", async e => {
-                e.stopPropagation();
-                if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
-                const ref = db.collection("follows").doc(auth.currentUser.uid + "_" + u.id);
-                try {
-                  const fs = await ref.get();
-                  if (fs.exists) { await ref.delete(); status("Unfollowed."); }
-                  else { await ref.set({ followerUid: auth.currentUser.uid, followeeUid: u.id }); status("Following."); notify(u.id, "follow"); }
-                  renderSearch(document.getElementById("searchInput").value);
-                } catch (err) { status("Follow failed: " + err.code, true); }
-              });
-              row.appendChild(btn);
-            }
-            box.appendChild(row);
-          });
+          box.innerHTML = "";
+          users.forEach(u => box.appendChild(buildSearchUserRow(u, () => renderSearch(raw))));
           decorateAvatars(box);
         });
+        return;
       }
+
+      if (!q) { box.innerHTML = '<div class="empty">Type to search posts.</div>'; return; }
+      const posts = lastPosts.filter(p => (p.data().text || "").toLowerCase().includes(q));
+      if (posts.length === 0) { box.innerHTML = '<div class="empty">No posts match "' + q + '".</div>'; return; }
+      posts.forEach(p => box.appendChild(buildPost(p.id, p.data(), null)));
+      decorateAvatars(box);
     }
 
     function notifText(d) {
@@ -1474,9 +1876,7 @@
           row.className = "notif-item" + (i.data.read ? "" : " unread");
           row.innerHTML = '<div class="avatar" data-uid="' + i.data.fromUid + '"><img src="' + (i.data.fromEmoji || faceForUid(i.data.fromUid)) + '" alt="" /></div><div class="n-body"><div class="n-text"></div><div class="n-time">' + timeAgo(i.data.createdAt) + "</div></div>";
           row.querySelector(".n-text").textContent = notifText(i.data);
-          row.addEventListener("click", () => {
-            openProfile(i.data.fromUid);
-          });
+          row.addEventListener("click", () => { openProfile(i.data.fromUid); });
           list.appendChild(row);
           if (!i.data.read) batch.update(db.collection("notifications").doc(i.id), { read: true });
         });
@@ -1486,22 +1886,138 @@
       } catch (err) { toast("Notifications error: " + err.code, true); }
     }
 
+    async function uploadToImgBB(file) {
+      const form = new FormData();
+      form.append("image", file);
+      const res = await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(IMGBB_KEY), {
+        method: "POST",
+        body: form
+      });
+      const data = await res.json();
+      if (!data || !data.success) {
+        const m = data && data.error && data.error.message ? data.error.message : "imgbb upload failed";
+        throw new Error(m);
+      }
+      return data.data.url;
+    }
+
+    async function uploadToCloudinary(file) {
+      const isVideo = file.type.startsWith("video/");
+      const resource = isVideo ? "video" : "image";
+      const endpoint = "https://api.cloudinary.com/v1_1/" + encodeURIComponent(CLOUDINARY_CLOUD) + "/" + resource + "/upload";
+      const form = new FormData();
+      form.append("file", file);
+      form.append("upload_preset", CLOUDINARY_PRESET);
+      const res = await fetch(endpoint, { method: "POST", body: form });
+      let data = null;
+      try { data = await res.json(); } catch (e) { data = null; }
+      if (!res.ok || !data || !data.secure_url) {
+        const m = data && data.error && data.error.message ? data.error.message : ("cloudinary http " + res.status);
+        throw new Error(m);
+      }
+      return data.secure_url;
+    }
+
+    function clearMediaPreview() {
+      pendingMediaUrl = null;
+      pendingMediaType = null;
+      if (pendingLocalUrl) { try { URL.revokeObjectURL(pendingLocalUrl); } catch (e) {} pendingLocalUrl = null; }
+      const prev = document.getElementById("mediaPreview");
+      if (prev) { prev.innerHTML = ""; prev.classList.remove("show"); }
+      const inp = document.getElementById("mediaInput");
+      if (inp) inp.value = "";
+    }
+
+    function showMediaPreview(url, type, isLocal) {
+      const prev = document.getElementById("mediaPreview");
+      prev.innerHTML = "";
+      const wrap = document.createElement("div");
+      wrap.style.position = "relative";
+      const el = document.createElement(type === "video" ? "video" : "img");
+      el.src = url;
+      if (type === "video") { el.controls = true; el.playsInline = true; el.muted = true; }
+      wrap.appendChild(el);
+      const rm = document.createElement("button");
+      rm.type = "button";
+      rm.className = "media-remove";
+      rm.textContent = "✕";
+      rm.title = "Remove";
+      rm.addEventListener("click", clearMediaPreview);
+      wrap.appendChild(rm);
+      prev.appendChild(wrap);
+      const label = document.createElement("div");
+      label.className = "media-preview-label";
+      label.textContent = isLocal ? "preview (uploading…)" : "preview — ready to post";
+      prev.appendChild(label);
+      prev.classList.add("show");
+    }
+
+    document.getElementById("uploadMediaBtn").addEventListener("click", () => {
+      if (isUploadingMedia) { toast("Upload already in progress...", true); return; }
+      document.getElementById("mediaInput").click();
+    });
+
+    document.getElementById("mediaInput").addEventListener("change", async function() {
+      const file = this.files && this.files[0];
+      if (!file) return;
+      clearMediaPreview();
+      this.value = "";
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      if (!isImage && !isVideo) { toast("Only images and videos are allowed.", true); return; }
+      if (file.size > MAX_MEDIA_BYTES) { toast("You can't upload more than 50MB", true); return; }
+      pendingLocalUrl = URL.createObjectURL(file);
+      const localKind = isVideo ? "video" : "image";
+      showMediaPreview(pendingLocalUrl, localKind, true);
+      const btn = document.getElementById("uploadMediaBtn");
+      isUploadingMedia = true;
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = "uploading...";
+      toast("Uploading " + (isVideo ? "video" : "image") + "...");
+      try {
+        let url, kind;
+        if (isImage) { url = await uploadToImgBB(file); kind = "image"; }
+        else { url = await uploadToCloudinary(file); kind = "video"; }
+        pendingMediaUrl = url;
+        pendingMediaType = kind;
+        showMediaPreview(url, kind, false);
+        toast("Media ready — hit Post!");
+      } catch (err) {
+        const msg = err && err.message ? err.message : String(err);
+        toast("Upload failed: " + msg, true);
+        clearMediaPreview();
+      } finally {
+        isUploadingMedia = false;
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+        document.getElementById("mediaInput").value = "";
+      }
+    });
+
     const postModal = document.getElementById("postModal");
     document.getElementById("openPost").addEventListener("click", () => {
       if (!auth || !auth.currentUser) { toast("Log in first — click your name in the sidebar.", true); return; }
       document.getElementById("postText").value = "";
+      clearMediaPreview();
       postModal.classList.add("open");
       document.getElementById("postText").focus();
     });
-    document.getElementById("cancelPost").addEventListener("click", () => postModal.classList.remove("open"));
-    postModal.addEventListener("click", e => { if (e.target === postModal) postModal.classList.remove("open"); });
+    document.getElementById("cancelPost").addEventListener("click", () => {
+      postModal.classList.remove("open");
+      clearMediaPreview();
+    });
+    postModal.addEventListener("click", e => {
+      if (e.target === postModal) { postModal.classList.remove("open"); clearMediaPreview(); }
+    });
 
     document.getElementById("submitPost").addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
+      if (isUploadingMedia) { return; }
       const text = document.getElementById("postText").value.trim();
-      if (!text) { toast("Post cannot be empty.", true); return; }
+      if (!text && !pendingMediaUrl) { toast("Post cannot be empty.", true); return; }
       try {
-        await db.collection("posts").add({
+        const postData = {
           uid: auth.currentUser.uid,
           username: myUsername,
           emoji: myEmoji,
@@ -1509,8 +2025,14 @@
           likes: {},
           commentCount: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        };
+        if (pendingMediaUrl) {
+          postData.mediaUrl = pendingMediaUrl;
+          postData.mediaType = pendingMediaType;
+        }
+        await db.collection("posts").add(postData);
         postModal.classList.remove("open");
+        clearMediaPreview();
         goHome();
         status("Posted successfully!");
       } catch (err) {
@@ -1534,11 +2056,293 @@
     document.getElementById("confirmOk").addEventListener("click", () => {
       confirmModal.classList.remove("open");
       if (confirmCb) { confirmCb(); confirmCb = null; }
-    });Q
+    });
     confirmModal.addEventListener("click", e => {
       if (e.target === confirmModal) { confirmModal.classList.remove("open"); confirmCb = null; }
     });
+
+    // ============================================================
+    // MUSIC PLAYER — up to 7 custom tracks + builtin theme
+    // ============================================================
+    function idbOpen() {
+      return new Promise((res, rej) => {
+        const req = indexedDB.open("fuzzy-music", 2);
+        req.onupgradeneeded = () => {
+          const d = req.result;
+          if (!d.objectStoreNames.contains("files")) d.createObjectStore("files");
+        };
+        req.onsuccess = () => res(req.result);
+        req.onerror = () => rej(req.error);
+      });
+    }
+    async function idbSet(key, val) {
+      const d = await idbOpen();
+      return new Promise((res, rej) => {
+        const tx = d.transaction("files", "readwrite");
+        tx.objectStore("files").put(val, key);
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+      });
+    }
+    async function idbGet(key) {
+      const d = await idbOpen();
+      return new Promise((res, rej) => {
+        const tx = d.transaction("files", "readonly");
+        const r = tx.objectStore("files").get(key);
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+      });
+    }
+    async function idbDel(key) {
+      const d = await idbOpen();
+      return new Promise((res, rej) => {
+        const tx = d.transaction("files", "readwrite");
+        tx.objectStore("files").delete(key);
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+      });
+    }
+
+    // state
+    const musicTracks = []; // { id, name, kind:'builtin'|'custom', src?, blobUrl?, blob?, loop, audioEl }
+    let activeTrackId = null;
+    let musicPausedByVideo = null;
+    const MUSIC_IDB_KEY = "customTracksV2";
+
+    function twIcon(url) { return '<img class="tw-emoji" src="' + url + '" alt="" />'; }
+
+    function getTrackAudio(track) {
+      if (track.audioEl) return track.audioEl;
+      const src = track.kind === "builtin" ? track.src : track.blobUrl;
+      const a = new Audio(src);
+      a.loop = track.loop;
+      a.addEventListener("play", () => {
+        // pause every other music track
+        musicTracks.forEach(t => {
+          if (t.id !== track.id && t.audioEl && !t.audioEl.paused) {
+            try { t.audioEl.pause(); } catch (e) {}
+          }
+        });
+        activeTrackId = track.id;
+        refreshAllTrackRows();
+      });
+      a.addEventListener("pause", () => { refreshAllTrackRows(); });
+      a.addEventListener("ended", () => {
+        if (!track.loop) { if (activeTrackId === track.id) activeTrackId = null; }
+        refreshAllTrackRows();
+      });
+      track.audioEl = a;
+      return a;
+    }
+
+    function refreshTrackRow(trackId) {
+      const track = musicTracks.find(t => t.id === trackId);
+      if (!track) return;
+      const row = document.querySelector('.music-track[data-track-id="' + trackId + '"]');
+      if (!row) return;
+      const isPlaying = track.audioEl && !track.audioEl.paused;
+      row.classList.toggle("active", isPlaying);
+      const iconWrap = row.querySelector(".music-play-btn .music-emoji");
+      if (iconWrap) {
+        const idleIcon = track.kind === "builtin" ? MI_GHOST : MI_HEADPHONES;
+        const playingIcon = MI_SPEAKER;
+        iconWrap.innerHTML = twIcon(isPlaying ? playingIcon : idleIcon);
+      }
+    }
+    function refreshAllTrackRows() { musicTracks.forEach(t => refreshTrackRow(t.id)); }
+
+    function toggleTrack(trackId) {
+      const track = musicTracks.find(t => t.id === trackId);
+      if (!track) return;
+      musicPausedByVideo = null; // user override
+      const a = getTrackAudio(track);
+      if (a.paused) {
+        // if another custom track plays, it will be paused by the play handler
+        a.play().catch(() => {});
+      } else {
+        a.pause();
+      }
+    }
+
+    function stopTrack(trackId) {
+      const track = musicTracks.find(t => t.id === trackId);
+      if (!track || !track.audioEl) return;
+      track.audioEl.pause();
+      track.audioEl.currentTime = 0;
+      refreshTrackRow(trackId);
+    }
+
+    function toggleLoop(trackId) {
+      const track = musicTracks.find(t => t.id === trackId);
+      if (!track) return;
+      track.loop = !track.loop;
+      if (track.audioEl) track.audioEl.loop = track.loop;
+      const row = document.querySelector('.music-track[data-track-id="' + trackId + '"]');
+      if (row) row.querySelector(".music-ctrl-btn.loop").classList.toggle("on", track.loop);
+    }
+
+    async function deleteTrack(trackId) {
+      const idx = musicTracks.findIndex(t => t.id === trackId);
+      if (idx < 0) return;
+      const track = musicTracks[idx];
+      if (track.kind === "builtin") return;
+      if (track.audioEl) { try { track.audioEl.pause(); } catch (e) {} }
+      if (track.blobUrl) { try { URL.revokeObjectURL(track.blobUrl); } catch (e) {} }
+      musicTracks.splice(idx, 1);
+      if (activeTrackId === trackId) activeTrackId = null;
+      if (musicPausedByVideo === trackId) musicPausedByVideo = null;
+      await saveCustomTracks();
+      renderMusicTracks();
+      toast("Removed track.");
+    }
+
+    async function saveCustomTracks() {
+      const customs = musicTracks.filter(t => t.kind === "custom").map(t => ({
+        id: t.id, name: t.name, blob: t.blob
+      }));
+      try { await idbSet(MUSIC_IDB_KEY, customs); } catch (e) { /* ignore */ }
+      // also clean up old single-track key
+      try { await idbDel("customTrack"); } catch (e) {}
+    }
+
+    async function loadCustomTracks() {
+      try {
+        const arr = await idbGet(MUSIC_IDB_KEY);
+        if (!Array.isArray(arr)) return [];
+        return arr.map(rec => {
+          const blobUrl = URL.createObjectURL(rec.blob);
+          return {
+            id: rec.id, name: rec.name, kind: "custom",
+            blob: rec.blob, blobUrl, loop: true, audioEl: null
+          };
+        });
+      } catch (e) { return []; }
+    }
+
+    function renderMusicTracks() {
+      const list = document.getElementById("musicTracksList");
+      list.innerHTML = "";
+      musicTracks.forEach(track => {
+        const isBuiltin = track.kind === "builtin";
+        const isPlaying = track.audioEl && !track.audioEl.paused;
+        const row = document.createElement("div");
+        row.className = "music-track" + (isPlaying ? " active" : "");
+        row.dataset.trackId = track.id;
+
+        const idleIcon = isBuiltin ? MI_GHOST : MI_HEADPHONES;
+        const buttonIcon = isPlaying ? MI_SPEAKER : idleIcon;
+
+        row.innerHTML =
+          '<button class="music-play-btn" title="play / pause">' +
+            '<span class="music-emoji">' + twIcon(buttonIcon) + '</span>' +
+            '<span class="music-name"></span>' +
+          '</button>' +
+          '<div class="music-controls">' +
+            '<button class="music-ctrl-btn loop' + (track.loop ? ' on' : '') + '" title="loop">' + twIcon(TW + "1f501.png") + '</button>' +
+            (isBuiltin
+              ? '<button class="music-ctrl-btn stop" title="stop">' + twIcon(TW + "23f9.png") + '</button>'
+              : '<button class="music-ctrl-btn del" title="remove">' + twIcon(TW + "274c.png") + '</button>') +
+          '</div>';
+        row.querySelector(".music-name").textContent = track.name;
+
+        row.querySelector(".music-play-btn").addEventListener("click", () => toggleTrack(track.id));
+        row.querySelector(".music-ctrl-btn.loop").addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleLoop(track.id);
+        });
+        if (isBuiltin) {
+          row.querySelector(".music-ctrl-btn.stop").addEventListener("click", (e) => {
+            e.stopPropagation();
+            stopTrack(track.id);
+          });
+        } else {
+          row.querySelector(".music-ctrl-btn.del").addEventListener("click", (e) => {
+            e.stopPropagation();
+            deleteTrack(track.id);
+          });
+        }
+        list.appendChild(row);
+      });
+      updateMusicUiState();
+    }
+
+    function updateMusicUiState() {
+      const customCount = musicTracks.filter(t => t.kind === "custom").length;
+      const addBtn = document.getElementById("addMusicBtn");
+      const hint = document.getElementById("musicHint");
+      if (customCount >= MAX_MUSIC_TRACKS) {
+        addBtn.disabled = true;
+        addBtn.textContent = "max tracks reached";
+      } else {
+        addBtn.disabled = false;
+        addBtn.textContent = "+ add your own";
+      }
+      hint.textContent = customCount + " / " + MAX_MUSIC_TRACKS + " custom";
+    }
+
+    async function addMusicFile(file) {
+      if (!file.type.startsWith("audio/")) { toast("Only audio files are allowed.", true); return; }
+      if (file.size > MAX_MUSIC_BYTES) { toast("Music can't be more than 25MB.", true); return; }
+      const customCount = musicTracks.filter(t => t.kind === "custom").length;
+      if (customCount >= MAX_MUSIC_TRACKS) { toast("You can only have " + MAX_MUSIC_TRACKS + " custom tracks.", true); return; }
+      const id = "u" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+      const blobUrl = URL.createObjectURL(file);
+      const track = {
+        id, name: file.name.replace(/\.[^.]+$/, ""), kind: "custom",
+        blob: file, blobUrl, loop: true, audioEl: null
+      };
+      musicTracks.push(track);
+      await saveCustomTracks();
+      renderMusicTracks();
+      toast("Added " + track.name + ".");
+    }
+
+    (async function initMusicPlayer() {
+      // builtin
+      musicTracks.push({
+        id: "spooky-main", name: "main theme", kind: "builtin",
+        src: "main.mp3", loop: true, audioEl: null
+      });
+      // customs from IDB
+      const customs = await loadCustomTracks();
+      customs.forEach(t => musicTracks.push(t));
+      renderMusicTracks();
+
+      document.getElementById("addMusicBtn").addEventListener("click", () => {
+        document.getElementById("musicFileInput").click();
+      });
+      document.getElementById("musicFileInput").addEventListener("change", function() {
+        const file = this.files && this.files[0];
+        this.value = "";
+        if (!file) return;
+        addMusicFile(file);
+      });
+    })();
+
+    // ---- video ↔ music interplay ----
+    // When a video starts, pause whatever music is playing and remember it.
+    // When a video ends, resume it.
+    document.addEventListener("play", (e) => {
+      if (!e.target || e.target.tagName !== "VIDEO") return;
+      // find a playing music track
+      const playing = musicTracks.find(t => t.audioEl && !t.audioEl.paused);
+      if (playing) {
+        musicPausedByVideo = playing.id;
+        try { playing.audioEl.pause(); } catch (err) {}
+      }
+    }, true);
+
+    document.addEventListener("ended", (e) => {
+      if (!e.target || e.target.tagName !== "VIDEO") return;
+      if (musicPausedByVideo) {
+        const t = musicTracks.find(x => x.id === musicPausedByVideo);
+        musicPausedByVideo = null;
+        if (t) {
+          const a = getTrackAudio(t);
+          if (a.paused) a.play().catch(() => {});
+        }
+      }
+    }, true);
   </script>
-  <script src="fuzzy-images.js?v=2"></script>
 </body>
 </html>
