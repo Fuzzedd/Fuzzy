@@ -109,27 +109,19 @@
     throw new Error(data?.error?.message || "Image upload failed");
   }
 
-  // 3. Direct Video Upload via Cloudinary API (Full CORS Support)
-  async function uploadVideoToCloudinary(file) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "docs_upload_example_us_preset");
+  // 3. Process Video locally into Base64 (100% Reliable, Zero Server/CORS Dependencies)
+  function processVideoFile(file) {
+    return new Promise((resolve, reject) => {
+      const maxMB = 25; // 25MB limit for smooth database saving
+      if (file.size > maxMB * 1024 * 1024) {
+        return reject(new Error(`Video file is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Please choose a video under ${maxMB}MB.`));
+      }
 
-    const res = await fetch("https://api.cloudinary.com/v1_1/demo/auto/upload", {
-      method: "POST",
-      body: formData
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error("Failed to read video file."));
+      reader.readAsDataURL(file);
     });
-
-    if (!res.ok) {
-      const errJson = await res.json().catch(() => ({}));
-      throw new Error(errJson?.error?.message || "Video upload failed");
-    }
-
-    const data = await res.json();
-    if (data && data.secure_url) {
-      return data.secure_url;
-    }
-    throw new Error("Could not retrieve video URL.");
   }
 
   // 4. Intercept Post Submit
@@ -148,7 +140,7 @@
 
         isSubmitting = true;
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = selectedFile.type.startsWith("video/") ? "Uploading video..." : "Uploading media...";
+        submitBtn.textContent = selectedFile.type.startsWith("video/") ? "Processing video..." : "Uploading media...";
         submitBtn.disabled = true;
 
         try {
@@ -156,7 +148,7 @@
           if (selectedFile.type.startsWith("image/")) {
             mediaUrl = await uploadImageToImgBB(selectedFile);
           } else if (selectedFile.type.startsWith("video/")) {
-            mediaUrl = await uploadVideoToCloudinary(selectedFile);
+            mediaUrl = await processVideoFile(selectedFile);
           }
 
           const postTextEl = document.getElementById("postText");
@@ -173,7 +165,7 @@
           submitBtn.textContent = originalText;
           submitBtn.click();
         } catch (err) {
-          alert("Error uploading media: " + err.message);
+          alert("Media Error: " + err.message);
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
         } finally {
@@ -193,11 +185,11 @@
       let html = el.innerHTML;
       let modified = false;
 
-      // Video Links (.mp4, .webm, .mov, Cloudinary Video URLs) -> Player
-      const videoRegex = /(https?:\/\/[^\s<"']+(?:\.(?:mp4|webm|mov|m4v)|cloudinary\.com\/[^\s<"']+\/video\/upload\/)[^\s<"']*)/gi;
+      // Video Links (.mp4, .webm, .mov, data:video/...) -> Player
+      const videoRegex = /(data:video\/[^;]+;base64,[^\s<"']+|https?:\/\/[^\s<"']+(?:\.(?:mp4|webm|mov|m4v))[^\s<"']*)/gi;
       if (videoRegex.test(html)) {
         html = html.replace(videoRegex, (url) => {
-          return `<div style="margin-top:10px;"><video src="${url}" controls style="max-width:100%; max-height:400px; border-radius:12px; border:1px solid #2f2f2f; display:block; background:#000;" onerror="this.parentNode.innerHTML='<div style=\\'color:#ff5555; padding:8px; font-size:13px;\\'>Unable to play video</div>'"></video></div>`;
+          return `<div style="margin-top:10px;"><video src="${url}" controls style="max-width:100%; max-height:400px; border-radius:12px; border:1px solid #2f2f2f; display:block; background:#000;"></video></div>`;
         });
         modified = true;
       }
