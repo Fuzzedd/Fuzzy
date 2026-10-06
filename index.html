@@ -14,13 +14,11 @@
     ::-webkit-scrollbar-thumb:hover { background: #1c1c1c; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: #e7e7e7; display: flex; height: 100vh; overflow: hidden; }
     body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition: none !important; animation: none !important; }
-    button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
+    button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
     button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active { transform: scale(0.95); }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
     .btn-ghost:hover { transform: translateY(-1px); }
-
-    .sidebar { width: 280px; flex-shrink: 0; background: var(--bg); border-right: 1px solid #2f2f2f; padding: 16px 12px; display: flex; flex-direction: column; }
-    .right-spacer { width: 280px; flex-shrink: 0; }
+    .sidebar { width: 280px; flex-shrink: 0; background: var(--bg); border-right: 1px solid #2f2f2f; padding: 16px 12px; display: flex; flex-direction: column; overflow-y: auto; }
     .logo { width: 130px; margin: 0 8px 16px; cursor: pointer; transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease; }
     .logo:hover { transform: scale(1.12) rotate(-6deg); filter: drop-shadow(0 0 14px rgba(255, 200, 60, 0.55)) brightness(1.05); }
     .nav-item { display: flex; align-items: center; gap: 18px; font-size: 22px; padding: 8px 12px; border-radius: 9999px; cursor: pointer; color: #9a9a9a; }
@@ -32,10 +30,51 @@
     .notif-badge { margin-left: auto; display: none; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 9999px; background: #f91818; color: #fff; font-size: 13px; font-weight: 700; line-height: 1; }
     .post-btn { margin: 14px 12px; background: var(--accent); color: #000; font-size: 20px; font-weight: 500; text-align: center; padding: 11px 0; border-radius: 9999px; cursor: pointer; border: none; }
     .post-btn:hover { filter: brightness(0.9); }
-    .user { position: fixed; left: 12px; bottom: 16px; width: calc(280px - 24px); display: flex; align-items: center; gap: 14px; font-size: 24px; padding: 8px 12px; border-radius: 9999px; cursor: pointer; background: var(--bg); z-index: 40; }
+    .user { display: flex; align-items: center; gap: 12px; font-size: 18px; padding: 8px 12px; margin: 4px 12px 0; border-radius: 9999px; cursor: pointer; background: var(--bg); }
     .user:hover { background: #1d1d1d; }
-    .user .avatar { width: 69px; height: 50px; }
-    .user #userName { color: #e7e7e7; }
+    .user .avatar { width: 52px; height: 40px; }
+    .user #userName { color: #e7e7e7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+    .right { width: 300px; flex-shrink: 0; background: var(--bg); border-left: 1px solid #2f2f2f; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    .conv-panel { display: flex; flex-direction: column; height: 100%; }
+    .conv-panel-header { padding: 16px; border-bottom: 1px solid #2f2f2f; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #fff; }
+    .conv-panel-header .new-btn { margin-left: auto; background: #2a2a2a; border: 1px solid #2f2f2f; color: #e7e7e7; border-radius: 9999px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .conv-panel-header .new-btn:hover { background: #333; }
+    .conv-list { flex: 1; overflow-y: auto; }
+    .conv-empty { padding: 30px 20px; text-align: center; color: #717171; font-size: 14px; line-height: 1.4; }
+    .conv-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #1d1d1d; cursor: pointer; }
+    .conv-item:hover { background: #1d1d1d; }
+    .conv-item.active { background: #1a2530; }
+    .conv-item .avatar { width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; }
+    .conv-item-info { flex: 1; min-width: 0; }
+    .conv-item-name { font-weight: 600; font-size: 15px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; }
+    .conv-item-last { font-size: 13px; color: #717171; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .conv-item-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .conv-item-time { font-size: 11px; color: #717171; }
+    .chat-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+    .chat-overlay.open { display: flex; }
+    .chat-window { width: 460px; max-width: 96%; height: 620px; max-height: 92vh; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.7); }
+    .chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #161616; border-bottom: 1px solid #2f2f2f; flex-shrink: 0; }
+    .chat-header .avatar { width: 38px; height: 38px; border-radius: 50%; }
+    .chat-header-name { font-weight: 600; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 4px; min-width: 0; }
+    .chat-close { background: none; border: none; color: #9a9a9a; font-size: 20px; cursor: pointer; padding: 4px 10px; border-radius: 8px; margin-left: 0; }
+    .chat-close:hover { background: #2a2a2a; color: #fff; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #717171; font-size: 14px; text-align: center; padding: 20px; }
+    .chat-msg-row { display: flex; max-width: 100%; }
+    .chat-msg-row.mine { justify-content: flex-end; }
+    .chat-msg-row.theirs { justify-content: flex-start; }
+    .chat-bubble { max-width: 78%; padding: 8px 12px 20px; border-radius: 14px; font-size: 14px; line-height: 1.35; position: relative; word-break: break-word; white-space: pre-wrap; }
+    .chat-bubble.mine { background: #25603a; color: #fff; border-bottom-right-radius: 3px; }
+    .chat-bubble.theirs { background: #2a2a2a; color: #e7e7e7; border-bottom-left-radius: 3px; }
+    .chat-bubble-time { position: absolute; right: 8px; bottom: 4px; display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.6); }
+    .chat-bubble.theirs .chat-bubble-time { color: rgba(255,255,255,0.4); }
+    .chat-seen { font-size: 11px; letter-spacing: -2px; color: rgba(255,255,255,0.65); }
+    .chat-seen.read { color: #4fc3f7; }
+    .chat-input-row { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid #2f2f2f; background: #161616; flex-shrink: 0; }
+    .chat-input-row input { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 14px; outline: none; font-family: inherit; }
+    .chat-input-row input:focus { border-color: #555; }
+    .chat-send { background: #25603a; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .chat-send:hover { background: #1e4f30; }
     .avatar { width: 69px; height: 50px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .status-badge { position: absolute; bottom: 0; right: 0; width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center; z-index: 2; }
@@ -46,7 +85,8 @@
     .status-badge img { width: 10px; height: 10px; }
     .status-badge .dnd-bar { width: 7px; height: 2px; background: #fff; border-radius: 2px; }
     .verified-check { width: 20px; height: 20px; vertical-align: -4px; margin-left: 3px; }
-    .logout { margin-left: auto; background: none; border: none; color: #717171; font-size: 16px; cursor: pointer; }
+    .dev-check { width: 20px; height: 20px; vertical-align: -4px; margin-left: 3px; }
+    .logout { background: none; border: none; color: #717171; font-size: 14px; cursor: pointer; flex-shrink: 0; }
     .logout:hover { color: #f91880; }
     .feed { flex: 1; display: flex; justify-content: center; min-width: 0; }
     .feed-inner { width: 100%; max-width: 700px; border-left: 1px solid #2f2f2f; border-right: 1px solid #2f2f2f; background: var(--bg); overflow-y: auto; height: 100%; }
@@ -89,6 +129,7 @@
     .c-head b:hover { text-decoration: underline; }
     .c-head .time { color: #717171; margin-left: 6px; }
     .c-head .verified-check { width: 14px; height: 14px; vertical-align: -3px; }
+    .c-head .dev-check { width: 14px; height: 14px; vertical-align: -3px; }
     .c-text { font-size: 15px; color: #c9c9c9; margin-top: 2px; word-break: break-word; }
     .c-actions { display: flex; gap: 14px; margin-top: 4px; align-items: center; }
     .c-like { background: none; border: none; color: #717171; font-size: 13px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
@@ -103,7 +144,7 @@
     .reply-chip .cancel { cursor: pointer; color: #717171; }
     .reply-chip .cancel:hover { color: #ff0000; }
     .empty { padding: 24px 20px; text-align: center; color: #717171; font-size: 18px; }
-    #profileView, #searchView, #notificationsView, #settingsView, #adminView { display: none; }
+    #profileView, #searchView, #notificationsView, #settingsView, #adminView, #conversationsView { display: none; }
     .profile-head { padding: 14px 16px; border-bottom: 1px solid #2f2f2f; background: #161616; }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: #e7e7e7; font-size: 16px; cursor: pointer; margin-bottom: 12px; padding: 6px 10px; border-radius: 9999px; }
     .back-btn:hover { background: rgba(255,255,255,0.06); }
@@ -123,10 +164,12 @@
     .profile-meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 13px; color: #717171; }
     .profile-meta b { color: #e7e7e7; font-weight: 600; }
     .profile-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-    .follow-btn { background: var(--accent); color: #000; border: none; border-radius: 9999px; padding: 9px 22px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 0; }
-    .follow-btn:hover { filter: brightness(0.9); }
+    .follow-btn, .msg-btn { background: var(--accent); color: #000; border: none; border-radius: 9999px; padding: 9px 22px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 0; }
+    .follow-btn:hover, .msg-btn:hover { filter: brightness(0.9); }
     .follow-btn.following { background: none; border: 1px solid #555; color: #e7e7e7; }
     .follow-btn.following:hover { border-color: #ff0000; color: #ff4800; }
+    .msg-btn { background: none; border: 1px solid #555; color: #e7e7e7; }
+    .msg-btn:hover { border-color: #e7e7e7; }
     .change-bio-btn { background: none; border: 1px solid #555; color: #e7e7e7; border-radius: 9999px; padding: 9px 22px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 0; }
     .change-bio-btn:hover { border-color: #e7e7e7; }
     .bio-edit { margin-top: 14px; display: none; }
@@ -230,7 +273,7 @@
     .music-title .spooky-glow { display: inline-flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 8px rgba(150, 90, 240, 0.7)); animation: spookyFloat 3s ease-in-out infinite; }
     .music-title .spooky-glow img { width: 22px; height: 22px; }
     @keyframes spookyFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-    .music-track { position: relative; display: flex; align-items: center; gap: 6px; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 12px; padding: 4px; margin-bottom: 8px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .music-track { position: relative; display: flex; align-items: center; gap: 6px; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 12px; padding: 4px; margin-bottom: 8px; }
     .music-track.active { border-color: #7a4dd6; box-shadow: 0 0 0 1px rgba(122, 77, 214, 0.35), 0 0 22px rgba(122, 77, 214, 0.25); }
     .music-play-btn { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; background: none; border: none; color: #e7e7e7; padding: 8px 10px; cursor: pointer; border-radius: 8px; font-family: inherit; font-size: 14px; text-align: left; }
     .music-play-btn:hover { background: #1d1d1d; }
@@ -240,8 +283,7 @@
     .music-controls { display: flex; gap: 2px; flex-shrink: 0; }
     .music-ctrl-btn { background: none; border: none; color: #6b6b6b; padding: 7px 8px; cursor: pointer; border-radius: 8px; line-height: 1; display: flex; align-items: center; justify-content: center; }
     .music-ctrl-btn:hover { background: #2a2a2a; }
-    .music-ctrl-btn img { width: 18px; height: 18px; opacity: 0.55; transition: opacity 0.15s, filter 0.15s; }
-    .music-ctrl-btn:hover img { opacity: 0.9; }
+    .music-ctrl-btn img { width: 18px; height: 18px; opacity: 0.55; }
     .music-ctrl-btn.on { background: #2a1f3d; }
     .music-ctrl-btn.on img { opacity: 1; filter: drop-shadow(0 0 6px rgba(150, 90, 240, 0.7)); }
     .music-add-btn { position: relative; width: 100%; background: none; border: 1px dashed #3a2f4a; color: #9a8fb5; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 13px; margin-top: 6px; font-family: inherit; }
@@ -255,14 +297,16 @@
     .setting-label { font-size: 15px; color: #e7e7e7; font-weight: 500; }
     .setting-desc { font-size: 12px; color: #717171; margin-top: 2px; }
     .setting-color { width: 54px; height: 36px; padding: 0; border: 1px solid #2f2f2f; border-radius: 10px; background: transparent; cursor: pointer; flex-shrink: 0; }
-    .setting-color::-webkit-color-swatch-wrapper { padding: 3px; }
-    .setting-color::-webkit-color-swatch { border: none; border-radius: 7px; }
     .setting-opts { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
     .setting-opt { background: #2a2a2a; border: 1px solid #2f2f2f; color: #9a9a9a; padding: 8px 16px; border-radius: 9999px; font-size: 13px; cursor: pointer; font-family: inherit; min-height: 36px; }
     .setting-opt:hover { background: #333; color: #e7e7e7; }
     .setting-opt.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
-
-    /* admin specific */
+    .pagination { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; padding: 20px 16px 32px; }
+    .page-btn { background: #1d1d1d; border: 1px solid #2f2f2f; color: #e7e7e7; border-radius: 9999px; padding: 8px 14px; font-size: 14px; cursor: pointer; font-family: inherit; min-width: 40px; }
+    .page-btn:hover:not(:disabled) { background: #2a2a2a; border-color: #444; }
+    .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+    .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .page-dots { color: #717171; padding: 0 4px; font-size: 14px; }
     .admin-panel { padding: 0 16px 24px; }
     .admin-row { background: #1d1d1d; border: 1px solid #2f2f2f; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
     .admin-row .avatar { width: 44px; height: 44px; flex-shrink: 0; }
@@ -276,40 +320,35 @@
     .admin-input-row { display: flex; gap: 8px; align-items: center; }
     .admin-input-row .auth-input { margin-bottom: 0; flex: 1; }
     .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .admin-action-btn { padding: 10px 18px; border-radius: 9999px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid #2f2f2f; background: #2a2a2a; color: #e7e7e7; font-family: inherit; transition: 0.15s; }
+    .admin-action-btn { padding: 10px 18px; border-radius: 9999px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid #2f2f2f; background: #2a2a2a; color: #e7e7e7; font-family: inherit; }
     .admin-action-btn:hover:not(:disabled) { background: #333; }
-    .admin-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .admin-action-btn.danger { background: #f91818; border-color: #f91818; color: #fff; }
-    .admin-action-btn.danger:hover:not(:disabled) { background: #d91212; }
     .admin-action-btn.primary { background: #4a90d9; border-color: #4a90d9; color: #fff; }
-    .admin-action-btn.primary:hover:not(:disabled) { background: #3a7ac0; }
     .admin-action-btn.success { background: #1e7a3a; border-color: #1e7a3a; color: #fff; }
-    .admin-action-btn.success:hover:not(:disabled) { background: #16612e; }
 
     @media (max-width: 768px) {
-      .right-spacer { display: none; }
-      .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: rgba(22, 22, 22, 0.98); backdrop-filter: blur(12px); z-index: 50; gap: 0; }
+      .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: #161616; z-index: 50; gap: 0; overflow: visible; }
+      .right { display: none; }
       .logo { display: none; }
-      .nav-item { position: relative; flex-direction: column; gap: 2px; font-size: 8px; padding: 5px 2px; justify-content: center; align-items: center; min-width: 0; flex: 1 1 0; max-width: 56px; border-radius: 10px; color: #9a9a9a; }
-      .nav-item img { width: 20px; height: 20px; }
+      .nav-item { position: relative; flex-direction: column; gap: 2px; font-size: 7px; padding: 4px 1px; justify-content: center; align-items: center; min-width: 0; flex: 1 1 0; border-radius: 10px; color: #9a9a9a; }
+      .nav-item img { width: 18px; height: 18px; }
       .nav-item.active { color: #fff; }
       .notif-badge { position: absolute; top: 2px; right: 4px; min-width: 14px; height: 14px; font-size: 8px; padding: 0 3px; line-height: 1; }
       .sidebar .nav-item[data-nav="home"] { order: 1; }
       .sidebar .nav-item[data-nav="search"] { order: 2; }
-      .post-btn { order: 3; }
-      .sidebar .nav-item[data-nav="account"] { order: 4; display: flex !important; }
-      .sidebar .nav-item[data-nav="notifications"] { order: 5; }
-      .sidebar .nav-item[data-nav="settings"] { order: 6; }
-      .sidebar .nav-item[data-nav="admin"] { order: 7; }
-      .post-btn { margin: 0; flex: 0 0 44px; width: 44px; height: 44px; min-width: 44px; max-width: 44px; border-radius: 50%; font-size: 0; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(231,231,231,0.22); align-self: center; }
-      .post-btn::before { content: "+"; font-size: 24px; font-weight: 400; line-height: 1; }
-      .user { left: auto; bottom: auto; top: 10px; right: 10px; width: auto; max-width: calc(100vw - 20px); z-index: 60; background: rgba(29,29,29,0.95); backdrop-filter: blur(10px); border: 1px solid #3a3a3a; border-radius: 9999px; padding: 4px 10px 4px 4px; gap: 8px; font-size: 13px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); flex-direction: row !important; min-height: 40px; }
+      .sidebar .nav-item[data-nav="conversations"] { order: 3; }
+      .post-btn { order: 4; }
+      .sidebar .nav-item[data-nav="account"] { order: 5; }
+      .sidebar .nav-item[data-nav="notifications"] { order: 6; }
+      .sidebar .nav-item[data-nav="settings"] { order: 7; }
+      .sidebar .nav-item[data-nav="admin"] { order: 8; }
+      .post-btn { margin: 0; flex: 0 0 42px; width: 42px; height: 42px; min-width: 42px; max-width: 42px; border-radius: 50%; font-size: 0; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(231,231,231,0.22); align-self: center; }
+      .post-btn::before { content: "+"; font-size: 22px; font-weight: 400; line-height: 1; }
+      .user { position: fixed; top: 10px; right: 10px; left: auto; bottom: auto; width: auto; max-width: calc(100vw - 20px); margin: 0; z-index: 60; background: rgba(29,29,29,0.98); border: 1px solid #3a3a3a; border-radius: 9999px; padding: 4px 10px 4px 4px; gap: 8px; font-size: 13px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); flex-direction: row; min-height: 40px; }
       .user .avatar { width: 32px; height: 32px; border-radius: 9px; }
       .user .avatar .status-badge { width: 12px; height: 12px; }
-      .user span#userName { display: inline !important; font-size: 12px; color: #e7e7e7; font-weight: 500; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .user.logged-in span#userName { display: none !important; }
-      .user .logout { display: block !important; font-size: 11px; padding: 5px 10px; background: #2f2f2f; border-radius: 9999px; color: #e7e7e7; margin-left: 0; font-weight: 500; cursor: pointer; min-height: 28px; }
-      .user .logout:hover { background: #3f3f3f; color: #f91880; }
+      .user #userName { font-size: 12px; max-width: 70px; flex: 0 1 auto; }
+      .user .logout { font-size: 11px; padding: 5px 10px; background: #2f2f2f; border-radius: 9999px; color: #e7e7e7; font-weight: 500; min-height: 28px; }
       .feed { padding-bottom: 76px; }
       .feed-inner { border-left: none; border-right: none; max-width: 100%; }
       .feed-header { font-size: 16px; padding: 14px 12px; justify-content: flex-start; gap: 8px; padding-right: 130px; }
@@ -323,7 +362,7 @@
       .profile-head { padding: 12px; }
       .back-btn { padding: 8px 12px; font-size: 14px; min-height: 40px; }
       .profile-actions { gap: 8px; }
-      .follow-btn, .change-bio-btn { padding: 10px 20px; font-size: 14px; flex: 1; min-width: 120px; }
+      .follow-btn, .msg-btn, .change-bio-btn { padding: 10px 20px; font-size: 14px; flex: 1; min-width: 120px; }
       .modal { width: 92%; }
       .emoji-grid { grid-template-columns: repeat(6, 1fr); }
       .status-picker { gap: 6px; }
@@ -336,6 +375,7 @@
       .setting-color { width: 48px; height: 34px; }
       .setting-opt { padding: 7px 14px; font-size: 12px; min-height: 34px; }
       #toasts { top: 58px; }
+      .chat-window { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; }
     }
   </style>
 </head>
@@ -344,18 +384,18 @@
     <img class="logo" src="Fuzzy.png" alt="Fuzzy logo" />
     <div class="nav-item active" data-nav="home"><img src="Home.png" alt="" /> home</div>
     <div class="nav-item" data-nav="search"><img src="search.png" alt="" /> search</div>
+    <div class="nav-item" data-nav="conversations"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4ac.png" alt="" /> chats</div>
     <div class="nav-item" data-nav="account"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f464.png" alt="" /> account</div>
     <div class="nav-item" data-nav="notifications"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f514.png" alt="" /> notifications <span class="notif-badge" id="notifBadge"></span></div>
     <div class="nav-item" data-nav="settings"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/2699.png" alt="" /> settings</div>
     <div class="nav-item admin" data-nav="admin" id="adminNavItem" style="display:none"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f6e1.png" alt="" /> admin</div>
     <button class="post-btn" id="openPost">post</button>
+    <div class="user" id="userRow">
+      <div class="avatar" id="myAvatar"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f642.png" alt="" /></div>
+      <span id="userName">sign in</span>
+      <button class="logout" id="logoutBtn" style="display:none">log out</button>
+    </div>
   </aside>
-
-  <div class="user" id="userRow">
-    <div class="avatar" id="myAvatar"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f642.png" alt="" /></div>
-    <span id="userName">sign in</span>
-    <button class="logout" id="logoutBtn" style="display:none">log out</button>
-  </div>
 
   <main class="feed">
     <div class="feed-inner" id="feedView">
@@ -364,6 +404,7 @@
         <span class="tab" data-tab="following">following</span>
       </div>
       <div id="postsList"></div>
+      <div class="pagination" id="feedPagination"></div>
     </div>
 
     <div class="feed-inner" id="profileView">
@@ -382,6 +423,7 @@
             <div class="profile-meta" id="profMeta"></div>
             <div class="profile-actions">
               <button class="follow-btn" id="followBtn" style="display:none">Follow</button>
+              <button class="msg-btn" id="msgBtn" style="display:none">Message</button>
               <button class="change-bio-btn" id="changeBioBtn" style="display:none">Change bio</button>
             </div>
             <div class="status-picker" id="statusPicker" style="display:none">
@@ -403,6 +445,7 @@
       </div>
       <div id="profList" style="display:none"></div>
       <div id="profPosts"></div>
+      <div class="pagination" id="profilePagination"></div>
     </div>
 
     <div class="feed-inner" id="searchView">
@@ -422,98 +465,41 @@
       <div id="notifList"></div>
     </div>
 
+    <div class="feed-inner" id="conversationsView">
+      <div class="feed-header"><span class="tab active">Conversations</span></div>
+      <div id="convListMobile"></div>
+    </div>
+
     <div class="feed-inner" id="settingsView">
       <div class="profile-head">
         <button class="back-btn" id="settingsBackBtn">&larr; back</button>
         <div style="font-size:22px;font-weight:700;margin-top:8px">settings</div>
       </div>
-
       <div class="settings-section-label">appearance</div>
       <div class="settings-list">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">background colour</div>
-            <div class="setting-desc">your local page background</div>
-          </div>
-          <input type="color" class="setting-color" data-setting="bgColor" />
-        </div>
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">banner colour</div>
-            <div class="setting-desc">public — everyone sees this on your profile</div>
-          </div>
-          <input type="color" class="setting-color" data-setting="bannerColor" />
-        </div>
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">accent colour</div>
-            <div class="setting-desc">your local buttons and highlights</div>
-          </div>
-          <input type="color" class="setting-color" data-setting="accentColor" />
-        </div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">background colour</div><div class="setting-desc">your local page background</div></div><input type="color" class="setting-color" data-setting="bgColor" /></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">banner colour</div><div class="setting-desc">public — everyone sees this on your profile</div></div><input type="color" class="setting-color" data-setting="bannerColor" /></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">accent colour</div><div class="setting-desc">your local buttons and highlights</div></div><input type="color" class="setting-color" data-setting="accentColor" /></div>
       </div>
-
       <div class="settings-section-label">behaviour</div>
       <div class="settings-list">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">reduce motion</div>
-            <div class="setting-desc">disable animations</div>
-          </div>
-          <div class="setting-opts">
-            <button class="setting-opt" data-setting="reduceMotion" data-val="off">off</button>
-            <button class="setting-opt" data-setting="reduceMotion" data-val="on">on</button>
-          </div>
-        </div>
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">home feed post TTL</div>
-            <div class="setting-desc">your profile keeps posts forever</div>
-          </div>
-          <div class="setting-opts">
-            <button class="setting-opt" data-setting="postTTL" data-val="12">12h</button>
-            <button class="setting-opt" data-setting="postTTL" data-val="24">24h</button>
-            <button class="setting-opt" data-setting="postTTL" data-val="48">48h</button>
-          </div>
-        </div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">reduce motion</div><div class="setting-desc">disable animations</div></div><div class="setting-opts"><button class="setting-opt" data-setting="reduceMotion" data-val="off">off</button><button class="setting-opt" data-setting="reduceMotion" data-val="on">on</button></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">home feed post TTL</div><div class="setting-desc">your profile keeps posts forever</div></div><div class="setting-opts"><button class="setting-opt" data-setting="postTTL" data-val="12">12h</button><button class="setting-opt" data-setting="postTTL" data-val="24">24h</button><button class="setting-opt" data-setting="postTTL" data-val="48">48h</button></div></div>
       </div>
-
       <div class="settings-section-label">notifications</div>
       <div class="settings-list">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">browser notifications</div>
-            <div class="setting-desc">alerts for replies and likes</div>
-          </div>
-          <div class="setting-opts">
-            <button class="setting-opt" data-setting="notifications" data-val="off">off</button>
-            <button class="setting-opt" data-setting="notifications" data-val="on">on</button>
-          </div>
-        </div>
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">test notification</div>
-            <div class="setting-desc">check if they actually work on this device</div>
-          </div>
-          <div class="setting-opts">
-            <button class="setting-opt" id="testNotifBtn">send test</button>
-          </div>
-        </div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">browser notifications</div><div class="setting-desc">alerts for replies, likes, and DMs</div></div><div class="setting-opts"><button class="setting-opt" data-setting="notifications" data-val="off">off</button><button class="setting-opt" data-setting="notifications" data-val="on">on</button></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">test notification</div><div class="setting-desc">check if they actually work on this device</div></div><div class="setting-opts"><button class="setting-opt" id="testNotifBtn">send test</button></div></div>
       </div>
-
-      <div class="settings-list" style="padding-bottom:32px">
-        <button class="btn btn-ghost" id="settingsReset">reset to defaults</button>
-      </div>
+      <div class="settings-list" style="padding-bottom:32px"><button class="btn btn-ghost" id="settingsReset">reset to defaults</button></div>
     </div>
 
-    <!-- =============== ADMIN VIEW =============== -->
     <div class="feed-inner" id="adminView">
       <div class="profile-head">
         <button class="back-btn" id="adminBackBtn">&larr; back</button>
         <div style="font-size:22px;font-weight:700;margin-top:8px">🛡️ admin panel</div>
         <div style="font-size:12px;color:#717171;margin-top:4px">only matu can use this</div>
       </div>
-
       <div class="admin-panel" style="padding-top:20px">
         <div class="setting-label" style="margin-bottom:8px">look up a user</div>
         <div class="setting-desc" style="margin-bottom:12px">type a username, or #number (like #3)</div>
@@ -523,25 +509,52 @@
         </div>
         <div id="adminLookupResult" style="margin-top:16px"></div>
       </div>
-
       <div class="settings-section-label">banned users</div>
       <div class="admin-panel" id="adminBannedList"></div>
     </div>
   </main>
 
-  <div class="right-spacer" aria-hidden="true"></div>
+  <aside class="right">
+    <div class="conv-panel">
+      <div class="conv-panel-header">
+        <span>conversations</span>
+        <button class="new-btn" id="newConvBtn" title="new conversation">+</button>
+      </div>
+      <div class="conv-list" id="convList"></div>
+    </div>
+  </aside>
 
-  <button class="music-bubble" id="musicBubble" aria-label="music">
-    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" />
-  </button>
+  <div class="chat-overlay" id="chatOverlay">
+    <div class="chat-window">
+      <div class="chat-header">
+        <button class="chat-close" id="chatClose">←</button>
+        <div class="avatar" id="chatHeaderAvatar" style="width:38px;height:38px;border-radius:50%;"><img src="" alt="" /></div>
+        <div class="chat-header-name" id="chatHeaderName"></div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-row">
+        <input id="chatInput" placeholder="Type a message..." autocomplete="off" />
+        <button class="chat-send" id="chatSend">➤</button>
+      </div>
+    </div>
+  </div>
 
+  <div class="modal-overlay" id="userPickerModal">
+    <div class="modal">
+      <h3>start a new conversation</h3>
+      <div id="userPickerList" style="max-height:400px;overflow-y:auto;margin:0 -20px -20px;padding:0;">
+        <div class="empty">loading...</div>
+      </div>
+      <div class="modal-btns"><button class="btn btn-ghost" id="userPickerClose">Close</button></div>
+    </div>
+  </div>
+
+  <button class="music-bubble" id="musicBubble" aria-label="music"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></button>
   <div class="music-popup" id="musicPopup" role="dialog" aria-label="music player">
     <button class="music-popup-close" id="musicPopupClose" aria-label="close">✕</button>
     <div class="music-popup-body">
       <div class="music-card">
-        <div class="music-title">
-          <span class="spooky-glow"><img class="tw-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></span> music
-        </div>
+        <div class="music-title"><span class="spooky-glow"><img class="tw-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></span> music</div>
         <div id="musicTracksList"></div>
         <button class="music-add-btn" id="addMusicBtn">+ add your own</button>
         <input type="file" id="musicFileInput" accept="audio/*" style="display:none" />
@@ -550,82 +563,17 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="postModal">
-    <div class="modal">
-      <h3>Create a post</h3>
-      <textarea id="postText" placeholder="What's happening?"></textarea>
-      <div class="post-media-row">
-        <button class="post-media-btn" id="uploadMediaBtn" type="button">
-          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload media
-        </button>
-        <input type="file" id="mediaInput" accept="image/*,video/mp4,video/webm,video/quicktime,video/*" style="display:none" />
-      </div>
-      <div class="media-preview" id="mediaPreview"></div>
-      <div class="modal-btns">
-        <button class="btn btn-ghost" id="cancelPost">Cancel</button>
-        <button class="btn btn-primary" id="submitPost">Post</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay" id="postModal"><div class="modal"><h3>Create a post</h3><textarea id="postText" placeholder="What's happening?"></textarea><div class="post-media-row"><button class="post-media-btn" id="uploadMediaBtn" type="button"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload media</button><input type="file" id="mediaInput" accept="image/*,video/mp4,video/webm,video/quicktime,video/*" style="display:none" /></div><div class="media-preview" id="mediaPreview"></div><div class="modal-btns"><button class="btn btn-ghost" id="cancelPost">Cancel</button><button class="btn btn-primary" id="submitPost">Post</button></div></div></div>
 
-  <div class="modal-overlay" id="authModal">
-    <div class="modal">
-      <h3 id="authTitle">Log in</h3>
-      <input class="auth-input" id="authUsername" placeholder="username" />
-      <input class="auth-input" id="authPassword" type="password" placeholder="password" />
-      <p class="auth-error" id="authError"></p>
-      <div class="modal-btns">
-        <button class="btn btn-ghost" id="authSwitch">No account? Sign up</button>
-        <button class="btn btn-primary" id="authSubmit">Log in</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay" id="authModal"><div class="modal"><h3 id="authTitle">Log in</h3><input class="auth-input" id="authUsername" placeholder="username" /><input class="auth-input" id="authPassword" type="password" placeholder="password" /><p class="auth-error" id="authError"></p><div class="modal-btns"><button class="btn btn-ghost" id="authSwitch">No account? Sign up</button><button class="btn btn-primary" id="authSubmit">Log in</button></div></div></div>
 
-  <div class="modal-overlay" id="fuzzedModal">
-    <div class="modal fuzzed-modal">
-      <h3>You have been FUZZED!</h3>
-      <button class="btn btn-primary" id="fuzzedLogout">log out</button>
-    </div>
-  </div>
+  <div class="modal-overlay" id="fuzzedModal"><div class="modal fuzzed-modal"><h3>You have been FUZZED!</h3><button class="btn btn-primary" id="fuzzedLogout">log out</button></div></div>
 
-  <div class="modal-overlay" id="bannedModal">
-    <div class="modal fuzzed-modal">
-      <h3 style="color:#ff6b6b">You have been BANNED!</h3>
-      <p style="color:#9a9a9a;margin-bottom:20px;font-size:14px">contact matu if you think this is a mistake</p>
-      <button class="btn btn-primary" id="bannedOk">ok</button>
-    </div>
-  </div>
+  <div class="modal-overlay" id="bannedModal"><div class="modal fuzzed-modal"><h3 style="color:#ff6b6b">You have been BANNED!</h3><p style="color:#9a9a9a;margin-bottom:20px;font-size:14px">contact matu if you think this is a mistake</p><button class="btn btn-primary" id="bannedOk">ok</button></div></div>
 
-  <div class="modal-overlay" id="pfpModal">
-    <div class="modal">
-      <h3>Change profile picture</h3>
-      <div class="pfp-section-label">Upload your own (images only)</div>
-      <div class="post-media-row" style="margin-top:0">
-        <button class="post-media-btn" id="pfpUploadBtn" type="button">
-          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload image
-        </button>
-        <input type="file" id="pfpUploadInput" accept="image/*" style="display:none" />
-      </div>
-      <div class="pfp-section-label" style="margin-top:16px">Or pick an image</div>
-      <div class="pfp-grid" id="pfpImages"></div>
-      <div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div>
-      <div class="emoji-grid" id="pfpEmojis"></div>
-      <div class="modal-btns">
-        <button class="btn btn-ghost" id="pfpClose">Close</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay" id="pfpModal"><div class="modal"><h3>Change profile picture</h3><div class="pfp-section-label">Upload your own (images only)</div><div class="post-media-row" style="margin-top:0"><button class="post-media-btn" id="pfpUploadBtn" type="button"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload image</button><input type="file" id="pfpUploadInput" accept="image/*" style="display:none" /></div><div class="pfp-section-label" style="margin-top:16px">Or pick an image</div><div class="pfp-grid" id="pfpImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="pfpEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="pfpClose">Close</button></div></div></div>
 
-  <div class="modal-overlay" id="confirmModal">
-    <div class="modal confirm-modal">
-      <h3 id="confirmTitle">Are you sure?</h3>
-      <p class="confirm-msg" id="confirmMsg"></p>
-      <div class="modal-btns" style="justify-content:center">
-        <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
-        <button class="btn btn-danger" id="confirmOk">Delete</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay" id="confirmModal"><div class="modal confirm-modal"><h3 id="confirmTitle">Are you sure?</h3><p class="confirm-msg" id="confirmMsg"></p><div class="modal-btns" style="justify-content:center"><button class="btn btn-ghost" id="confirmCancel">Cancel</button><button class="btn btn-danger" id="confirmOk">Delete</button></div></div></div>
 
   <div id="toasts"></div>
 
@@ -660,8 +608,12 @@
     applySettings();
     let POST_TTL = settings.postTTL * 60 * 60 * 1000;
 
+    const POSTS_PER_PAGE = 20;
+    let homePage = 1;
+    let profilePage = 1;
+
     const NOTIF_ASKED_KEY = "fuzzy-notif-asked-v1";
-    const RELEVANT_NOTIF_TYPES = ["reply", "comment", "like_post", "like_comment"];
+    const RELEVANT_NOTIF_TYPES = ["reply", "comment", "like_post", "like_comment", "dm"];
     function maybeRequestNotifPermission() {
       if (!("Notification" in window)) return;
       if (Notification.permission !== "default") return;
@@ -682,6 +634,7 @@
         case "comment": body = name + " commented on your post"; break;
         case "like_post": body = name + " liked your post"; break;
         case "like_comment": body = name + " liked your reply"; break;
+        case "dm": body = name + ": " + (data.text || "sent you a message"); break;
         default: return;
       }
       try {
@@ -738,12 +691,18 @@
     const MI_HEADPHONES = TW + "1f3a7.png";
     const MI_SPEAKER = TW + "1f50a.png";
 
-    // dynamic verified set — populated from user docs + static fallback
     const VERIFIED_STATIC = ["matu", "matu67"];
+    const DEV_STATIC = ["matu", "matu67"];
     const verifiedUsernames = new Set(VERIFIED_STATIC.map(x => x.toLowerCase()));
-    function verifiedBadge(username) {
-      return verifiedUsernames.has((username || "").toLowerCase()) ? '<img class="verified-check" src="check.png" alt="verified" />' : "";
+    const devUsernames = new Set(DEV_STATIC.map(x => x.toLowerCase()));
+    function userBadges(username) {
+      const uname = (username || "").toLowerCase();
+      let html = "";
+      if (verifiedUsernames.has(uname)) html += '<img class="verified-check" src="check.png" alt="verified" />';
+      if (devUsernames.has(uname)) html += '<img class="dev-check" src="dev.png" alt="dev" />';
+      return html;
     }
+    function verifiedBadge(username) { return userBadges(username); }
 
     function escapeHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
     function twEmojiHtml(text) {
@@ -780,7 +739,7 @@
       auth = firebase.auth();
       db = firebase.firestore();
       status("Fuzzy fuzz fuzzzzzz.");
-    } catch (err) { status("Firebase FAILED to load: " + err.message, true); }
+    } catch (err) { status("Firebase FAILED: " + err.message, true); }
 
     let isSignup = false;
     let myUsername = "";
@@ -797,7 +756,6 @@
     let profListMode = null;
     let commentUnsubs = [];
     let profPostsUnsub = null;
-    let allPostsUnsub = null; // for the admin + robust profile filter
     let notifUnsub = null;
     let usersUnsub = null;
     let usersSig = "";
@@ -805,14 +763,26 @@
     let searchMode = "posts";
     let userNumMap = new Map();
     const userCache = new Map();
-    const allPostsCache = new Map(); // id -> plain data
+    const allPostsCache = new Map();
     function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
     function isAdminUser() { return (myUsername || "").toLowerCase() === "matu"; }
 
-    // resolve a post's owner uid, trying multiple field names (old posts might use different names)
-    function postOwnerUid(d) {
-      if (!d) return null;
-      return d.uid || d.author || d.userId || d.user || d.postedBy || d.creatorId || null;
+    // MUTUAL FOLLOW HELPER
+    function areMutual(otherUid) {
+      if (!auth || !auth.currentUser) return false;
+      if (!otherUid) return false;
+      if (otherUid === auth.currentUser.uid) return false;
+      return myFollowing.has(otherUid) && myFollowers.has(otherUid);
+    }
+
+    function postOwnerUid(d) { if (!d) return null; return d.uid || d.author || d.userId || d.user || d.postedBy || d.creatorId || null; }
+    function postBelongsTo(post, uid, username) {
+      const owner = postOwnerUid(post);
+      if (owner && owner === uid) return true;
+      const postName = String((post && (post.username || post.userName || post.authorName)) || "").toLowerCase();
+      const target = String(username || "").toLowerCase();
+      if (target && postName && postName === target) return true;
+      return false;
     }
 
     const IMGBB_KEY = "38f5349bc38fbf6581e25c9bcd61e6d0";
@@ -839,11 +809,9 @@
     window.addEventListener("pagehide", touchLastSeen);
 
     function isOnline(uid) {
-      const u = userCache.get(uid);
-      if (!u) return false;
+      const u = userCache.get(uid); if (!u) return false;
       if (u.status) return true;
-      const ls = u.lastSeen;
-      if (!ls) return false;
+      const ls = u.lastSeen; if (!ls) return false;
       return Date.now() - ls.toMillis() < 5 * 60 * 1000;
     }
     function statusBadgeHtml(uid) {
@@ -874,13 +842,7 @@
       usersUnsub = db.collection("users").onSnapshot(snap => {
         verifiedUsernames.clear();
         VERIFIED_STATIC.forEach(x => verifiedUsernames.add(x.toLowerCase()));
-
-        snap.forEach(d => {
-          const u = d.data();
-          cacheUser(d.id, u);
-          if (u.verified && u.username) verifiedUsernames.add(String(u.username).toLowerCase());
-        });
-
+        snap.forEach(d => { const u = d.data(); cacheUser(d.id, u); if (u.verified && u.username) verifiedUsernames.add(String(u.username).toLowerCase()); });
         const docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
         docs.sort((a, b) => {
           const ta = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
@@ -889,13 +851,11 @@
           return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
         });
         const m = new Map(); docs.forEach((d, i) => m.set(d.id, i + 1)); userNumMap = m;
-
         let sig = "";
         snap.forEach(d => {
           const u = d.data();
           sig += d.id + ":" + (u.emoji || "") + ":" + (u.username || "") + ":" + (u.status || "") + ":" + (u.bio || "").slice(0, 24) + ":" + (u.bannerColor || "") + ":" + (u.banned ? "B" : "") + ":" + (u.verified ? "V" : "") + ";";
         });
-
         if (sig !== usersSig) {
           usersSig = sig;
           renderPosts();
@@ -903,9 +863,10 @@
           if (activeView === "search") renderSearch(document.getElementById("searchInput").value);
           if (activeView === "notifications") renderNotifications();
           if (activeView === "admin") renderAdminBanned();
+          renderConversationsList();
+          renderConversationsListMobile();
         }
         refreshStatusDots();
-
         if (auth && auth.currentUser) {
           const me = userCache.get(auth.currentUser.uid);
           if (me) {
@@ -914,14 +875,7 @@
             if (me.bio !== undefined) myBio = me.bio;
             myStatus = me.status || null;
             if (me.bannerColor) myBannerColor = me.bannerColor;
-
-            // banned check while online
-            if (me.banned) {
-              auth.signOut().then(() => {
-                document.getElementById("bannedModal").classList.add("open");
-              });
-              return;
-            }
+            if (me.banned) { auth.signOut().then(() => { bannedModal.classList.add("open"); }); return; }
           }
         }
         updateSidebar();
@@ -933,10 +887,13 @@
     const fuzzedModal = document.getElementById("fuzzedModal");
     const bannedModal = document.getElementById("bannedModal");
     const postsList = document.getElementById("postsList");
+    const feedPagination = document.getElementById("feedPagination");
+    const profilePagination = document.getElementById("profilePagination");
     const feedView = document.getElementById("feedView");
     const profileView = document.getElementById("profileView");
     const searchView = document.getElementById("searchView");
     const notificationsView = document.getElementById("notificationsView");
+    const conversationsView = document.getElementById("conversationsView");
     const settingsView = document.getElementById("settingsView");
     const adminView = document.getElementById("adminView");
     const profPosts = document.getElementById("profPosts");
@@ -948,6 +905,7 @@
       profileView.style.display = name === "profile" ? "block" : "none";
       searchView.style.display = name === "search" ? "block" : "none";
       notificationsView.style.display = name === "notifications" ? "block" : "none";
+      conversationsView.style.display = name === "conversations" ? "block" : "none";
       settingsView.style.display = name === "settings" ? "block" : "none";
       adminView.style.display = name === "admin" ? "block" : "none";
     }
@@ -959,7 +917,6 @@
       const myAvatar = document.getElementById("myAvatar");
       const userRow = document.getElementById("userRow");
       const adminNav = document.getElementById("adminNavItem");
-
       if (auth && auth.currentUser) {
         nameEl.textContent = myUsername || "you";
         avatarImg.src = myEmoji;
@@ -974,7 +931,6 @@
         userRow.classList.remove("logged-in");
         const b = myAvatar.querySelector(".status-badge"); if (b) b.remove();
       }
-      // admin nav item visibility
       if (adminNav) adminNav.style.display = isAdminUser() ? "flex" : "none";
       decorateAvatars(document.body);
     }
@@ -982,7 +938,7 @@
     function fallbackName(user) { return user.email ? user.email.split("@")[0] : "you"; }
     function validUsername(u) { return /^[a-zA-Z0-9]{3,13}$/.test(u); }
     function killCommentListeners() { commentUnsubs.forEach(u => { try { u(); } catch (e) {} }); commentUnsubs = []; }
-    function killProfPostsListener() { if (profPostsUnsub) { try { profPostsUnsub(); } catch (e) {} profPostsUnsub = null; } }
+    function killProfPostsListener() { if (profPostsUnsub) { try { profPostsUnsub(); } catch (e) {} } profPostsUnsub = null; }
 
     function setNotifBadge(n) {
       const b = document.getElementById("notifBadge");
@@ -990,6 +946,42 @@
       if (n <= 0) { b.style.display = "none"; b.textContent = ""; return; }
       b.textContent = n > 9 ? "9+" : String(n);
       b.style.display = "flex";
+    }
+
+    function renderPagination(container, currentPage, totalPages, onChange) {
+      container.innerHTML = "";
+      if (totalPages <= 1) return;
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "page-btn"; prevBtn.textContent = "‹ prev";
+      prevBtn.disabled = currentPage <= 1;
+      prevBtn.addEventListener("click", () => { if (currentPage > 1) onChange(currentPage - 1); });
+      container.appendChild(prevBtn);
+      const nums = [];
+      if (totalPages <= 7) { for (let i = 1; i <= totalPages; i++) nums.push(i); }
+      else {
+        nums.push(1);
+        if (currentPage > 3) nums.push("…");
+        const start = Math.max(2, currentPage - 1);
+        const end = Math.min(totalPages - 1, currentPage + 1);
+        for (let i = start; i <= end; i++) nums.push(i);
+        if (currentPage < totalPages - 2) nums.push("…");
+        nums.push(totalPages);
+      }
+      nums.forEach(n => {
+        if (n === "…") { const sp = document.createElement("span"); sp.className = "page-dots"; sp.textContent = "…"; container.appendChild(sp); }
+        else {
+          const b = document.createElement("button");
+          b.className = "page-btn" + (n === currentPage ? " active" : "");
+          b.textContent = String(n);
+          b.addEventListener("click", () => { if (n !== currentPage) onChange(n); });
+          container.appendChild(b);
+        }
+      });
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "page-btn"; nextBtn.textContent = "next ›";
+      nextBtn.disabled = currentPage >= totalPages;
+      nextBtn.addEventListener("click", () => { if (currentPage < totalPages) onChange(currentPage + 1); });
+      container.appendChild(nextBtn);
     }
 
     let seenNotifIds = new Set();
@@ -1000,10 +992,7 @@
       if (!user || !db) { setNotifBadge(0); prevUnreadCount = 0; return; }
       notifUnsub = db.collection("notifications").where("targetUid", "==", user.uid).onSnapshot(snap => {
         let n = 0; const newOnes = [];
-        snap.forEach(d => {
-          const data = d.data(); if (!data.read) n++;
-          if (!seenNotifIds.has(d.id)) { seenNotifIds.add(d.id); if (!notifFirstLoad) newOnes.push({ id: d.id, data }); }
-        });
+        snap.forEach(d => { const data = d.data(); if (!data.read) n++; if (!seenNotifIds.has(d.id)) { seenNotifIds.add(d.id); if (!notifFirstLoad) newOnes.push({ id: d.id, data }); } });
         const relevantNew = newOnes.filter(x => RELEVANT_NOTIF_TYPES.includes(x.data.type));
         if (relevantNew.length > 0) playNotifSound();
         prevUnreadCount = n; setNotifBadge(n);
@@ -1017,10 +1006,7 @@
       if (auth && auth.currentUser) await auth.signOut();
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBannerColor = "#161616";
       myFollowing = new Set(); myFollowers = new Set();
-      updateSidebar();
-      closeProfile();
-      showView("feed");
-      renderPosts();
+      updateSidebar(); closeProfile(); showView("feed"); renderPosts();
       fuzzedModal.classList.add("open");
     }
 
@@ -1030,12 +1016,7 @@
         const snap = await db.collection("users").doc(user.uid).get();
         if (snap.exists) {
           const ud = snap.data();
-          // banned check
-          if (ud.banned) {
-            await auth.signOut();
-            bannedModal.classList.add("open");
-            return;
-          }
+          if (ud.banned) { await auth.signOut(); bannedModal.classList.add("open"); return; }
           myUsername = ud.username || fallbackName(user);
           myEmoji = ud.emoji || faceForUid(user.uid);
           myBio = ud.bio || "";
@@ -1048,39 +1029,38 @@
           myEmoji = faceForUid(user.uid);
           await db.collection("users").doc(user.uid).set({ username: myUsername, emoji: myEmoji, bio: "", bannerColor: myBannerColor, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
         }
-        touchLastSeen();
-        updateSidebar();
+        touchLastSeen(); updateSidebar();
         if (!validUsername(myUsername)) { await fuzzUser(); return; }
         maybeRequestNotifPermission();
         status("Signed in as " + myUsername + " — hi there boi");
+        startConversationsListener();
       } catch (err) {
-        if (err.code === "permission-denied") status("BLOCKED: fix your Firestore rules.", true);
-        else status("Signed in as " + myUsername + " (profile error: " + err.code + ")", true);
+        if (err.code === "permission-denied") status("BLOCKED: fix Firestore rules.", true);
+        else status("Profile error: " + err.code, true);
       }
     }
 
     async function notify(targetUid, type, extra) {
       if (!targetUid || !auth || !auth.currentUser) return;
       if (targetUid === auth.currentUser.uid) return;
-      try {
-        await db.collection("notifications").add({ targetUid, fromUid: auth.currentUser.uid, fromUsername: myUsername, fromEmoji: myEmoji, type, read: false, createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...(extra || {}) });
-      } catch (e) {}
+      try { await db.collection("notifications").add({ targetUid, fromUid: auth.currentUser.uid, fromUsername: myUsername, fromEmoji: myEmoji, type, read: false, createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...(extra || {}) }); } catch (e) {}
     }
 
     if (auth) {
       auth.onAuthStateChanged(user => {
         if (user) {
-          loadProfile(user);
-          setupNotifListener(user);
-          setupUsersListener();
-          renderPosts();
+          loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts();
         } else {
           myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBannerColor = "#161616";
           myFollowing = new Set(); myFollowers = new Set();
           killCommentListeners(); killProfPostsListener();
           if (usersUnsub) { usersUnsub(); usersUnsub = null; }
+          if (conversationsUnsub) { conversationsUnsub(); conversationsUnsub = null; }
+          closeConversation();
           setupNotifListener(null);
           updateSidebar(); closeProfile(); showView("feed"); renderPosts();
+          renderConversationsList();
+          renderConversationsListMobile();
         }
       });
     }
@@ -1091,21 +1071,21 @@
         db.collection("follows").where("followerUid", "==", user.uid).onSnapshot(snap => {
           myFollowing = new Set(snap.docs.map(d => d.data().followeeUid));
           renderPosts(); if (profileUid) renderProfile();
+          renderConversationsList(); renderConversationsListMobile();
         }, () => {});
         db.collection("follows").where("followeeUid", "==", user.uid).onSnapshot(snap => {
           myFollowers = new Set(snap.docs.map(d => d.data().followerUid));
+          renderConversationsList(); renderConversationsListMobile();
         }, () => {});
       });
     }
 
     function usernameToEmail(username) { return username.toLowerCase().replace(/[^a-z0-9]/g, "") + "@fuzzy.local"; }
-
     function goHome() {
       showView("feed");
       document.querySelectorAll("#feedView .tab").forEach(t => t.classList.remove("active"));
       document.querySelector('.tab[data-tab="foryou"]').classList.add("active");
-      activeTab = "foryou";
-      renderPosts();
+      activeTab = "foryou"; homePage = 1; renderPosts();
     }
 
     document.querySelectorAll(".nav-item").forEach(item => {
@@ -1120,6 +1100,10 @@
         else if (nav === "account") {
           if (auth && auth.currentUser) openProfile(auth.currentUser.uid);
           else { authModal.classList.add("open"); document.getElementById("authUsername").focus(); }
+        }
+        else if (nav === "conversations") {
+          if (window.innerWidth <= 768) { showView("conversations"); renderConversationsListMobile(); }
+          else { openUserPicker(); }
         }
         else if (nav === "notifications") { showView("notifications"); renderNotifications(); }
         else if (nav === "settings") { showView("settings"); }
@@ -1149,10 +1133,7 @@
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null;
       updateSidebar(); showView("feed"); renderPosts();
     });
-
-    document.getElementById("bannedOk").addEventListener("click", () => {
-      bannedModal.classList.remove("open");
-    });
+    document.getElementById("bannedOk").addEventListener("click", () => bannedModal.classList.remove("open"));
 
     document.getElementById("authSubmit").addEventListener("click", async () => {
       if (!auth) { authError.textContent = "Firebase is not loaded."; return; }
@@ -1191,8 +1172,7 @@
           touchLastSeen(); updateSidebar();
         }
         authModal.classList.remove("open");
-        goHome();
-        maybeRequestNotifPermission();
+        goHome(); maybeRequestNotifPermission();
         status("Signed in as " + myUsername + " — welcome!");
       } catch (err) {
         status("Auth error: " + err.code, true);
@@ -1214,6 +1194,7 @@
       if (!uid) return;
       profileUid = uid;
       profListMode = null;
+      profilePage = 1;
       showView("profile");
       profileView.scrollTop = 0;
       renderProfile();
@@ -1240,10 +1221,6 @@
       return years + (years === 1 ? " year" : " years") + ", " + rem + (rem === 1 ? " month" : " months");
     }
 
-    // ============================================================
-    // PROFILE — fetches ALL posts forever. Uses a broad uid matcher
-    // so old posts with different field names still show.
-    // ============================================================
     async function renderProfile() {
       if (!profileUid || !db) return;
       const videoState = captureVideoState();
@@ -1271,16 +1248,18 @@
         meta.innerHTML = "";
         const idSpan = document.createElement("span"); idSpan.innerHTML = 'ID <b>#' + (num || "?") + '</b>';
         const joinSpan = document.createElement("span"); joinSpan.innerHTML = 'joined <b>' + formatJoinDate(u.createdAt) + '</b>';
-        const ageSpan = document.createElement("span"); ageSpan.innerHTML = 'age <b>' + accountAgeText(u.createdAt) + '</b>';
+        const ageSpan = document.createElement("span"); ageSpan.innerHTML = 'account age : <b>' + accountAgeText(u.createdAt) + '</b>';
         meta.appendChild(idSpan); meta.appendChild(joinSpan); meta.appendChild(ageSpan);
 
         const followBtn = document.getElementById("followBtn");
+        const msgBtn = document.getElementById("msgBtn");
         const changeBioBtn = document.getElementById("changeBioBtn");
         const bioEdit = document.getElementById("bioEdit");
         const picker = document.getElementById("statusPicker");
         bioEdit.classList.remove("open");
         if (isMe) {
           followBtn.style.display = "none";
+          msgBtn.style.display = "none";
           changeBioBtn.style.display = "block";
           document.getElementById("profAvatar").style.cursor = "pointer";
           picker.style.display = "flex";
@@ -1293,6 +1272,12 @@
           const following = myFollowing.has(profileUid);
           followBtn.textContent = following ? "Unfollow" : "Follow";
           followBtn.classList.toggle("following", following);
+          // ONLY show Message button if mutual
+          if (areMutual(profileUid)) {
+            msgBtn.style.display = "block";
+          } else {
+            msgBtn.style.display = "none";
+          }
         }
 
         const [folSnap, follSnap] = await Promise.all([
@@ -1307,45 +1292,37 @@
         document.getElementById("profPosts").style.display = "block";
 
         killProfPostsListener();
-
         const liveUid = profileUid;
+        const liveUsername = u.username || "";
         const liveUser = u;
 
-        // Fetch ALL posts once, filter client-side. Robust against old field names.
-        // Then also subscribe to live updates on the whole posts collection
-        // (small app, fine) so new posts show up instantly.
         function refreshProfilePosts() {
           if (profileUid !== liveUid) return;
           const postList = [];
-          allPostsCache.forEach((d, id) => {
-            if (postOwnerUid(d) === liveUid) postList.push({ id, d });
-          });
+          allPostsCache.forEach((d, id) => { if (postBelongsTo(d, liveUid, liveUsername)) postList.push({ id, d }); });
           postList.sort((a, b) => {
             const at = (a.d.createdAt && typeof a.d.createdAt.toMillis === "function") ? a.d.createdAt.toMillis() : 0;
             const bt = (b.d.createdAt && typeof b.d.createdAt.toMillis === "function") ? b.d.createdAt.toMillis() : 0;
             return bt - at;
           });
+          const totalPages = Math.max(1, Math.ceil(postList.length / POSTS_PER_PAGE));
+          if (profilePage > totalPages) profilePage = totalPages;
+          if (profilePage < 1) profilePage = 1;
+          const start = (profilePage - 1) * POSTS_PER_PAGE;
+          const pageSlice = postList.slice(start, start + POSTS_PER_PAGE);
           profPosts.innerHTML = "";
-          if (postList.length === 0) { profPosts.innerHTML = '<div class="empty">No posts yet.</div>'; return; }
-          postList.forEach(item => { try { profPosts.appendChild(buildPost(item.id, item.d, liveUser)); } catch (e) { console.warn(e); } });
+          if (postList.length === 0) { profPosts.innerHTML = '<div class="empty">No posts yet.</div>'; profilePagination.innerHTML = ""; return; }
+          pageSlice.forEach(item => { try { profPosts.appendChild(buildPost(item.id, item.d, liveUser)); } catch (e) { console.warn(e); } });
           decorateAvatars(profileView);
+          renderPagination(profilePagination, profilePage, totalPages, (newPage) => { profilePage = newPage; refreshProfilePosts(); profileView.scrollTop = 0; });
           requestAnimationFrame(() => restoreVideoState(videoState));
         }
 
-        // one-time fetch to prime the cache
         try {
           const allSnap = await db.collection("posts").get();
-          allSnap.forEach(docSnap => {
-            let plain = {}; try { plain = docSnap.data() || {}; } catch (e) { plain = {}; }
-            allPostsCache.set(docSnap.id, plain);
-          });
-        } catch (e) {
-          console.warn("posts fetch error:", e);
-        }
-
+          allSnap.forEach(docSnap => { let plain = {}; try { plain = docSnap.data() || {}; } catch (e) { plain = {}; } allPostsCache.set(docSnap.id, plain); });
+        } catch (e) {}
         refreshProfilePosts();
-
-        // live subscription
         profPostsUnsub = db.collection("posts").onSnapshot(snap => {
           if (profileUid !== liveUid) return;
           snap.docChanges().forEach(ch => {
@@ -1355,11 +1332,8 @@
             allPostsCache.set(docSnap.id, plain);
           });
           refreshProfilePosts();
-        }, (err) => {
-          console.warn("profile posts listener error:", err && err.code);
-        });
+        }, () => {});
       } catch (err) {
-        console.error("renderProfile error:", err);
         status("Profile error: " + (err.code || err.message), true);
         profPosts.innerHTML = '<div class="empty">Could not load profile: ' + (err.code || err.message) + "</div>";
       }
@@ -1367,22 +1341,18 @@
 
     document.querySelectorAll(".status-opt").forEach(b => b.addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
-      const s = b.dataset.status || null;
-      myStatus = s;
+      const s = b.dataset.status || null; myStatus = s;
       try {
         await db.collection("users").doc(auth.currentUser.uid).update({ status: s === null ? firebase.firestore.FieldValue.delete() : s });
-        const cached = userCache.get(auth.currentUser.uid) || {};
-        userCache.set(auth.currentUser.uid, { ...cached, status: s });
+        const cached = userCache.get(auth.currentUser.uid) || {}; userCache.set(auth.currentUser.uid, { ...cached, status: s });
         refreshStatusDots();
         status(s ? "Status set to " + s + "." : "Status set to auto.");
       } catch (err) { toast("Status failed: " + err.code, true); }
     }));
 
     document.getElementById("changeBioBtn").addEventListener("click", () => {
-      const bioEdit = document.getElementById("bioEdit");
-      const bioInput = document.getElementById("bioInput");
-      bioInput.value = myBio || "";
-      bioEdit.classList.add("open"); bioInput.focus();
+      const bioEdit = document.getElementById("bioEdit"); const bioInput = document.getElementById("bioInput");
+      bioInput.value = myBio || ""; bioEdit.classList.add("open"); bioInput.focus();
     });
 
     document.getElementById("followBtn").addEventListener("click", async function() {
@@ -1397,14 +1367,17 @@
       } catch (err) { status("Follow failed: " + err.code, true); }
     });
 
+    document.getElementById("msgBtn").addEventListener("click", () => {
+      if (profileUid) openConversation(profileUid);
+    });
+
     document.getElementById("bioCancel").addEventListener("click", () => document.getElementById("bioEdit").classList.remove("open"));
     document.getElementById("bioSave").addEventListener("click", async () => {
       if (!auth || !auth.currentUser) return;
       const bio = document.getElementById("bioInput").value.trim();
       try {
         await db.collection("users").doc(auth.currentUser.uid).set({ bio }, { merge: true });
-        myBio = bio;
-        setEmojiText(document.getElementById("profBio"), bio || "No bio.");
+        myBio = bio; setEmojiText(document.getElementById("profBio"), bio || "No bio.");
         document.getElementById("bioEdit").classList.remove("open");
         status("Bio saved.");
       } catch (err) { status("Bio save failed: " + err.code, true); }
@@ -1416,6 +1389,7 @@
       const box = document.getElementById("profList");
       if (!profileUid || !db) return;
       document.getElementById("profPosts").style.display = "none";
+      profilePagination.innerHTML = "";
       box.style.display = "block";
       const me = auth && auth.currentUser ? auth.currentUser.uid : null;
       const q = profListMode === "following" ? db.collection("follows").where("followerUid", "==", profileUid) : db.collection("follows").where("followeeUid", "==", profileUid);
@@ -1542,11 +1516,11 @@
       const likeCount = data.likes ? Object.keys(data.likes).length : 0;
       const iLiked = auth && auth.currentUser && data.likes && data.likes[auth.currentUser.uid];
       const ownerUid = postOwnerUid(data);
-      const isMyPost = auth && auth.currentUser && ownerUid === auth.currentUser.uid;
+      const isMyPost = auth && auth.currentUser && (ownerUid === auth.currentUser.uid || (data.username && data.username.toLowerCase() === (myUsername || "").toLowerCase()));
       const cachedUser = userCache.get(ownerUid);
       const emoji = (cachedUser && cachedUser.emoji) || (userDoc && userDoc.emoji) || data.emoji || faceForUid(ownerUid);
       const name = (cachedUser && cachedUser.username) || data.username || (userDoc && userDoc.username) || "user";
-      const postUid = ownerUid;
+      const postUid = ownerUid || (userDoc ? profileUid : null);
 
       let mediaHtml = "";
       if (data.mediaUrl) {
@@ -1556,8 +1530,8 @@
 
       article.innerHTML =
         '<div class="post-head">' +
-          '<div class="avatar" data-uid="' + postUid + '"><img src="' + emoji + '" alt="" /></div>' +
-          '<span class="p-name" data-uid="' + postUid + '"></span>' + verifiedBadge(name) +
+          '<div class="avatar" data-uid="' + (postUid || "") + '"><img src="' + emoji + '" alt="" /></div>' +
+          '<span class="p-name" data-uid="' + (postUid || "") + '"></span>' + verifiedBadge(name) +
           ' <span class="time">| ' + timeAgo(data.createdAt) + "</span>" +
         "</div>" +
         '<div class="post-body"></div>' + mediaHtml +
@@ -1576,8 +1550,10 @@
         "</div>";
       article.querySelector(".p-name").textContent = name;
       setEmojiText(article.querySelector(".post-body"), data.text || "");
-      article.querySelector(".p-name").addEventListener("click", () => openProfile(postUid));
-      article.querySelector(".post-head .avatar").addEventListener("click", () => openProfile(postUid));
+      if (postUid) {
+        article.querySelector(".p-name").addEventListener("click", () => openProfile(postUid));
+        article.querySelector(".post-head .avatar").addEventListener("click", () => openProfile(postUid));
+      }
       article.querySelector(".like").addEventListener("click", async function() {
         if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
         const uid = auth.currentUser.uid;
@@ -1587,7 +1563,7 @@
         if (countEl) { const cur = parseInt(countEl.textContent, 10) || 0; countEl.textContent = liked ? Math.max(0, cur - 1) : cur + 1; }
         const newLikes = { ...(data.likes || {}) };
         if (liked) delete newLikes[uid]; else newLikes[uid] = true;
-        try { await db.collection("posts").doc(postId).update({ likes: newLikes }); if (!liked && postUid !== uid) notify(postUid, "like_post", { postId }); }
+        try { await db.collection("posts").doc(postId).update({ likes: newLikes }); if (!liked && postUid && postUid !== uid) notify(postUid, "like_post", { postId }); }
         catch (err) { toast("Like failed: " + err.code, true); }
       });
       article.querySelector(".comment-toggle").addEventListener("click", function() {
@@ -1668,7 +1644,7 @@
           await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
           cInput.value = ""; setReply(null);
           if (rt) { if (rt.uid !== auth.currentUser.uid) notify(rt.uid, "reply", { postId }); }
-          else { if (postUid !== auth.currentUser.uid) notify(postUid, "comment", { postId }); }
+          else { if (postUid && postUid !== auth.currentUser.uid) notify(postUid, "comment", { postId }); }
         } catch (err) { toast("Comment failed: " + err.code, true); }
       });
       if (auth && auth.currentUser) {
@@ -1687,22 +1663,28 @@
       return article;
     }
 
-    // HOME feed — TTL applied here
     function renderPosts() {
       const videoState = captureVideoState();
       killCommentListeners();
       postsList.innerHTML = "";
-      if (!db) { postsList.innerHTML = '<div class="empty">Firebase not loaded.</div>'; return; }
+      if (!db) { postsList.innerHTML = '<div class="empty">Firebase not loaded.</div>'; feedPagination.innerHTML = ""; return; }
       const cutoff = Date.now() - POST_TTL;
       let posts = lastPosts.filter(p => { const ts = p.data().createdAt; return ts && ts.toMillis() >= cutoff; });
       if (activeTab === "following") posts = posts.filter(p => myFollowing.has(p.data().uid));
       if (posts.length === 0) {
         postsList.innerHTML = '<div class="empty">' + (activeTab === "following" ? "Follow some people and their posts will show up here." : "No recent posts.") + "</div>";
+        feedPagination.innerHTML = "";
         requestAnimationFrame(() => restoreVideoState(videoState));
         return;
       }
-      posts.forEach(p => postsList.appendChild(buildPost(p.id, p.data(), null)));
+      const totalPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+      if (homePage > totalPages) homePage = totalPages;
+      if (homePage < 1) homePage = 1;
+      const start = (homePage - 1) * POSTS_PER_PAGE;
+      const pageSlice = posts.slice(start, start + POSTS_PER_PAGE);
+      pageSlice.forEach(p => postsList.appendChild(buildPost(p.id, p.data(), null)));
       decorateAvatars(postsList);
+      renderPagination(feedPagination, homePage, totalPages, (newPage) => { homePage = newPage; renderPosts(); feedView.scrollTop = 0; });
       requestAnimationFrame(() => restoreVideoState(videoState));
     }
 
@@ -1710,11 +1692,7 @@
     if (db) {
       db.collection("posts").orderBy("createdAt", "desc").onSnapshot(snap => {
         lastPosts = snap.docs;
-        // update allPostsCache from this listener too
-        snap.forEach(docSnap => {
-          let plain = {}; try { plain = docSnap.data() || {}; } catch (e) { plain = {}; }
-          allPostsCache.set(docSnap.id, plain);
-        });
+        snap.forEach(docSnap => { let plain = {}; try { plain = docSnap.data() || {}; } catch (e) { plain = {}; } allPostsCache.set(docSnap.id, plain); });
         const nextMap = new Map(); let needsFullRender = false;
         snap.docs.forEach(d => {
           const data = d.data();
@@ -1736,7 +1714,7 @@
     document.querySelectorAll("#feedView .tab").forEach(tab => {
       tab.addEventListener("click", () => {
         document.querySelectorAll("#feedView .tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active"); activeTab = tab.dataset.tab; renderPosts();
+        tab.classList.add("active"); activeTab = tab.dataset.tab; homePage = 1; renderPosts();
       });
     });
 
@@ -1868,6 +1846,7 @@
         case "comment": return name + " commented on your post";
         case "like_comment": return name + " liked your reply";
         case "reply": return name + " replied to your comment";
+        case "dm": return name + " sent you a message";
         default: return name + " did something";
       }
     }
@@ -1888,7 +1867,10 @@
           row.className = "notif-item" + (i.data.read ? "" : " unread");
           row.innerHTML = '<div class="avatar" data-uid="' + i.data.fromUid + '"><img src="' + (i.data.fromEmoji || faceForUid(i.data.fromUid)) + '" alt="" /></div><div class="n-body"><div class="n-text"></div><div class="n-time">' + timeAgo(i.data.createdAt) + "</div></div>";
           row.querySelector(".n-text").textContent = notifText(i.data);
-          row.addEventListener("click", () => { openProfile(i.data.fromUid); });
+          row.addEventListener("click", () => {
+            if (i.data.type === "dm") openConversation(i.data.fromUid);
+            else openProfile(i.data.fromUid);
+          });
           list.appendChild(row);
           if (!i.data.read) batch.update(db.collection("notifications").doc(i.id), { read: true });
         });
@@ -2023,7 +2005,7 @@
       btn.addEventListener("click", () => {
         const key = btn.dataset.setting; const val = btn.dataset.val;
         if (key === "reduceMotion") settings.reduceMotion = (val === "on");
-        else if (key === "postTTL") { settings.postTTL = parseInt(val, 10) || 24; POST_TTL = settings.postTTL * 60 * 60 * 1000; renderPosts(); }
+        else if (key === "postTTL") { settings.postTTL = parseInt(val, 10) || 24; POST_TTL = settings.postTTL * 60 * 60 * 1000; homePage = 1; renderPosts(); }
         else if (key === "notifications") {
           settings.notifications = (val === "on");
           if (settings.notifications && "Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {});
@@ -2041,7 +2023,7 @@
       else Notification.requestPermission().then(p => { if (p === "granted") { try { new Notification("Fuzzy", { body: "test notification!", icon: "icon.png" }); toast("Test sent!"); } catch (e) {} } });
     });
     document.getElementById("settingsReset").addEventListener("click", () => {
-      settings = { ...DEFAULT_SETTINGS }; POST_TTL = settings.postTTL * 60 * 60 * 1000;
+      settings = { ...DEFAULT_SETTINGS }; POST_TTL = settings.postTTL * 60 * 60 * 1000; homePage = 1;
       applySettings(); saveSettings(); refreshSettingsUi(); renderPosts(); toast("Settings reset.");
     });
     document.getElementById("settingsBackBtn").addEventListener("click", () => {
@@ -2052,14 +2034,307 @@
     refreshSettingsUi();
 
     // ============================================================
-    // ADMIN PANEL
+    // CONVERSATIONS — mutual follow only
     // ============================================================
+    const conversationsCache = new Map();
+    let conversationsUnsub = null;
+    let currentConvId = null;
+    let currentConvOtherUid = null;
+    let currentMsgUnsub = null;
+
+    function convIdFor(a, b) { return [a, b].sort().join("_"); }
+
+    function startConversationsListener() {
+      if (conversationsUnsub) { conversationsUnsub(); conversationsUnsub = null; }
+      if (!db || !auth || !auth.currentUser) return;
+      const me = auth.currentUser.uid;
+      conversationsUnsub = db.collection("conversations").where("members", "array-contains", me).onSnapshot(snap => {
+        conversationsCache.clear();
+        snap.forEach(d => conversationsCache.set(d.id, d.data()));
+        renderConversationsList();
+        renderConversationsListMobile();
+        // refresh ticks in current chat
+        if (currentConvId && currentMsgUnsub) {
+          // re-render ticks by re-triggering messages render
+          const other = currentConvOtherUid;
+          if (other) {
+            db.collection("conversations").doc(currentConvId).collection("messages")
+              .orderBy("createdAt", "asc").get().then(g => {
+                if (currentConvOtherUid === other) renderChatMessages(g, other);
+              }).catch(() => {});
+          }
+        }
+      }, () => {});
+    }
+
+    function shortTime(ts) {
+      if (!ts) return "";
+      const t = ts.toMillis();
+      const diff = Date.now() - t;
+      if (diff < 24*60*60*1000) {
+        const d = ts.toDate();
+        return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+      }
+      if (diff < 7*24*60*60*1000) {
+        const days = ["sun","mon","tue","wed","thu","fri","sat"];
+        return days[ts.toDate().getDay()];
+      }
+      return timeAgo(ts);
+    }
+
+    function buildConvItem(convId, data, otherUid) {
+      const el = document.createElement("div");
+      el.className = "conv-item" + (currentConvId === convId ? " active" : "");
+      const u = userCache.get(otherUid) || {};
+      const emoji = u.emoji || faceForUid(otherUid);
+      const name = u.username || "user";
+      const isMine = data.lastMessageFrom === auth.currentUser.uid;
+      const prefix = isMine ? "you: " : "";
+      el.innerHTML =
+        '<div class="avatar" data-uid="' + otherUid + '"><img src="' + emoji + '" alt="" /></div>' +
+        '<div class="conv-item-info">' +
+          '<div class="conv-item-name"></div>' +
+          '<div class="conv-item-last"></div>' +
+        '</div>' +
+        '<div class="conv-item-meta">' +
+          '<div class="conv-item-time">' + (data.lastAt ? shortTime(data.lastAt) : "") + '</div>' +
+        '</div>';
+      el.querySelector(".conv-item-name").textContent = name;
+      el.querySelector(".conv-item-name").insertAdjacentHTML("beforeend", verifiedBadge(name));
+      el.querySelector(".conv-item-last").textContent = prefix + (data.lastMessage || "");
+      el.addEventListener("click", () => openConversation(otherUid));
+      decorateAvatars(el);
+      return el;
+    }
+
+    function renderConversationsList() {
+      const list = document.getElementById("convList");
+      if (!list) return;
+      if (!auth || !auth.currentUser) { list.innerHTML = '<div class="conv-empty">log in to see conversations</div>'; return; }
+      const items = [];
+      conversationsCache.forEach((data, id) => {
+        const otherUid = (data.members || []).find(u => u !== auth.currentUser.uid);
+        if (!otherUid) return;
+        items.push({ id, data, otherUid });
+      });
+      items.sort((a, b) => {
+        const ta = a.data.lastAt ? a.data.lastAt.toMillis() : 0;
+        const tb = b.data.lastAt ? b.data.lastAt.toMillis() : 0;
+        return tb - ta;
+      });
+      if (items.length === 0) { list.innerHTML = '<div class="conv-empty">no conversations yet.<br>tap + to start one.<br><br>you can only chat with people who follow you back.</div>'; return; }
+      list.innerHTML = "";
+      items.forEach(item => list.appendChild(buildConvItem(item.id, item.data, item.otherUid)));
+    }
+
+    function renderConversationsListMobile() {
+      const list = document.getElementById("convListMobile");
+      if (!list) return;
+      if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">log in to see conversations.</div>'; return; }
+      const items = [];
+      conversationsCache.forEach((data, id) => {
+        const otherUid = (data.members || []).find(u => u !== auth.currentUser.uid);
+        if (!otherUid) return;
+        items.push({ id, data, otherUid });
+      });
+      items.sort((a, b) => {
+        const ta = a.data.lastAt ? a.data.lastAt.toMillis() : 0;
+        const tb = b.data.lastAt ? b.data.lastAt.toMillis() : 0;
+        return tb - ta;
+      });
+      if (items.length === 0) { list.innerHTML = '<div class="empty">no conversations yet.<br><br>you can only chat with people who follow you back.</div>'; return; }
+      list.innerHTML = "";
+      items.forEach(item => {
+        const el = buildConvItem(item.id, item.data, item.otherUid);
+        list.appendChild(el);
+      });
+    }
+
+    async function openConversation(otherUid) {
+      if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+      const me = auth.currentUser.uid;
+      if (otherUid === me) { toast("You can't message yourself.", true); return; }
+      if (!areMutual(otherUid)) {
+        toast("You can only chat with people you follow who follow you back.", true);
+        return;
+      }
+      const convId = convIdFor(me, otherUid);
+      currentConvId = convId;
+      currentConvOtherUid = otherUid;
+      const other = userCache.get(otherUid) || {};
+      const header = document.getElementById("chatHeaderName");
+      header.textContent = other.username || "user";
+      header.insertAdjacentHTML("beforeend", verifiedBadge(other.username));
+      document.querySelector("#chatHeaderAvatar img").src = other.emoji || faceForUid(otherUid);
+      document.querySelector("#chatHeaderAvatar").dataset.uid = otherUid;
+      decorateAvatars(document.querySelector(".chat-header"));
+      document.getElementById("chatOverlay").classList.add("open");
+
+      // mark my lastRead
+      try {
+        await db.collection("conversations").doc(convId).set({
+          members: [me, otherUid].sort(),
+          [`lastRead.${me}`]: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch (e) { /* silent */ }
+
+      if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
+      const msgsEl = document.getElementById("chatMessages");
+      msgsEl.innerHTML = '<div class="chat-empty">loading...</div>';
+      currentMsgUnsub = db.collection("conversations").doc(convId).collection("messages")
+        .orderBy("createdAt", "asc")
+        .onSnapshot(snap => { renderChatMessages(snap, otherUid); }, () => {
+          msgsEl.innerHTML = '<div class="chat-empty">could not load messages</div>';
+        });
+
+      renderConversationsList();
+      renderConversationsListMobile();
+
+      setTimeout(() => { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
+    }
+
+    function renderChatMessages(snap, otherUid) {
+      const msgsEl = document.getElementById("chatMessages");
+      if (!auth || !auth.currentUser) return;
+      const me = auth.currentUser.uid;
+      const conv = conversationsCache.get(currentConvId) || {};
+      const theirLastRead = conv.lastRead && conv.lastRead[otherUid];
+      const theirLastReadMs = (theirLastRead && typeof theirLastRead.toMillis === "function") ? theirLastRead.toMillis() : 0;
+      const msgs = [];
+      if (snap && snap.forEach) snap.forEach(d => msgs.push({ id: d.id, data: d.data() }));
+      else if (snap && snap.docs) snap.docs.forEach(d => msgs.push({ id: d.id, data: d.data() }));
+      if (msgs.length === 0) { msgsEl.innerHTML = '<div class="chat-empty">no messages yet. say hi 👋</div>'; return; }
+      const nearBottom = msgsEl.scrollHeight - msgsEl.scrollTop - msgsEl.clientHeight < 100;
+      msgsEl.innerHTML = "";
+      msgs.forEach(m => {
+        const mine = m.data.from === me;
+        const row = document.createElement("div");
+        row.className = "chat-msg-row " + (mine ? "mine" : "theirs");
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble " + (mine ? "mine" : "theirs");
+        const textEl = document.createElement("span");
+        textEl.textContent = m.data.text || "";
+        bubble.appendChild(textEl);
+        const timeEl = document.createElement("span");
+        timeEl.className = "chat-bubble-time";
+        timeEl.textContent = (m.data.createdAt ? formatMsgTime(m.data.createdAt) : "");
+        if (mine) {
+          const msgMs = m.data.createdAt ? m.data.createdAt.toMillis() : 0;
+          const seen = msgMs > 0 && msgMs <= theirLastReadMs;
+          const tick = document.createElement("span");
+          tick.className = "chat-seen" + (seen ? " read" : "");
+          tick.textContent = "✓✓";
+          timeEl.appendChild(tick);
+        }
+        bubble.appendChild(timeEl);
+        row.appendChild(bubble);
+        msgsEl.appendChild(row);
+      });
+      if (nearBottom) requestAnimationFrame(() => { msgsEl.scrollTop = msgsEl.scrollHeight; });
+    }
+
+    function formatMsgTime(ts) {
+      if (!ts) return "";
+      const d = ts.toDate();
+      return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text) return;
+      if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+      if (!currentConvId || !currentConvOtherUid) { toast("No conversation open.", true); return; }
+      const me = auth.currentUser.uid;
+      const otherUid = currentConvOtherUid;
+
+      if (!areMutual(otherUid)) {
+        toast("You can only chat with people you follow who follow you back.", true);
+        return;
+      }
+
+      input.value = "";
+      try {
+        const convRef = db.collection("conversations").doc(currentConvId);
+        const snap = await convRef.get();
+        const data = {
+          lastMessage: text,
+          lastMessageFrom: me,
+          lastAt: firebase.firestore.FieldValue.serverTimestamp(),
+          [`lastRead.${me}`]: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (!snap.exists) data.members = [me, otherUid].sort();
+        await convRef.set(data, { merge: true });
+        await convRef.collection("messages").add({
+          from: me, text: text, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        notify(otherUid, "dm", { text: text.slice(0, 60) });
+      } catch (e) {
+        console.error("send error:", e);
+        toast("Send failed: " + (e.code || e.message || "unknown"), true);
+      }
+    }
+
+    function closeConversation() {
+      document.getElementById("chatOverlay").classList.remove("open");
+      if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
+      currentConvId = null;
+      currentConvOtherUid = null;
+      renderConversationsList();
+      renderConversationsListMobile();
+    }
+
+    document.getElementById("chatClose").addEventListener("click", closeConversation);
+    document.getElementById("chatSend").addEventListener("click", sendChatMessage);
+    document.getElementById("chatInput").addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+    });
+    document.getElementById("chatOverlay").addEventListener("click", e => {
+      if (e.target === document.getElementById("chatOverlay")) closeConversation();
+    });
+
+    function openUserPicker() {
+      if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+      const box = document.getElementById("userPickerList");
+      box.innerHTML = '<div class="empty">loading...</div>';
+      document.getElementById("userPickerModal").classList.add("open");
+      db.collection("users").get().then(snap => {
+        const me = auth.currentUser.uid;
+        const users = snap.docs.map(d => ({ id: d.id, data: d.data() }))
+          .filter(u => u.id !== me && areMutual(u.id));
+        users.sort((a, b) => (a.data.username || "").localeCompare(b.data.username || ""));
+        box.innerHTML = "";
+        if (users.length === 0) {
+          box.innerHTML = '<div class="empty">no mutual follows yet.<br><br>you can only message people you follow who follow you back.</div>';
+          return;
+        }
+        users.forEach(u => {
+          const num = userNumMap.get(u.id);
+          const row = document.createElement("div");
+          row.className = "list-row";
+          row.innerHTML = '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div><div style="flex:1;min-width:0"><div class="l-name"></div><div class="l-handle">@' + escapeHtml(u.data.username || "user") + (num ? " · #" + num : "") + '</div></div>';
+          row.querySelector(".l-name").textContent = u.data.username || "user";
+          row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
+          row.addEventListener("click", () => {
+            document.getElementById("userPickerModal").classList.remove("open");
+            openConversation(u.id);
+          });
+          box.appendChild(row);
+        });
+        decorateAvatars(box);
+      }).catch(() => { box.innerHTML = '<div class="empty">could not load users</div>'; });
+    }
+
+    document.getElementById("newConvBtn").addEventListener("click", openUserPicker);
+    document.getElementById("userPickerClose").addEventListener("click", () => document.getElementById("userPickerModal").classList.remove("open"));
+    document.getElementById("userPickerModal").addEventListener("click", e => { if (e.target === document.getElementById("userPickerModal")) document.getElementById("userPickerModal").classList.remove("open"); });
+
+    // ADMIN
     document.getElementById("adminBackBtn").addEventListener("click", () => {
       document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
       document.querySelector('.nav-item[data-nav="home"]').classList.add("active");
       goHome();
     });
-
     function adminResolveTarget(input) {
       const q = (input || "").trim().toLowerCase();
       if (!q) return null;
@@ -2072,13 +2347,10 @@
         return { uid, data: userCache.get(uid) || {} };
       }
       let foundUid = null;
-      userCache.forEach((data, uid) => {
-        if ((data.username || "").toLowerCase() === q) foundUid = uid;
-      });
+      userCache.forEach((data, uid) => { if ((data.username || "").toLowerCase() === q) foundUid = uid; });
       if (!foundUid) return null;
       return { uid: foundUid, data: userCache.get(foundUid) || {} };
     }
-
     function adminBadgeHtml(data, num) {
       let html = "";
       if (data.verified) html += '<span class="admin-badge verified">verified</span>';
@@ -2086,7 +2358,6 @@
       if (num === 1) html += '<span class="admin-badge admin">admin</span>';
       return html;
     }
-
     function adminUserRowHtml(uid, data) {
       const num = userNumMap.get(uid);
       const emoji = data.emoji || faceForUid(uid);
@@ -2101,39 +2372,27 @@
         '</div>'
       );
     }
-
     function renderAdminLookupResult(target) {
       const box = document.getElementById("adminLookupResult");
       if (!target) { box.innerHTML = '<div class="empty">User not found. Try a username or #number.</div>'; return; }
       const { uid, data } = target;
-      const num = userNumMap.get(uid);
       if ((data.username || "").toLowerCase() === "matu") {
         box.innerHTML = adminUserRowHtml(uid, data) + '<div class="empty" style="padding:10px 0 0 0;font-size:13px">can\'t modify the admin account</div>';
         return;
       }
-      box.innerHTML =
-        adminUserRowHtml(uid, data) +
+      box.innerHTML = adminUserRowHtml(uid, data) +
         '<div class="admin-actions">' +
-          (data.banned
-            ? '<button class="admin-action-btn success" data-act="unban" data-uid="' + uid + '">unban</button>'
-            : '<button class="admin-action-btn danger" data-act="ban" data-uid="' + uid + '">ban</button>') +
-          (data.verified
-            ? '<button class="admin-action-btn" data-act="unverify" data-uid="' + uid + '">unverify</button>'
-            : '<button class="admin-action-btn primary" data-act="verify" data-uid="' + uid + '">verify</button>') +
+          (data.banned ? '<button class="admin-action-btn success" data-act="unban" data-uid="' + uid + '">unban</button>' : '<button class="admin-action-btn danger" data-act="ban" data-uid="' + uid + '">ban</button>') +
+          (data.verified ? '<button class="admin-action-btn" data-act="unverify" data-uid="' + uid + '">unverify</button>' : '<button class="admin-action-btn primary" data-act="verify" data-uid="' + uid + '">verify</button>') +
         '</div>';
-
       box.querySelectorAll(".admin-action-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
-          const act = btn.dataset.act;
-          const targetUid = btn.dataset.uid;
-          await adminApplyAction(act, targetUid);
+          await adminApplyAction(btn.dataset.act, btn.dataset.uid);
           const t = adminResolveTarget(document.getElementById("adminLookupInput").value);
-          renderAdminLookupResult(t);
-          renderAdminBanned();
+          renderAdminLookupResult(t); renderAdminBanned();
         });
       });
     }
-
     async function adminApplyAction(act, targetUid) {
       try {
         const ref = db.collection("users").doc(targetUid);
@@ -2147,7 +2406,6 @@
         else toast("Action failed: " + (e.code || e.message), true);
       }
     }
-
     document.getElementById("adminLookupBtn").addEventListener("click", () => {
       const t = adminResolveTarget(document.getElementById("adminLookupInput").value);
       renderAdminLookupResult(t);
@@ -2155,7 +2413,6 @@
     document.getElementById("adminLookupInput").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("adminLookupBtn").click();
     });
-
     function renderAdminBanned() {
       const box = document.getElementById("adminBannedList");
       if (!box) return;
@@ -2164,16 +2421,12 @@
       if (banned.length === 0) { box.innerHTML = '<div class="empty">nobody is banned right now</div>'; return; }
       box.innerHTML = "";
       banned.forEach(({ uid, data }) => {
-        const row = document.createElement("div");
-        row.innerHTML = adminUserRowHtml(uid, data);
+        const row = document.createElement("div"); row.innerHTML = adminUserRowHtml(uid, data);
         const el = row.firstChild;
         const unbanBtn = document.createElement("button");
-        unbanBtn.className = "admin-action-btn success";
-        unbanBtn.textContent = "unban";
-        unbanBtn.style.marginLeft = "auto";
+        unbanBtn.className = "admin-action-btn success"; unbanBtn.textContent = "unban"; unbanBtn.style.marginLeft = "auto";
         unbanBtn.addEventListener("click", async () => {
-          await adminApplyAction("unban", uid);
-          renderAdminBanned();
+          await adminApplyAction("unban", uid); renderAdminBanned();
           const t = adminResolveTarget(document.getElementById("adminLookupInput").value);
           renderAdminLookupResult(t);
         });
@@ -2182,9 +2435,7 @@
       });
     }
 
-    // ============================================================
-    // MUSIC PLAYER
-    // ============================================================
+    // MUSIC
     function idbOpen() { return new Promise((res, rej) => { const req = indexedDB.open("fuzzy-music", 2); req.onupgradeneeded = () => { const d = req.result; if (!d.objectStoreNames.contains("files")) d.createObjectStore("files"); }; req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); }); }
     async function idbSet(key, val) { const d = await idbOpen(); return new Promise((res, rej) => { const tx = d.transaction("files", "readwrite"); tx.objectStore("files").put(val, key); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
     async function idbGet(key) { const d = await idbOpen(); return new Promise((res, rej) => { const tx = d.transaction("files", "readonly"); const r = tx.objectStore("files").get(key); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
@@ -2267,7 +2518,6 @@
       document.getElementById("addMusicBtn").addEventListener("click", () => document.getElementById("musicFileInput").click());
       document.getElementById("musicFileInput").addEventListener("change", function() { const file = this.files && this.files[0]; this.value = ""; if (!file) return; addMusicFile(file); });
     })();
-
     (function initMusicBubble() {
       const bubble = document.getElementById("musicBubble"); const popup = document.getElementById("musicPopup"); const closeBtn = document.getElementById("musicPopupClose");
       const POS_KEY = "fuzzy-music-bubble-pos-v2";
