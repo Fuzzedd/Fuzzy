@@ -14,7 +14,7 @@
     ::-webkit-scrollbar-thumb:hover { background: #1c1c1c; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: #e7e7e7; display: flex; height: 100vh; overflow: hidden; }
     body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition: none !important; animation: none !important; }
-    button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
+    button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
     button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active { transform: scale(0.95); }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
     .btn-ghost:hover { transform: translateY(-1px); }
@@ -54,8 +54,10 @@
     .chat-overlay.open { display: flex; }
     .chat-window { width: 460px; max-width: 96%; height: 620px; max-height: 92vh; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.7); }
     .chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #161616; border-bottom: 1px solid #2f2f2f; flex-shrink: 0; }
-    .chat-header .avatar { width: 38px; height: 38px; border-radius: 50%; }
-    .chat-header-name { font-weight: 600; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 4px; min-width: 0; }
+    .chat-header .avatar { width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
+    .chat-header .avatar:hover { outline: 2px solid #4fc3f7; }
+    .chat-header-name { font-weight: 600; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 4px; min-width: 0; cursor: pointer; }
+    .chat-header-name:hover { text-decoration: underline; }
     .chat-close { background: none; border: none; color: #9a9a9a; font-size: 20px; cursor: pointer; padding: 4px 10px; border-radius: 8px; margin-left: 0; }
     .chat-close:hover { background: #2a2a2a; color: #fff; }
     .chat-messages { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 6px; }
@@ -66,13 +68,20 @@
     .chat-bubble { max-width: 78%; padding: 8px 12px 20px; border-radius: 14px; font-size: 14px; line-height: 1.35; position: relative; word-break: break-word; white-space: pre-wrap; }
     .chat-bubble.mine { background: #25603a; color: #fff; border-bottom-right-radius: 3px; }
     .chat-bubble.theirs { background: #2a2a2a; color: #e7e7e7; border-bottom-left-radius: 3px; }
+    .chat-bubble.has-media { padding: 4px; }
+    .chat-bubble-media-wrap { border-radius: 12px; overflow: hidden; position: relative; background: #000; }
+    .chat-bubble-media { display: block; max-width: 260px; max-height: 320px; border-radius: 12px; }
+    .chat-bubble.has-media .chat-bubble-time { right: 10px; bottom: 10px; background: rgba(0,0,0,0.55); padding: 2px 7px; border-radius: 10px; }
+    .chat-bubble-caption { padding: 6px 8px 4px; color: inherit; white-space: pre-wrap; word-break: break-word; }
     .chat-bubble-time { position: absolute; right: 8px; bottom: 4px; display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.6); }
     .chat-bubble.theirs .chat-bubble-time { color: rgba(255,255,255,0.4); }
-    .chat-seen { font-size: 11px; letter-spacing: -2px; color: rgba(255,255,255,0.65); }
+    .chat-seen { font-size: 11px; letter-spacing: -2px; color: rgba(255,255,255,0.55); transition: color 0.2s ease; }
     .chat-seen.read { color: #4fc3f7; }
-    .chat-input-row { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid #2f2f2f; background: #161616; flex-shrink: 0; }
-    .chat-input-row input { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 14px; outline: none; font-family: inherit; }
+    .chat-input-row { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid #2f2f2f; background: #161616; flex-shrink: 0; align-items: center; }
+    .chat-input-row input[type="text"], .chat-input-row input:not([type="file"]) { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 14px; outline: none; font-family: inherit; }
     .chat-input-row input:focus { border-color: #555; }
+    .chat-attach-btn { background: none; border: none; color: #9a9a9a; font-size: 20px; width: 40px; height: 40px; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chat-attach-btn:hover { background: #2a2a2a; color: #fff; }
     .chat-send { background: #25603a; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .chat-send:hover { background: #1e4f30; }
     .avatar { width: 69px; height: 50px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
@@ -528,11 +537,13 @@
     <div class="chat-window">
       <div class="chat-header">
         <button class="chat-close" id="chatClose">←</button>
-        <div class="avatar" id="chatHeaderAvatar" style="width:38px;height:38px;border-radius:50%;"><img src="" alt="" /></div>
+        <div class="avatar" id="chatHeaderAvatar"><img src="" alt="" /></div>
         <div class="chat-header-name" id="chatHeaderName"></div>
       </div>
       <div class="chat-messages" id="chatMessages"></div>
       <div class="chat-input-row">
+        <button class="chat-attach-btn" id="chatAttachBtn" title="attach media">📎</button>
+        <input type="file" id="chatMediaInput" accept="image/*,video/mp4,video/webm,video/quicktime,video/*" style="display:none" />
         <input id="chatInput" placeholder="Type a message..." autocomplete="off" />
         <button class="chat-send" id="chatSend">➤</button>
       </div>
@@ -766,8 +777,6 @@
     const allPostsCache = new Map();
     function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
     function isAdminUser() { return (myUsername || "").toLowerCase() === "matu"; }
-
-    // MUTUAL FOLLOW HELPER
     function areMutual(otherUid) {
       if (!auth || !auth.currentUser) return false;
       if (!otherUid) return false;
@@ -797,6 +806,7 @@
     let pendingMediaType = null;
     let pendingLocalUrl = null;
     let isUploadingMedia = false;
+    let isUploadingChatMedia = false;
 
     let notifSound = null;
     function playNotifSound() { try { if (!notifSound) notifSound = new Audio("Notification.mp3"); notifSound.currentTime = 0; notifSound.play().catch(() => {}); } catch (e) {} }
@@ -1272,7 +1282,6 @@
           const following = myFollowing.has(profileUid);
           followBtn.textContent = following ? "Unfollow" : "Follow";
           followBtn.classList.toggle("following", following);
-          // ONLY show Message button if mutual
           if (areMutual(profileUid)) {
             msgBtn.style.display = "block";
           } else {
@@ -2034,13 +2043,14 @@
     refreshSettingsUi();
 
     // ============================================================
-    // CONVERSATIONS — mutual follow only
+    // CONVERSATIONS — mutual follow only, media support, blue ticks
     // ============================================================
     const conversationsCache = new Map();
     let conversationsUnsub = null;
     let currentConvId = null;
     let currentConvOtherUid = null;
     let currentMsgUnsub = null;
+    let currentMsgsSnap = null;
 
     function convIdFor(a, b) { return [a, b].sort().join("_"); }
 
@@ -2053,16 +2063,9 @@
         snap.forEach(d => conversationsCache.set(d.id, d.data()));
         renderConversationsList();
         renderConversationsListMobile();
-        // refresh ticks in current chat
-        if (currentConvId && currentMsgUnsub) {
-          // re-render ticks by re-triggering messages render
-          const other = currentConvOtherUid;
-          if (other) {
-            db.collection("conversations").doc(currentConvId).collection("messages")
-              .orderBy("createdAt", "asc").get().then(g => {
-                if (currentConvOtherUid === other) renderChatMessages(g, other);
-              }).catch(() => {});
-          }
+        // if a chat is open, re-render ticks so lastRead updates in real time
+        if (currentConvId && currentMsgsSnap && currentConvOtherUid) {
+          renderChatMessages(currentMsgsSnap, currentConvOtherUid);
         }
       }, () => {});
     }
@@ -2170,7 +2173,6 @@
       decorateAvatars(document.querySelector(".chat-header"));
       document.getElementById("chatOverlay").classList.add("open");
 
-      // mark my lastRead
       try {
         await db.collection("conversations").doc(convId).set({
           members: [me, otherUid].sort(),
@@ -2179,11 +2181,15 @@
       } catch (e) { /* silent */ }
 
       if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
+      currentMsgsSnap = null;
       const msgsEl = document.getElementById("chatMessages");
       msgsEl.innerHTML = '<div class="chat-empty">loading...</div>';
       currentMsgUnsub = db.collection("conversations").doc(convId).collection("messages")
         .orderBy("createdAt", "asc")
-        .onSnapshot(snap => { renderChatMessages(snap, otherUid); }, () => {
+        .onSnapshot(snap => {
+          currentMsgsSnap = snap;
+          renderChatMessages(snap, otherUid);
+        }, () => {
           msgsEl.innerHTML = '<div class="chat-empty">could not load messages</div>';
         });
 
@@ -2204,7 +2210,7 @@
       if (snap && snap.forEach) snap.forEach(d => msgs.push({ id: d.id, data: d.data() }));
       else if (snap && snap.docs) snap.docs.forEach(d => msgs.push({ id: d.id, data: d.data() }));
       if (msgs.length === 0) { msgsEl.innerHTML = '<div class="chat-empty">no messages yet. say hi 👋</div>'; return; }
-      const nearBottom = msgsEl.scrollHeight - msgsEl.scrollTop - msgsEl.clientHeight < 100;
+      const nearBottom = msgsEl.scrollHeight - msgsEl.scrollTop - msgsEl.clientHeight < 120;
       msgsEl.innerHTML = "";
       msgs.forEach(m => {
         const mine = m.data.from === me;
@@ -2212,9 +2218,36 @@
         row.className = "chat-msg-row " + (mine ? "mine" : "theirs");
         const bubble = document.createElement("div");
         bubble.className = "chat-bubble " + (mine ? "mine" : "theirs");
-        const textEl = document.createElement("span");
-        textEl.textContent = m.data.text || "";
-        bubble.appendChild(textEl);
+
+        if (m.data.mediaUrl) {
+          bubble.classList.add("has-media");
+          const wrap = document.createElement("div");
+          wrap.className = "chat-bubble-media-wrap";
+          const mediaEl = document.createElement(m.data.mediaType === "video" ? "video" : "img");
+          mediaEl.src = m.data.mediaUrl;
+          mediaEl.className = "chat-bubble-media";
+          if (m.data.mediaType === "video") {
+            mediaEl.controls = true;
+            mediaEl.playsInline = true;
+            mediaEl.preload = "metadata";
+          } else {
+            mediaEl.loading = "lazy";
+            mediaEl.alt = "";
+          }
+          wrap.appendChild(mediaEl);
+          bubble.appendChild(wrap);
+          if (m.data.text) {
+            const cap = document.createElement("div");
+            cap.className = "chat-bubble-caption";
+            cap.textContent = m.data.text;
+            bubble.appendChild(cap);
+          }
+        } else {
+          const textEl = document.createElement("span");
+          textEl.textContent = m.data.text || "";
+          bubble.appendChild(textEl);
+        }
+
         const timeEl = document.createElement("span");
         timeEl.className = "chat-bubble-time";
         timeEl.textContent = (m.data.createdAt ? formatMsgTime(m.data.createdAt) : "");
@@ -2275,9 +2308,66 @@
       }
     }
 
+    async function sendChatMedia(file) {
+      if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+      if (!currentConvId || !currentConvOtherUid) { toast("No conversation open.", true); return; }
+      if (!areMutual(currentConvOtherUid)) { toast("You can only chat with people you follow who follow you back.", true); return; }
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      if (!isImage && !isVideo) { toast("Only images and videos allowed.", true); return; }
+      if (file.size > MAX_MEDIA_BYTES) { toast("You can't upload more than 50MB", true); return; }
+      if (isUploadingChatMedia) { toast("Upload already in progress...", true); return; }
+
+      const me = auth.currentUser.uid;
+      const otherUid = currentConvOtherUid;
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      input.value = "";
+
+      isUploadingChatMedia = true;
+      const attachBtn = document.getElementById("chatAttachBtn");
+      const oldHtml = attachBtn.innerHTML;
+      attachBtn.disabled = true;
+      attachBtn.innerHTML = "⏳";
+      toast("Uploading " + (isVideo ? "video" : "image") + "...");
+
+      try {
+        let url, kind;
+        if (isImage) { url = await uploadToImgBB(file); kind = "image"; }
+        else { url = await uploadToCloudinary(file); kind = "video"; }
+
+        const convRef = db.collection("conversations").doc(currentConvId);
+        const snap = await convRef.get();
+        const preview = text || (isImage ? "📷 photo" : "🎥 video");
+        const data = {
+          lastMessage: preview,
+          lastMessageFrom: me,
+          lastAt: firebase.firestore.FieldValue.serverTimestamp(),
+          [`lastRead.${me}`]: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (!snap.exists) data.members = [me, otherUid].sort();
+        await convRef.set(data, { merge: true });
+
+        await convRef.collection("messages").add({
+          from: me, text: text, mediaUrl: url, mediaType: kind,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        notify(otherUid, "dm", { text: preview });
+        toast("Sent!");
+      } catch (e) {
+        console.error("sendChatMedia error:", e);
+        toast("Upload failed: " + (e.code || e.message || "unknown"), true);
+      } finally {
+        isUploadingChatMedia = false;
+        attachBtn.disabled = false;
+        attachBtn.innerHTML = oldHtml;
+      }
+    }
+
     function closeConversation() {
       document.getElementById("chatOverlay").classList.remove("open");
       if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
+      currentMsgsSnap = null;
       currentConvId = null;
       currentConvOtherUid = null;
       renderConversationsList();
@@ -2291,6 +2381,35 @@
     });
     document.getElementById("chatOverlay").addEventListener("click", e => {
       if (e.target === document.getElementById("chatOverlay")) closeConversation();
+    });
+
+    // chat header avatar → open their profile
+    document.getElementById("chatHeaderAvatar").addEventListener("click", () => {
+      if (currentConvOtherUid) {
+        const uid = currentConvOtherUid;
+        closeConversation();
+        openProfile(uid);
+      }
+    });
+    document.getElementById("chatHeaderName").addEventListener("click", () => {
+      if (currentConvOtherUid) {
+        const uid = currentConvOtherUid;
+        closeConversation();
+        openProfile(uid);
+      }
+    });
+
+    // chat media attach button
+    document.getElementById("chatAttachBtn").addEventListener("click", () => {
+      if (!currentConvId) { toast("No conversation open.", true); return; }
+      if (isUploadingChatMedia) { toast("Upload already in progress...", true); return; }
+      document.getElementById("chatMediaInput").click();
+    });
+    document.getElementById("chatMediaInput").addEventListener("change", function() {
+      const file = this.files && this.files[0];
+      this.value = "";
+      if (!file) return;
+      sendChatMedia(file);
     });
 
     function openUserPicker() {
