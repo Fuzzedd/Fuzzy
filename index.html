@@ -52,19 +52,24 @@
     .conv-item-last { font-size: 13px; color: #717171; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
     .conv-item-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
     .conv-item-time { font-size: 11px; color: #717171; }
-    .chat-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
-    .chat-overlay.open { display: flex; }
-    .chat-window { width: 460px; max-width: 96%; height: 620px; max-height: 92vh; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.7); }
-    .chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #161616; border-bottom: 1px solid #2f2f2f; flex-shrink: 0; position: relative; }
-    .chat-header .avatar { width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
+
+    /* === CHAT VIEW (fills the middle feed column) === */
+    #chatView {
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+    .chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(22,22,22,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #2f2f2f; flex-shrink: 0; position: sticky; top: 0; z-index: 5; }
+    .chat-header .avatar { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
     .chat-header .avatar:hover { outline: 2px solid #4fc3f7; }
     .chat-header-info { display: flex; flex-direction: column; min-width: 0; flex: 1; cursor: pointer; }
-    .chat-header-name { font-weight: 600; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 4px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-header-name { font-weight: 600; color: #fff; font-size: 17px; display: flex; align-items: center; gap: 4px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chat-header-name:hover { text-decoration: underline; }
-    .chat-header-sub { font-size: 11px; color: #4fc3f7; height: 14px; line-height: 14px; opacity: 0; transition: opacity 0.18s ease; }
+    .chat-header-sub { font-size: 12px; color: #4fc3f7; height: 15px; line-height: 15px; opacity: 0; transition: opacity 0.18s ease; }
     .chat-header-sub.show { opacity: 1; }
-    .chat-close { background: none; border: none; color: #9a9a9a; font-size: 20px; cursor: pointer; padding: 4px 10px; border-radius: 8px; margin-left: 0; }
-    .chat-close:hover { background: #2a2a2a; color: #fff; }
+    .chat-close { background: none; border: none; color: #e7e7e7; font-size: 22px; cursor: pointer; padding: 6px 12px; border-radius: 9999px; flex-shrink: 0; }
+    .chat-close:hover { background: #2a2a2a; }
     .chat-messages { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 6px; }
     .chat-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #717171; font-size: 14px; text-align: center; padding: 20px; }
     .chat-msg-row { display: flex; max-width: 100%; }
@@ -84,12 +89,13 @@
     .chat-seen { font-size: 11px; letter-spacing: -2px; color: rgba(255,255,255,0.55); transition: color 0.2s ease; }
     .chat-seen.read { color: #4fc3f7; }
     .chat-input-row { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid #2f2f2f; background: #161616; flex-shrink: 0; align-items: center; }
-    .chat-input-row input[type="text"], .chat-input-row input:not([type="file"]) { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 14px; outline: none; font-family: inherit; }
+    .chat-input-row input[type="text"], .chat-input-row input:not([type="file"]) { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 14px; outline: none; font-family: inherit; min-width: 0; }
     .chat-input-row input:focus { border-color: #555; }
     .chat-attach-btn { background: none; border: none; color: #9a9a9a; font-size: 20px; width: 40px; height: 40px; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .chat-attach-btn:hover { background: #2a2a2a; color: #fff; }
     .chat-send { background: #25603a; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .chat-send:hover { background: #1e4f30; }
+
     .avatar { width: 69px; height: 50px; border-radius: 10px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .status-badge { position: absolute; bottom: 0; right: 0; width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center; z-index: 2; }
@@ -140,12 +146,12 @@
     .action.like.active img, .c-like.active img { animation: heartPop 0.35s ease; }
     .comments { margin-top: 8px; }
     .comment-row { display: flex; gap: 10px; align-items: center; }
-    .comment-row input { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 15px; outline: none; }
+    .comment-row input { flex: 1; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 9999px; padding: 10px 16px; color: #e7e7e7; font-size: 15px; outline: none; min-width: 0; }
     .comment-row input:focus { border-color: #555; }
     .comment-item { display: flex; gap: 10px; padding: 8px 0; }
     .comment-item.nested { padding-top: 4px; padding-bottom: 4px; }
     .comment-item .avatar { width: 32px; height: 32px; border-radius: 8px; cursor: pointer; }
-    .c-body { flex: 1; }
+    .c-body { flex: 1; min-width: 0; }
     .c-head { font-size: 14px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .c-head b { color: #fff; cursor: pointer; }
     .c-head b:hover { text-decoration: underline; }
@@ -169,7 +175,7 @@
     .reply-chip .cancel { cursor: pointer; color: #717171; }
     .reply-chip .cancel:hover { color: #ff0000; }
     .empty { padding: 24px 20px; text-align: center; color: #717171; font-size: 18px; }
-    #profileView, #searchView, #notificationsView, #settingsView, #adminView, #conversationsView { display: none; }
+    #profileView, #searchView, #notificationsView, #settingsView, #adminView, #conversationsView, #chatView { display: none; }
     .profile-head { padding: 12px 16px 14px; border-bottom: 1px solid #2f2f2f; background: #161616; }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: #e7e7e7; font-size: 16px; cursor: pointer; margin-bottom: 12px; padding: 6px 10px; border-radius: 9999px; }
     .back-btn:hover { background: rgba(255,255,255,0.06); }
@@ -440,6 +446,15 @@
     .gif-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .gif-attribution { text-align: center; font-size: 11px; color: #717171; margin-top: 8px; letter-spacing: 0.3px; }
 
+    /* Modal z-index overrides so pickers open on top of the post/chat modals */
+    #gifPickerModal { z-index: 400; }
+    #groupMembersModal { z-index: 400; }
+    #groupAvatarModal { z-index: 400; }
+    .comment-media { margin-top: 8px; }
+    .comment-media img { max-width: 240px; max-height: 240px; border-radius: 10px; cursor: zoom-in; display: block; }
+    .comment-gif-btn { background: none; border: none; color: #9a9a9a; font-size: 20px; cursor: pointer; padding: 0 8px; height: 40px; width: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .comment-gif-btn:hover { background: #2a2a2a; color: #fff; }
+
     @media (max-width: 768px) {
       .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: #161616; z-index: 50; gap: 0; overflow: visible; }
       .right { display: none; }
@@ -491,9 +506,13 @@
       .setting-color { width: 48px; height: 34px; }
       .setting-opt { padding: 7px 14px; font-size: 12px; min-height: 34px; }
       #toasts { top: 58px; }
-      .chat-window { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; }
       #globalLoader img { width: 72px; height: 72px; }
       .gif-grid { grid-template-columns: repeat(2, 1fr); max-height: 300px; }
+      .chat-header { padding: 10px 12px; }
+      .chat-header .avatar { width: 38px; height: 38px; }
+      .chat-header-name { font-size: 15px; }
+      .chat-messages { padding: 12px 12px 6px; }
+      .chat-input-row { padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); }
     }
   </style>
 </head>
@@ -638,23 +657,10 @@
       <div class="settings-section-label">banned users</div>
       <div class="admin-panel" id="adminBannedList"></div>
     </div>
-  </main>
 
-  <aside class="right">
-    <div class="conv-panel">
-      <div class="conv-panel-header">
-        <span>conversations</span>
-        <button class="new-btn" id="newGroupBtn" title="new group">👥</button>
-        <button class="new-btn" id="newConvBtn" title="new conversation">+</button>
-      </div>
-      <div class="conv-list" id="convList"></div>
-    </div>
-  </aside>
-
-  <div class="chat-overlay" id="chatOverlay">
-    <div class="chat-window">
+    <div class="feed-inner" id="chatView">
       <div class="chat-header">
-        <button class="chat-close" id="chatClose">←</button>
+        <button class="chat-close" id="chatClose" title="back">←</button>
         <div class="avatar" id="chatHeaderAvatar"><img src="" alt="" /></div>
         <div class="chat-header-info" id="chatHeaderInfo">
           <div class="chat-header-name" id="chatHeaderName"></div>
@@ -670,7 +676,18 @@
         <button class="chat-send" id="chatSend">➤</button>
       </div>
     </div>
-  </div>
+  </main>
+
+  <aside class="right">
+    <div class="conv-panel">
+      <div class="conv-panel-header">
+        <span>conversations</span>
+        <button class="new-btn" id="newGroupBtn" title="new group">👥</button>
+        <button class="new-btn" id="newConvBtn" title="new conversation">+</button>
+      </div>
+      <div class="conv-list" id="convList"></div>
+    </div>
+  </aside>
 
   <div class="modal-overlay" id="userPickerModal">
     <div class="modal">
@@ -709,6 +726,27 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="groupMembersModal">
+    <div class="modal">
+      <h3 id="groupMembersTitle">group members</h3>
+      <div id="groupMembersList" style="max-height:400px;overflow-y:auto;margin:0 -20px;padding:0;">
+        <div class="empty">loading...</div>
+      </div>
+      <div class="modal-btns"><button class="btn btn-ghost" id="groupMembersClose">Close</button></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="groupAvatarModal">
+    <div class="modal">
+      <h3>Change group icon</h3>
+      <div class="pfp-section-label">Pick an emoji</div>
+      <div class="emoji-grid" id="groupAvatarEmojis"></div>
+      <div class="pfp-section-label" style="margin-top:16px">Or pick an image we chose , that you may like.</div>
+      <div class="pfp-grid" id="groupAvatarImages"></div>
+      <div class="modal-btns"><button class="btn btn-ghost" id="groupAvatarClose">Close</button></div>
+    </div>
+  </div>
+
   <button class="music-bubble" id="musicBubble" aria-label="music"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></button>
   <div class="music-popup" id="musicPopup" role="dialog" aria-label="music player">
     <button class="music-popup-close" id="musicPopupClose" aria-label="close">✕</button>
@@ -743,7 +781,7 @@
 
   <div class="modal-overlay" id="bannedModal"><div class="modal fuzzed-modal"><h3 style="color:#ff6b6b">You have been BANNED!</h3><p style="color:#9a9a9a;margin-bottom:20px;font-size:14px">contact matu if you think this is a mistake</p><button class="btn btn-primary" id="bannedOk">ok</button></div></div>
 
-  <div class="modal-overlay" id="pfpModal"><div class="modal"><h3>Change profile picture</h3><div class="pfp-section-label">Upload your own (images only)</div><div class="post-media-row" style="margin-top:0"><button class="post-media-btn" id="pfpUploadBtn" type="button"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload image</button><input type="file" id="pfpUploadInput" accept="image/*" style="display:none" /></div><div class="pfp-section-label" style="margin-top:16px">Or pick an image</div><div class="pfp-grid" id="pfpImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="pfpEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="pfpClose">Close</button></div></div></div>
+  <div class="modal-overlay" id="pfpModal"><div class="modal"><h3>Change profile picture</h3><div class="pfp-section-label">Upload your own (images only)</div><div class="post-media-row" style="margin-top:0"><button class="post-media-btn" id="pfpUploadBtn" type="button"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload image</button><input type="file" id="pfpUploadInput" accept="image/*" style="display:none" /></div><div class="pfp-section-label" style="margin-top:16px">Or pick an image we chose , that you may like.</div><div class="pfp-grid" id="pfpImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="pfpEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="pfpClose">Close</button></div></div></div>
 
   <div class="modal-overlay" id="confirmModal"><div class="modal confirm-modal"><h3 id="confirmTitle">Are you sure?</h3><p class="confirm-msg" id="confirmMsg"></p><div class="modal-btns" style="justify-content:center"><button class="btn btn-ghost" id="confirmCancel">Cancel</button><button class="btn btn-danger" id="confirmOk">Delete</button></div></div></div>
 
@@ -1201,6 +1239,7 @@
     const conversationsView = document.getElementById("conversationsView");
     const settingsView = document.getElementById("settingsView");
     const adminView = document.getElementById("adminView");
+    const chatView = document.getElementById("chatView");
     const profPosts = document.getElementById("profPosts");
 
     function showView(name) {
@@ -1213,6 +1252,7 @@
       conversationsView.style.display = name === "conversations" ? "block" : "none";
       settingsView.style.display = name === "settings" ? "block" : "none";
       adminView.style.display = name === "admin" ? "block" : "none";
+      chatView.style.display = name === "chat" ? "flex" : "none";
     }
 
     function updateSidebar() {
@@ -1392,6 +1432,8 @@
     function usernameToEmail(username) { return username.toLowerCase().replace(/[^a-z0-9]/g, "") + "@fuzzy.local"; }
     function goHome() {
       showView("feed");
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+      document.querySelector('.nav-item[data-nav="home"]').classList.add("active");
       document.querySelectorAll("#feedView .tab").forEach(t => t.classList.remove("active"));
       document.querySelector('.tab[data-tab="foryou"]').classList.add("active");
       activeTab = "foryou"; homePage = 1; renderPosts();
@@ -1960,6 +2002,7 @@
           '<div class="reply-chip"></div>' +
           '<div class="comment-row">' +
             '<input type="text" placeholder="Write a comment..." />' +
+            '<button class="comment-gif-btn" title="Send GIF">🎞️</button>' +
             '<button class="btn btn-primary send-comment">Send</button>' +
           "</div>" +
         "</div>";
@@ -2038,6 +2081,22 @@
         item.querySelector(".avatar").addEventListener("click", () => openProfile(cd.uid));
         setRichText(item.querySelector(".c-text"), cd.text);
         bindRichClickHandlers(item.querySelector(".c-text"));
+        if (cd.mediaUrl) {
+          const mediaWrap = document.createElement("div");
+          mediaWrap.className = "comment-media";
+          if (cd.mediaType === "video") {
+            const vid = document.createElement("video");
+            vid.src = cd.mediaUrl; vid.controls = true; vid.playsInline = true;
+            vid.style.maxWidth = "240px"; vid.style.borderRadius = "10px";
+            mediaWrap.appendChild(vid);
+          } else {
+            const img = document.createElement("img");
+            img.src = cd.mediaUrl; img.loading = "lazy"; img.alt = "";
+            img.addEventListener("click", () => openLightbox(cd.mediaUrl));
+            mediaWrap.appendChild(img);
+          }
+          item.querySelector(".c-body").insertBefore(mediaWrap, item.querySelector(".c-actions"));
+        }
         item.querySelector(".c-like").addEventListener("click", async function() {
           if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
           const uid = auth.currentUser.uid;
@@ -2096,6 +2155,25 @@
           if (rt) { if (rt.uid !== auth.currentUser.uid) notify(rt.uid, "reply", { postId }); }
           else { if (postUid && postUid !== auth.currentUser.uid) notify(postUid, "comment", { postId }); }
         } catch (err) { toast("Comment failed: " + err.code, true); }
+      });
+      article.querySelector(".comment-gif-btn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+        openGifPicker(async function(gifUrl) {
+          const rt = replyTarget;
+          try {
+            await db.collection("posts").doc(postId).collection("comments").add({
+              uid: auth.currentUser.uid, username: myUsername, emoji: myEmoji,
+              text: "", likes: {}, parentId: rt ? rt.id : null,
+              mediaUrl: gifUrl, mediaType: "gif",
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
+            if (rt) { if (rt.uid !== auth.currentUser.uid) notify(rt.uid, "reply", { postId }); }
+            else { if (postUid && postUid !== auth.currentUser.uid) notify(postUid, "comment", { postId }); }
+            status("GIF reply sent!");
+          } catch (err) { toast("Comment failed: " + (err.code || err.message), true); }
+        });
       });
       if (auth && auth.currentUser) {
         const unsub = db.collection("posts").doc(postId).collection("comments").orderBy("createdAt", "asc").onSnapshot(snap => {
@@ -2769,6 +2847,7 @@
     let currentMsgUnsub = null;
     let currentMsgsSnap = null;
     let convTypingUnsub = null;
+    let chatReturnView = "feed";
 
     function convIdFor(a, b) { return [a, b].sort().join("_"); }
 
@@ -2929,6 +3008,7 @@
       currentConvId = convId;
       currentConvOtherUid = otherUid;
       currentConvIsGroup = false;
+      if (activeView !== "chat") chatReturnView = activeView;
       const other = userCache.get(otherUid) || {};
       const header = document.getElementById("chatHeaderName");
       header.textContent = other.username || "user";
@@ -2937,7 +3017,9 @@
       document.querySelector("#chatHeaderAvatar").dataset.uid = otherUid;
       document.getElementById("chatHeaderSub").classList.remove("show");
       decorateAvatars(document.querySelector(".chat-header"));
-      document.getElementById("chatOverlay").classList.add("open");
+
+      showView("chat");
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
 
       try {
         await db.collection("conversations").doc(convId).set({
@@ -2975,6 +3057,7 @@
       currentConvId = convId;
       currentConvOtherUid = null;
       currentConvIsGroup = true;
+      if (activeView !== "chat") chatReturnView = activeView;
       const header = document.getElementById("chatHeaderName");
       header.textContent = data.name || "group";
       const avatarImg = document.querySelector("#chatHeaderAvatar img");
@@ -2982,7 +3065,9 @@
       delete document.querySelector("#chatHeaderAvatar").dataset.uid;
       const badge = document.querySelector("#chatHeaderAvatar .status-badge"); if (badge) badge.remove();
       document.getElementById("chatHeaderSub").classList.remove("show");
-      document.getElementById("chatOverlay").classList.add("open");
+
+      showView("chat");
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
 
       try {
         await db.collection("conversations").doc(convId).set({
@@ -3227,7 +3312,6 @@
     }
 
     function closeConversation() {
-      document.getElementById("chatOverlay").classList.remove("open");
       if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
       clearConvTyping();
       currentMsgsSnap = null;
@@ -3237,6 +3321,30 @@
       document.getElementById("chatHeaderSub").classList.remove("show");
       renderConversationsList();
       renderConversationsListMobile();
+      // return to previous view
+      const back = chatReturnView || "feed";
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+      if (back === "profile" && profileUid) {
+        showView("profile");
+        const nav = document.querySelector('.nav-item[data-nav="account"]'); if (nav) nav.classList.add("active");
+      } else if (back === "notifications") {
+        showView("notifications");
+        const nav = document.querySelector('.nav-item[data-nav="notifications"]'); if (nav) nav.classList.add("active");
+        renderNotifications();
+      } else if (back === "search") {
+        showView("search");
+        const nav = document.querySelector('.nav-item[data-nav="search"]'); if (nav) nav.classList.add("active");
+      } else if (back === "settings") {
+        showView("settings");
+        const nav = document.querySelector('.nav-item[data-nav="settings"]'); if (nav) nav.classList.add("active");
+      } else if (back === "conversations") {
+        showView("conversations");
+        const nav = document.querySelector('.nav-item[data-nav="conversations"]'); if (nav) nav.classList.add("active");
+      } else {
+        showView("feed");
+        const nav = document.querySelector('.nav-item[data-nav="home"]'); if (nav) nav.classList.add("active");
+      }
+      chatReturnView = "feed";
     }
 
     document.getElementById("chatClose").addEventListener("click", closeConversation);
@@ -3245,12 +3353,9 @@
       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
     document.getElementById("chatInput").addEventListener("input", () => { signalTyping(); });
-    document.getElementById("chatOverlay").addEventListener("click", e => {
-      if (e.target === document.getElementById("chatOverlay")) closeConversation();
-    });
 
     document.getElementById("chatHeaderAvatar").addEventListener("click", () => {
-      if (currentConvIsGroup) return;
+      if (currentConvIsGroup) { openGroupAvatarPicker(); return; }
       if (currentConvOtherUid) {
         const uid = currentConvOtherUid;
         closeConversation();
@@ -3258,7 +3363,7 @@
       }
     });
     document.getElementById("chatHeaderInfo").addEventListener("click", () => {
-      if (currentConvIsGroup) return;
+      if (currentConvIsGroup) { openGroupMembers(); return; }
       if (currentConvOtherUid) {
         const uid = currentConvOtherUid;
         closeConversation();
@@ -3387,6 +3492,93 @@
     document.getElementById("groupCancel").addEventListener("click", () => document.getElementById("groupModal").classList.remove("open"));
     document.getElementById("groupCreate").addEventListener("click", createGroupChat);
     document.getElementById("groupModal").addEventListener("click", e => { if (e.target === document.getElementById("groupModal")) document.getElementById("groupModal").classList.remove("open"); });
+
+    // === GROUP MEMBERS VIEW ===
+    async function openGroupMembers() {
+      if (!currentConvIsGroup || !currentConvId) return;
+      const data = conversationsCache.get(currentConvId);
+      if (!data) { toast("Group not found.", true); return; }
+      const members = data.members || [];
+      const title = document.getElementById("groupMembersTitle");
+      title.textContent = (data.name || "group") + " · " + members.length + " " + (members.length === 1 ? "member" : "members");
+      const box = document.getElementById("groupMembersList");
+      box.innerHTML = '<div class="empty">loading...</div>';
+      document.getElementById("groupMembersModal").classList.add("open");
+      try {
+        const snaps = await Promise.all(members.map(function(uid) { return db.collection("users").doc(uid).get(); }));
+        box.innerHTML = "";
+        snaps.forEach(function(s) {
+          if (!s.exists) return;
+          const u = s.data(); const uid = s.id; cacheUser(uid, u);
+          const row = document.createElement("div"); row.className = "list-row";
+          row.innerHTML = '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || faceForUid(uid)) + '" alt="" /></div><div style="flex:1;min-width:0"><div class="l-name"></div><div class="l-handle">@' + escapeHtml(u.username || "user") + '</div></div>';
+          row.querySelector(".l-name").textContent = u.username || "user";
+          row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
+          row.addEventListener("click", function() {
+            document.getElementById("groupMembersModal").classList.remove("open");
+            const targetUid = uid;
+            closeConversation();
+            openProfile(targetUid);
+          });
+          box.appendChild(row);
+        });
+        decorateAvatars(box);
+      } catch (e) {
+        box.innerHTML = '<div class="empty">could not load members</div>';
+      }
+    }
+    document.getElementById("groupMembersClose").addEventListener("click", function() {
+      document.getElementById("groupMembersModal").classList.remove("open");
+    });
+    document.getElementById("groupMembersModal").addEventListener("click", function(e) {
+      if (e.target === document.getElementById("groupMembersModal")) document.getElementById("groupMembersModal").classList.remove("open");
+    });
+
+    // === GROUP AVATAR PICKER ===
+    function openGroupAvatarPicker() {
+      if (!currentConvIsGroup || !currentConvId) return;
+      if (!auth || !auth.currentUser) return;
+      const imgGrid = document.getElementById("groupAvatarImages"); imgGrid.innerHTML = "";
+      findAvatars().then(function(avatars) {
+        avatars.forEach(function(src) {
+          const b = document.createElement("button");
+          b.className = "pfp-opt";
+          b.innerHTML = '<img src="' + src + '" alt="" />';
+          b.addEventListener("click", function() { setGroupAvatar(src); });
+          imgGrid.appendChild(b);
+        });
+      });
+      const emoGrid = document.getElementById("groupAvatarEmojis"); emoGrid.innerHTML = "";
+      FACES.forEach(function(f) {
+        const url = TW + f + ".png";
+        const b = document.createElement("button");
+        b.className = "emoji-opt";
+        b.innerHTML = '<img src="' + url + '" alt="" />';
+        b.addEventListener("click", function() { setGroupAvatar(url); });
+        emoGrid.appendChild(b);
+      });
+      document.getElementById("groupAvatarModal").classList.add("open");
+    }
+    async function setGroupAvatar(src) {
+      if (!currentConvId) return;
+      try {
+        await db.collection("conversations").doc(currentConvId).update({ emoji: src });
+        const data = conversationsCache.get(currentConvId);
+        if (data) { data.emoji = src; conversationsCache.set(currentConvId, data); }
+        const avatarImg = document.querySelector("#chatHeaderAvatar img");
+        if (avatarImg) avatarImg.src = src;
+        renderConversationsList();
+        renderConversationsListMobile();
+        document.getElementById("groupAvatarModal").classList.remove("open");
+        status("Group icon updated.");
+      } catch (e) { toast("Failed: " + (e.code || e.message), true); }
+    }
+    document.getElementById("groupAvatarClose").addEventListener("click", function() {
+      document.getElementById("groupAvatarModal").classList.remove("open");
+    });
+    document.getElementById("groupAvatarModal").addEventListener("click", function(e) {
+      if (e.target === document.getElementById("groupAvatarModal")) document.getElementById("groupAvatarModal").classList.remove("open");
+    });
 
     // ADMIN
     document.getElementById("adminBackBtn").addEventListener("click", () => {
@@ -3680,7 +3872,7 @@
       const isEditable = tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable);
       if (e.key === "Escape") {
         if (lightboxEl.classList.contains("open")) { closeLightbox(); return; }
-        if (document.getElementById("chatOverlay").classList.contains("open")) { closeConversation(); return; }
+        if (activeView === "chat") { closeConversation(); return; }
         const openModals = document.querySelectorAll(".modal-overlay.open");
         if (openModals.length) { openModals.forEach(m => m.classList.remove("open")); return; }
         return;
