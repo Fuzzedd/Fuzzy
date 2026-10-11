@@ -9,19 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-@font-face {
-  font-family: "Anime Ace BB";
-  src: url("animeace2_reg.ttf") format("truetype"),
-       url("AnimeAce2.0BB_Reg.ttf") format("truetype"),
-       url("anime_ace_bb.ttf") format("truetype");
-  font-display: swap;
-}
-@font-face {
-  font-family: "LDF Comic Sans";
-  src: url("LDFComicSans.ttf") format("truetype"),
-       url("ldfcomicsans.ttf") format("truetype");
-  font-display: swap;
-}
+@font-face { font-family: "Anime Ace BB"; src: url("animeace2_reg.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "LDF Comic Sans"; src: url("LDFComicSans.ttf") format("truetype"); font-display: swap; }
 :root { --bg: #161616; --surface: #1d1d1d; --banner: #161616; --accent: #e7e7e7; --font-size: 16px; --fs: 1; --radius: 12px; --avatar-radius: 10px; --sidebar-w: 280px; --logo-glow: #4fc3f7; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #000 transparent; }
 body.hide-scrollbars *::-webkit-scrollbar { display: none; }
@@ -71,6 +60,7 @@ body.reduce-motion .logo, body.reduce-motion .logo:hover { transform: none; }
 .conv-item-name { font-weight: 600; font-size: calc(15px * var(--fs)); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; }
 .conv-item-last { font-size: 13px; color: #717171; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .conv-item-time { font-size: 11px; color: #717171; }
+.conv-item.active-call { background: rgba(34,197,94,0.08); border-left: 3px solid #22c55e; }
 #chatView { display: none; flex-direction: column; overflow: hidden; height: 100%; }
 .chat-header { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: rgba(22,22,22,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #2f2f2f; flex-shrink: 0; position: sticky; top: 0; z-index: 5; }
 .chat-header .avatar { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
@@ -79,6 +69,7 @@ body.reduce-motion .logo, body.reduce-motion .logo:hover { transform: none; }
 .chat-header-sub { font-size: 12px; color: #4fc3f7; height: 15px; opacity: 0; }
 .chat-header-sub.show { opacity: 1; }
 .chat-close, .chat-search-btn { background: none; border: none; color: #e7e7e7; font-size: 20px; cursor: pointer; padding: 6px 10px; border-radius: 9999px; flex-shrink: 0; }
+.call-header-btns { display: flex; gap: 2px; flex-shrink: 0; }
 .chat-search-bar { display: none; padding: 8px 12px; background: #0d0d0d; border-bottom: 1px solid #2f2f2f; align-items: center; gap: 8px; flex-shrink: 0; }
 .chat-search-bar.open { display: flex; }
 .chat-search-bar input { flex: 1; background: var(--bg); border: 1px solid #2f2f2f; border-radius: 9999px; padding: 8px 14px; color: #e7e7e7; font-size: 14px; outline: none; }
@@ -216,9 +207,9 @@ body.avatar-square .avatar { border-radius: 4px; }
 .profile-head { padding: 12px 16px 14px; border-bottom: 1px solid #2f2f2f; background: var(--bg); }
 .back-btn { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: #e7e7e7; font-size: 16px; cursor: pointer; margin-bottom: 12px; padding: 6px 10px; border-radius: 9999px; }
 .profile-banner { height: 150px; border-radius: var(--radius); background: #161616; }
-.profile-top { display: flex; gap: 20px; align-items: flex-start; margin-top: -96px; position: relative; }
-.profile-top .avatar { width: 96px; height: 96px; border: 4px solid var(--bg); border-radius: var(--avatar-radius); }
-.profile-info { flex: 1; padding-top: 106px; min-width: 0; }
+.profile-top { display: flex; gap: 20px; align-items: flex-start; margin-top: -120px; position: relative; }
+.profile-top .avatar { width: 96px; height: 96px; border: 4px solid var(--bg); border-radius: var(--avatar-radius); margin-left: 0; }
+.profile-info { flex: 1; padding-top: 122px; min-width: 0; }
 .profile-name { font-size: calc(24px * var(--fs)); font-weight: 700; }
 .profile-handle { color: #717171; font-size: 16px; }
 .profile-bio { margin-top: 10px; font-size: calc(16px * var(--fs)); line-height: 1.4; white-space: pre-wrap; }
@@ -305,6 +296,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 .post-media { margin-top: 10px; border-radius: var(--radius); overflow: hidden; max-width: 100%; }
 .post-media img, .post-media video { max-width: 100%; max-height: 500px; display: block; border-radius: var(--radius); }
 .post-media img { cursor: zoom-in; }
+.post-media video { cursor: zoom-in; }
 .music-bubble { position: fixed; z-index: 90; width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(180deg, #2a1f3d 0%, #0d0d0d 100%); border: 1px solid #7a4dd6; cursor: grab; display: flex; align-items: center; justify-content: center; padding: 0; touch-action: none; user-select: none; }
 .music-bubble img { width: 28px; height: 28px; pointer-events: none; }
 .music-popup { position: fixed; z-index: 90; width: 340px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); background: linear-gradient(180deg, #1a1226 0%, #0d0d0d 100%); border: 1px solid #3a2f4a; border-radius: var(--radius); display: none; flex-direction: column; overflow: hidden; }
@@ -363,7 +355,8 @@ body.avatar-square .avatar { border-radius: 4px; }
 #lightbox { position: fixed; inset: 0; z-index: 550; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(18px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.28s ease, visibility 0s linear 0.28s; cursor: zoom-out; }
 #lightbox.open { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.28s ease, visibility 0s linear 0s; }
 #lightbox img { max-width: 94vw; max-height: 92vh; border-radius: var(--radius); }
-#lightbox .lb-close { position: fixed; top: 18px; right: 22px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#lightbox video { max-width: 94vw; max-height: 92vh; border-radius: var(--radius); background: #000; }
+#lightbox .lb-close { position: fixed; top: 18px; right: 22px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
 .dbl-heart { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0); width: 90px; height: 90px; pointer-events: none; z-index: 5; animation: dblHeartPop 0.7s ease forwards; }
 .dbl-heart svg { width: 100%; height: 100%; fill: rgb(218, 51, 51); }
 @keyframes dblHeartPop { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 25% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; } 60% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
@@ -401,7 +394,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 .gif-save-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; display: grid; place-items: center; opacity: 0; transition: opacity 0.18s, transform 0.12s; z-index: 4; padding: 0; }
 .gif-save-btn .ui-emoji, .gif-save-btn .tw-emoji { display: block; width: 20px; height: 20px; margin: 0; }
 .media-hover-wrap:hover .gif-save-btn { opacity: 1; }
-.gif-save-btn.saved { opacity: 1; background: rgba(249, 199, 79, 0.9); }
+.gif-save-btn.saved { background: rgba(249, 199, 79, 0.9); }
 .chat-bubble-media-wrap .gif-save-btn { top: 6px; right: 6px; width: 30px; height: 30px; }
 .chat-bubble-media-wrap .gif-save-btn .ui-emoji, .chat-bubble-media-wrap .gif-save-btn .tw-emoji { width: 16px; height: 16px; }
 .media-hover-wrap { position: relative; display: inline-block; max-width: 100%; }
@@ -423,6 +416,53 @@ body.avatar-square .avatar { border-radius: 4px; }
 .sound-item button.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
 .sound-item button.danger { color: #ff6b6b; border-color: #7a1414; }
 .gradient-bar { width: 100%; height: 40px; border-radius: var(--radius); margin-top: 8px; border: 1px solid #2f2f2f; }
+.seen-by-section { padding: 12px 20px 6px; font-size: 12px; font-weight: 700; color: #717171; text-transform: uppercase; letter-spacing: 0.8px; }
+#noInternetOverlay { position: fixed; inset: 0; z-index: 8000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); flex-direction: column; padding: 24px; text-align: center; }
+#noInternetOverlay.open { display: flex; }
+#noInternetOverlay img { max-width: 280px; max-height: 40vh; margin-bottom: 24px; opacity: 0.9; }
+#noInternetOverlay h2 { font-size: 24px; color: #fff; margin-bottom: 8px; }
+#noInternetOverlay p { font-size: 14px; color: #9a9a9a; max-width: 320px; line-height: 1.5; }
+.no-internet-badge { margin-top: 20px; padding: 8px 16px; background: var(--surface); border: 1px solid #2f2f2f; border-radius: 9999px; font-size: 13px; color: #4fc3f7; cursor: pointer; font-family: inherit; transition: background 0.15s ease, border-color 0.15s ease; }
+.no-internet-badge:hover { background: #252525; border-color: #4fc3f7; }
+.incoming-call { position: fixed; inset: 0; z-index: 700; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); }
+.incoming-call.open { display: flex; }
+.incoming-call-card { background: var(--surface); border: 1px solid #2f2f2f; border-radius: 16px; padding: 32px 24px; text-align: center; max-width: 340px; width: 90%; }
+.incoming-call-avatar { width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 16px; overflow: hidden; background: #2a2a2a; }
+.incoming-call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.incoming-call-name { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.incoming-call-type { font-size: 14px; color: #9a9a9a; margin-bottom: 26px; }
+.incoming-call-btns { display: flex; gap: 20px; justify-content: center; }
+.incoming-call-btn { width: 60px; height: 60px; border-radius: 50%; border: none; color: #fff; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+.incoming-call-btn.accept { background: #22c55e; }
+.incoming-call-btn.decline { background: #f91818; }
+.incoming-call-btn:active { transform: scale(0.94); }
+.call-overlay { position: fixed; inset: 0; z-index: 600; background: #0d0d0d; display: none; flex-direction: column; }
+.call-overlay.open { display: flex; }
+.call-header { padding: 14px 18px; display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.35); border-bottom: 1px solid #1d1d1d; flex-shrink: 0; }
+.call-header .avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+.call-header-info { flex: 1; min-width: 0; }
+.call-header-title { font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-header-sub { font-size: 12px; color: #9a9a9a; margin-top: 2px; }
+.call-duration { font-size: 14px; color: #9a9a9a; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.call-videos { flex: 1; display: grid; gap: 8px; padding: 12px; overflow: auto; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-content: start; }
+.call-videos.voice-mode { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.call-tile { position: relative; background: linear-gradient(180deg, #1d1d1d 0%, #0d0d0d 100%); border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; transition: box-shadow 0.15s ease; }
+.call-tile.speaking { box-shadow: 0 0 0 3px #22c55e, 0 0 24px rgba(34,197,94,0.45); }
+.call-tile video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.call-tile .call-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: #2a2a2a; }
+.call-tile.voice-only .call-avatar { width: 100px; height: 100px; }
+.call-tile .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.call-tile-label { position: absolute; bottom: 8px; left: 8px; padding: 4px 10px; background: rgba(0,0,0,0.65); border-radius: 9999px; font-size: 12px; color: #fff; display: flex; align-items: center; gap: 6px; max-width: calc(100% - 16px); }
+.call-tile-label .call-muted-icon { color: #ff6b6b; font-size: 13px; }
+.call-tile-label .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-tile.local-mirror video { transform: scaleX(-1); }
+.call-controls { display: flex; gap: 16px; padding: 16px; justify-content: center; background: rgba(0,0,0,0.4); border-top: 1px solid #1d1d1d; flex-shrink: 0; }
+.call-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: #2a2a2a; color: #fff; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.1s; }
+.call-btn:hover { background: #3a3a3a; }
+.call-btn:active { transform: scale(0.94); }
+.call-btn.end { background: #f91818; }
+.call-btn.end:hover { background: #ff3030; }
+.call-btn.muted { background: #7a1414; color: #ffb3b3; }
 @media (max-width: 768px) {
   .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: var(--bg); z-index: 50; overflow: visible; transition: none; }
   .right { display: none; }
@@ -449,9 +489,9 @@ body.avatar-square .avatar { border-radius: 4px; }
   .feed-header { font-size: 16px; padding: 14px 12px; justify-content: flex-start; gap: 8px; padding-right: 130px; }
   .post { padding: 12px; }
   .profile-banner { height: 120px; }
-  .profile-top { margin-top: -72px; }
-  .profile-top .avatar { width: 72px; height: 72px; }
-  .profile-info { padding-top: 82px; }
+  .profile-top { margin-top: -92px; }
+  .profile-top .avatar { width: 72px; height: 72px; margin-left: 0; }
+  .profile-info { padding-top: 92px; }
   .modal { width: 92%; }
   .gif-grid { grid-template-columns: repeat(2, 1fr); max-height: 300px; }
   .chat-header { padding: 10px 12px; gap: 10px; }
@@ -461,6 +501,8 @@ body.avatar-square .avatar { border-radius: 4px; }
   #scrollTopBtn { left: 12px; right: auto; bottom: 82px; }
   #introOverlay img { width: 260px; }
   .theme-presets { grid-template-columns: repeat(2, 1fr); }
+  .call-videos { grid-template-columns: 1fr; }
+  .incoming-call-avatar { width: 80px; height: 80px; }
 }
 </style>
 </head>
@@ -622,7 +664,11 @@ body.avatar-square .avatar { border-radius: 4px; }
       <button class="chat-close" id="chatClose">←</button>
       <div class="avatar" id="chatHeaderAvatar"><img src="" alt="" /></div>
       <div class="chat-header-info" id="chatHeaderInfo"><div class="chat-header-name" id="chatHeaderName"></div><div class="chat-header-sub" id="chatHeaderSub"></div></div>
-      <button class="chat-search-btn" id="chatSearchBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f50d.png" alt="" /></button>
+      <div class="call-header-btns">
+        <button class="chat-search-btn" id="chatVoiceCallBtn" title="Voice call"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4de.png" alt="" style="width:20px;height:20px" /></button>
+        <button class="chat-search-btn" id="chatVideoCallBtn" title="Video call"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f9.png" alt="" style="width:20px;height:20px" /></button>
+        <button class="chat-search-btn" id="chatSearchBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f50d.png" alt="" /></button>
+      </div>
     </div>
     <div class="chat-search-bar" id="chatSearchBar"><input id="chatSearchInput" placeholder="Search..." /><span id="chatSearchCount" style="font-size:12px;color:#717171"></span><button class="chat-close" id="chatSearchClose" style="font-size:16px">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
@@ -646,7 +692,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 </aside>
 
 <div class="modal-overlay" id="userPickerModal"><div class="modal"><h3>start conversation</h3><div id="userPickerList" style="max-height:400px;overflow-y:auto;margin:0 -20px -20px;padding:0;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="userPickerClose">Close</button></div></div></div>
-<div class="modal-overlay" id="groupModal"><div class="modal"><h3>new group chat</h3><input class="auth-input" id="groupNameInput" placeholder="group name" maxlength="40" /><div class="pfp-section-label">members</div><div id="groupMemberList" style="max-height:340px;overflow-y:auto;margin:0 -20px;border-top:1px solid #2f2f2f;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupCancel">Cancel</button><button class="btn btn-primary" id="groupCreate">Create</button></div></div></div>
+<div class="modal-overlay" id="groupModal"><div class="modal"><h3>new group chat <span style="font-size:12px;color:#717171;font-weight:400">(max 10 members)</span></h3><input class="auth-input" id="groupNameInput" placeholder="group name" maxlength="40" /><div class="pfp-section-label">members</div><div id="groupMemberList" style="max-height:340px;overflow-y:auto;margin:0 -20px;border-top:1px solid #2f2f2f;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupCancel">Cancel</button><button class="btn btn-primary" id="groupCreate">Create</button></div></div></div>
 <div class="modal-overlay" id="gifPickerModal"><div class="modal" style="width:540px"><h3>Pick a GIF</h3><div class="gif-tabs"><button class="gif-tab active" data-gif-tab="trending"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f525.png" alt="" /> Trending</button><button class="gif-tab" data-gif-tab="saved"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> Saved</button></div><input class="auth-input" id="gifSearchInput" placeholder="Search GIPHY..." autocomplete="off" /><div id="gifResultsGrid" class="gif-grid"><div class="empty">Loading...</div></div><div class="gif-attribution">Powered by GIPHY</div><div class="modal-btns"><button class="btn btn-ghost" id="gifPickerClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupMembersModal"><div class="modal"><h3 id="groupMembersTitle">group members</h3><div id="groupMembersList" style="max-height:400px;overflow-y:auto;margin:0 -20px;padding:0;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupMembersClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupAvatarModal"><div class="modal"><h3>Change group icon</h3><div class="pfp-section-label">Pick an image</div><div class="pfp-grid" id="groupAvatarImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="groupAvatarEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="groupAvatarClose">Close</button></div></div></div>
@@ -664,12 +710,50 @@ body.avatar-square .avatar { border-radius: 4px; }
 <div class="modal-overlay" id="bannedModal"><div class="modal confirm-modal"><h3 style="color:#ff6b6b">You have been BANNED!</h3><p style="color:#9a9a9a;margin-bottom:20px;font-size:14px">contact matu if you think this is a mistake</p><button class="btn btn-primary" id="bannedOk">ok</button></div></div>
 <div class="modal-overlay" id="pfpModal"><div class="modal"><h3>Change profile picture</h3><div class="pfp-section-label">Upload your own</div><div class="post-media-row" style="margin-top:0"><button class="post-media-btn" id="pfpUploadBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload</button><input type="file" id="pfpUploadInput" accept="image/*" style="display:none" /></div><div class="pfp-section-label" style="margin-top:16px">Or pick an image</div><div class="pfp-grid" id="pfpImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="pfpEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="pfpClose">Close</button></div></div></div>
 <div class="modal-overlay" id="confirmModal"><div class="modal confirm-modal"><h3 id="confirmTitle">Are you sure?</h3><p class="confirm-msg" id="confirmMsg"></p><div class="modal-btns" style="justify-content:center"><button class="btn btn-ghost" id="confirmCancel">Cancel</button><button class="btn btn-danger" id="confirmOk">Delete</button></div></div></div>
+<div class="modal-overlay" id="seenByModal"><div class="modal"><h3>Seen by</h3><div id="seenByList" style="max-height:400px;overflow-y:auto;margin:0 -20px;padding:0;"></div><div class="modal-btns"><button class="btn btn-ghost" id="seenByClose">Close</button></div></div></div>
+
+<div class="incoming-call" id="incomingCall">
+  <div class="incoming-call-card">
+    <div class="incoming-call-avatar" id="incomingCallAvatar"><img src="" alt="" /></div>
+    <div class="incoming-call-name" id="incomingCallName"></div>
+    <div class="incoming-call-type" id="incomingCallType"></div>
+    <div class="incoming-call-btns">
+      <button class="incoming-call-btn decline" id="incomingDecline">✕</button>
+      <button class="incoming-call-btn accept" id="incomingAccept">📞</button>
+    </div>
+  </div>
+</div>
+
+<div class="call-overlay" id="callOverlay">
+  <div class="call-header">
+    <div class="avatar" id="callHeaderAvatar"><img src="" alt="" /></div>
+    <div class="call-header-info">
+      <div class="call-header-title" id="callHeaderTitle"></div>
+      <div class="call-header-sub" id="callHeaderSub"></div>
+    </div>
+    <div class="call-duration" id="callDuration">0:00</div>
+  </div>
+  <div class="call-videos" id="callVideos"></div>
+  <div class="call-controls">
+    <button class="call-btn" id="callMuteBtn" title="Mute">🎤</button>
+    <button class="call-btn" id="callVideoBtn" title="Camera">📹</button>
+    <button class="call-btn end" id="callEndBtn" title="End call">📞</button>
+  </div>
+</div>
+
+<div id="noInternetOverlay">
+  <img src="nointernet.png" alt="" />
+  <h2>No internet connection</h2>
+  <p>Fuzzy needs internet or cellular data to work. Please check your connection.</p>
+  <button class="no-internet-badge" id="retryConnectionBtn">tap to retry</button>
+</div>
+
 <div class="reaction-picker" id="reactionPicker"></div>
 <div id="quickActionMenu"></div>
 <button id="scrollTopBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/2b06.png" alt="" /></button>
 <div id="introOverlay"><img src="intro.gif" alt="" /></div>
 <div id="globalLoader"><div style="display:flex;flex-direction:column;align-items:center;gap:14px"><img src="loop.png" alt="" /><div class="loader-label">uploading…</div></div></div>
-<div id="lightbox"><button class="lb-close" id="lbClose">✕</button><img id="lbImg" src="" alt="" /></div>
+<div id="lightbox"><button class="lb-close" id="lbClose">✕</button><img id="lbImg" src="" alt="" /><video id="lbVideo" controls playsinline style="display:none"></video></div>
 <div id="toasts"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -709,6 +793,7 @@ const MAX_SOUND_BYTES = 1 * 1024 * 1024;
 const MAX_SOUND_DURATION = 2;
 const MAX_CUSTOM_SOUNDS = 5;
 const MAX_MUSIC_TRACKS = 7;
+const MAX_GROUP_MEMBERS = 10;
 const IMG_COMPRESS_MIN = 1 * 1024 * 1024;
 const IMG_COMPRESS_TRIGGER = 2 * 1024 * 1024;
 const IMG_COMPRESS_TARGET_MAX = 4 * 1024 * 1024;
@@ -834,6 +919,11 @@ const conversationsCache = new Map();
 const verifiedUsernames = new Set(VERIFIED_STATIC.map(function(x) { return x.toLowerCase(); }));
 const devUsernames = new Set(DEV_STATIC.map(function(x) { return x.toLowerCase(); }));
 
+let currentCall = null;
+let pendingIncomingCall = null;
+let callUnsubs = [];
+let callRingCtx = null, callRingTimer = null;
+
 /* =====================================================================
    FUNCTIONS
    ===================================================================== */
@@ -846,8 +936,24 @@ function timeAgo(ts) { if (!ts) return "now"; const secs = Math.floor((Date.now(
 function formatMsgTime(ts) { if (!ts) return ""; const d = ts.toDate(); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); }
 function showLoader(label) { loaderCount++; const el = document.getElementById("globalLoader"); if (!el) return; const lbl = el.querySelector(".loader-label"); if (lbl) lbl.textContent = label || "uploading…"; el.classList.add("show"); }
 function hideLoader() { loaderCount = Math.max(0, loaderCount - 1); if (loaderCount === 0) { const el = document.getElementById("globalLoader"); if (el) el.classList.remove("show"); } }
-function openLightbox(src) { if (!src) return; const lb = document.getElementById("lightbox"); const img = document.getElementById("lbImg"); if (!lb || !img) return; img.src = src; lb.classList.add("open"); }
-function closeLightbox() { const lb = document.getElementById("lightbox"); const img = document.getElementById("lbImg"); if (!lb) return; lb.classList.remove("open"); setTimeout(function() { if (!lb.classList.contains("open") && img) img.src = ""; }, 300); }
+function openLightbox(src, isVideo) {
+  if (!src) return;
+  const lb = document.getElementById("lightbox");
+  const img = document.getElementById("lbImg");
+  const vid = document.getElementById("lbVideo");
+  if (!lb || !img || !vid) return;
+  if (isVideo) { img.style.display = "none"; img.src = ""; vid.style.display = "block"; vid.src = src; vid.currentTime = 0; }
+  else { try { vid.pause(); } catch (e) {} vid.style.display = "none"; vid.src = ""; img.style.display = "block"; img.src = src; }
+  lb.classList.add("open");
+}
+function closeLightbox() {
+  const lb = document.getElementById("lightbox");
+  const img = document.getElementById("lbImg");
+  const vid = document.getElementById("lbVideo");
+  if (!lb) return;
+  lb.classList.remove("open");
+  setTimeout(function() { if (!lb.classList.contains("open")) { if (img) img.src = ""; if (vid) { try { vid.pause(); } catch (e) {} vid.src = ""; } } }, 300);
+}
 function faceForUid(uid) { let h = 0; const s = String(uid || ""); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return TWE + FACES[h % FACES.length] + ".png"; }
 function fallbackName(user) { return user && user.email ? user.email.split("@")[0] : "you"; }
 function validUsername(u) { return /^[a-zA-Z0-9]{3,13}$/.test(u); }
@@ -892,7 +998,6 @@ function refreshStatusDots() {
     const nb = tmp.firstChild; if (nb) b.replaceWith(nb);
   });
 }
-
 function updateSidebar() {
   const nameEl = document.getElementById("userName");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -917,7 +1022,6 @@ function updateSidebar() {
   if (adminNav) adminNav.style.display = isAdminUser() ? "flex" : "none";
   decorateAvatars(document.body);
 }
-
 function renderPagination(container, currentPage, totalPages, onChange) {
   container.innerHTML = "";
   if (totalPages <= 1) return;
@@ -944,7 +1048,6 @@ function renderPagination(container, currentPage, totalPages, onChange) {
   const nextBtn = document.createElement("button"); nextBtn.className = "page-btn"; nextBtn.textContent = "next ›"; nextBtn.disabled = currentPage >= totalPages;
   nextBtn.addEventListener("click", function() { if (currentPage < totalPages) onChange(currentPage + 1); }); container.appendChild(nextBtn);
 }
-
 function showConfirm(title, msg, cb, okText) {
   document.getElementById("confirmTitle").textContent = title;
   document.getElementById("confirmMsg").textContent = msg;
@@ -952,7 +1055,6 @@ function showConfirm(title, msg, cb, okText) {
   confirmCb = cb;
   document.getElementById("confirmModal").classList.add("open");
 }
-
 function showView(name) {
   if (activeView !== name) pauseAllVideos();
   activeView = name;
@@ -962,9 +1064,7 @@ function showView(name) {
     if (el) el.style.display = (k === name) ? (k === "chat" ? "flex" : "block") : "none";
   });
 }
-
 function pauseAllVideos() { document.querySelectorAll("video").forEach(function(v) { try { if (!v.paused) v.pause(); } catch (e) {} }); }
-
 function captureVideoState() {
   const map = new Map();
   document.querySelectorAll("video").forEach(function(v) {
@@ -985,7 +1085,6 @@ function restoreVideoState(map) {
     if (v.readyState >= 1) apply(); else v.addEventListener("loadedmetadata", apply, { once: true });
   });
 }
-
 function renderRichText(text) {
   const raw = String(text || "");
   const parts = [];
@@ -1024,7 +1123,6 @@ function renderRichText(text) {
 }
 function setRichText(el, text) { if (el) el.innerHTML = renderRichText(text); }
 function extractFirstUrl(text) { const m = String(text || "").match(/https?:\/\/[^\s<>"']+/); return m ? m[0] : null; }
-
 function bindRichClickHandlers(root) {
   if (!root) return;
   root.querySelectorAll(".rich-hashtag").forEach(function(el) {
@@ -1054,7 +1152,6 @@ function bindRichClickHandlers(root) {
     el.addEventListener("click", function(e) { e.stopPropagation(); confirmOpenLink(el.dataset.url); });
   });
 }
-
 function renderChatText(el, text) {
   if (!el) return;
   el.innerHTML = "";
@@ -1072,14 +1169,12 @@ function renderChatText(el, text) {
   }
   if (last < raw.length) el.appendChild(document.createTextNode(raw.slice(last)));
 }
-
 function confirmOpenLink(url) {
   if (!url) return;
   pendingLinkUrl = url;
   try { const u = new URL(url); document.getElementById("linkWarnUrl").textContent = u.hostname + u.pathname; } catch (e) { document.getElementById("linkWarnUrl").textContent = url; }
   document.getElementById("linkWarnModal").classList.add("open");
 }
-
 function renderPollHtml(poll, postId, myUid) {
   if (!poll || !Array.isArray(poll.options)) return "";
   const total = poll.options.reduce(function(sum, o) { return sum + (Array.isArray(o.votes) ? o.votes.length : 0); }, 0);
@@ -1097,10 +1192,8 @@ function renderPollHtml(poll, postId, myUid) {
   html += '<div class="poll-meta"><span>' + total + ' vote' + (total === 1 ? "" : "s") + '</span><span>' + (ended ? "poll ended" : (myVoteIdx >= 0 ? '<span class="poll-voted-tag">you voted</span>' : "tap to vote")) + "</span></div></div>";
   return html;
 }
-
 function notifText(d) { const name = d.fromUsername || "Someone"; switch (d.type) { case "follow": return name + " followed you"; case "like_post": return name + " liked your post"; case "comment": return name + " commented on your post"; case "like_comment": return name + " liked your reply"; case "reply": return name + " replied to your comment"; case "dm": return name + " sent you a message"; default: return name + " did something"; } }
 function groupedNotifText(group) { const items = group.items; if (items.length === 1) return notifText(items[0].data); const first = items[0].data.fromUsername || "Someone"; const rest = items.length - 1; const type = items[0].data.type; const verb = type === "like_post" ? "liked your post" : type === "like_comment" ? "liked your reply" : type === "comment" ? "commented on your post" : type === "reply" ? "replied to your comment" : "did something"; return first + " and " + rest + " other" + (rest === 1 ? "" : "s") + " " + verb; }
-
 function maybeRequestNotifPermission() { if (!("Notification" in window)) return; if (Notification.permission !== "default") return; if (localStorage.getItem(NOTIF_ASKED_KEY) === "1") return; try { localStorage.setItem(NOTIF_ASKED_KEY, "1"); } catch (e) {} Notification.requestPermission().catch(function() {}); }
 function showBrowserNotification(data) {
   if (!settingsState.notifications) return; if (!("Notification" in window)) return; if (Notification.permission !== "granted") return;
@@ -1114,10 +1207,8 @@ function showBrowserNotification(data) {
     try { const n = new Notification("Fuzzy", opts); n.onclick = function() { try { window.focus(); } catch (e) {} try { n.close(); } catch (e) {} }; } catch (e) {}
   }
 }
-
 function canvasToBlob(canvas, type, quality) { return new Promise(function(resolve, reject) { canvas.toBlob(function(b) { if (b) resolve(b); else reject(new Error("toBlob failed")); }, type, quality); }); }
 function loadImageFromFile(file) { return new Promise(function(resolve, reject) { const url = URL.createObjectURL(file); const img = new Image(); img.onload = function() { resolve({ img: img, url: url }); }; img.onerror = function() { URL.revokeObjectURL(url); reject(new Error("load failed")); }; img.src = url; }); }
-
 async function compressImage(file) {
   if (!file.type.startsWith("image/")) return file;
   if (file.size <= IMG_COMPRESS_TRIGGER) return file;
@@ -1142,16 +1233,12 @@ async function compressImage(file) {
     return new File([best], name, { type: outType, lastModified: Date.now() });
   } catch (e) { return file; }
 }
-
 async function uploadToImgBB(file) { const form = new FormData(); form.append("image", file); const res = await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(IMGBB_KEY), { method: "POST", body: form }); const data = await res.json(); if (!data || !data.success) throw new Error((data && data.error && data.error.message) ? data.error.message : "imgbb failed"); return data.data.url; }
 async function uploadToCloudinary(file) { const isImage = file.type.startsWith("image/"); const resource = isImage ? "image" : "video"; const endpoint = "https://api.cloudinary.com/v1_1/" + encodeURIComponent(CLOUDINARY_CLOUD) + "/" + resource + "/upload"; const form = new FormData(); form.append("file", file); form.append("upload_preset", CLOUDINARY_PRESET); const res = await fetch(endpoint, { method: "POST", body: form }); let data = null; try { data = await res.json(); } catch (e) {} if (!res.ok || !data || !data.secure_url) throw new Error((data && data.error && data.error.message) ? data.error.message : ("cloudinary " + res.status)); return data.secure_url; }
-
 function clearMediaPreview() { pendingMediaUrl = null; pendingMediaType = null; if (pendingLocalUrl) { try { URL.revokeObjectURL(pendingLocalUrl); } catch (e) {} pendingLocalUrl = null; } const prev = document.getElementById("mediaPreview"); if (prev) { prev.innerHTML = ""; prev.classList.remove("show"); } const inp = document.getElementById("mediaInput"); if (inp) inp.value = ""; }
 function showMediaPreview(url, type, isLocal) { const prev = document.getElementById("mediaPreview"); if (!prev) return; prev.innerHTML = ""; const wrap = document.createElement("div"); wrap.style.position = "relative"; const el = document.createElement(type === "video" ? "video" : "img"); el.src = url; if (type === "video") { el.controls = true; el.playsInline = true; el.muted = true; } wrap.appendChild(el); const rm = document.createElement("button"); rm.type = "button"; rm.className = "media-remove"; rm.textContent = "✕"; rm.addEventListener("click", clearMediaPreview); wrap.appendChild(rm); prev.appendChild(wrap); const label = document.createElement("div"); label.className = "media-preview-label"; label.textContent = isLocal ? "preview (uploading…)" : (type === "gif" ? "GIF ready" : "ready"); prev.appendChild(label); prev.classList.add("show"); }
-
 function clearEditMediaPreview() { editPendingMediaUrl = null; editPendingMediaType = null; editPendingMediaRemoved = false; if (editPendingMediaLocalUrl) { try { URL.revokeObjectURL(editPendingMediaLocalUrl); } catch (e) {} editPendingMediaLocalUrl = null; } const prev = document.getElementById("editMediaPreview"); if (prev) { prev.innerHTML = ""; prev.classList.remove("show"); } const inp = document.getElementById("editMediaInput"); if (inp) inp.value = ""; }
 function showEditMediaPreview(url, type, isLocal, removed) { const prev = document.getElementById("editMediaPreview"); if (!prev) return; prev.innerHTML = ""; if (removed) { prev.innerHTML = '<div class="media-preview-label" style="color:#ff6b6b">Media will be removed on save</div>'; prev.classList.add("show"); return; } if (!url) return; const wrap = document.createElement("div"); wrap.style.position = "relative"; const el = document.createElement(type === "video" ? "video" : "img"); el.src = url; if (type === "video") { el.controls = true; el.playsInline = true; el.muted = true; } wrap.appendChild(el); const rm = document.createElement("button"); rm.type = "button"; rm.className = "media-remove"; rm.textContent = "✕"; rm.addEventListener("click", function() { editPendingMediaUrl = null; editPendingMediaType = null; editPendingMediaRemoved = true; if (editPendingMediaLocalUrl) { try { URL.revokeObjectURL(editPendingMediaLocalUrl); } catch (e) {} editPendingMediaLocalUrl = null; } showEditMediaPreview(null, null, false, true); }); wrap.appendChild(rm); prev.appendChild(wrap); const label = document.createElement("div"); label.className = "media-preview-label"; label.textContent = isLocal ? "preview (uploading…)" : "current — click ✕ to remove"; prev.appendChild(label); prev.classList.add("show"); }
-
 function runIntro() {
   const ov = document.getElementById("introOverlay");
   if (!ov) return;
@@ -1167,7 +1254,7 @@ function runIntro() {
 
 /* ==== GIF PICKER ==== */
 async function fetchGiphy(path, params) { const q = new URLSearchParams(Object.assign({ api_key: GIPHY_API_KEY, limit: 24, rating: "g" }, params || {})); const res = await fetch(GIPHY_ENDPOINT + "/" + path + "?" + q.toString()); if (!res.ok) throw new Error("giphy " + res.status); return res.json(); }
-function openGifPicker(onSelect) { currentGifSelectCallback = onSelect; const modal = document.getElementById("gifPickerModal"); const grid = document.getElementById("gifResultsGrid"); const input = document.getElementById("gifSearchInput"); input.value = ""; setGifTab("trending"); modal.classList.add("open"); setTimeout(function() { try { input.focus(); } catch (e) {} }, 100); }
+function openGifPicker(onSelect) { currentGifSelectCallback = onSelect; const modal = document.getElementById("gifPickerModal"); const input = document.getElementById("gifSearchInput"); input.value = ""; setGifTab("trending"); modal.classList.add("open"); setTimeout(function() { try { input.focus(); } catch (e) {} }, 100); }
 function setGifTab(tab) {
   currentGifTab = tab;
   document.querySelectorAll(".gif-tab").forEach(function(t) { t.classList.toggle("active", t.dataset.gifTab === tab); });
@@ -1218,7 +1305,6 @@ function renderGifGrid(gifs) {
   });
 }
 function closeGifPicker() { const el = document.getElementById("gifPickerModal"); if (el) el.classList.remove("open"); currentGifSelectCallback = null; }
-
 function isGifSaved(url) { return mySavedGifs.some(function(g) { return g.url === url; }); }
 async function starGif(gif) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
@@ -1270,7 +1356,6 @@ function findAvatars(forceRefresh) {
   });
 }
 function refreshAvatarCache() { cachedAvatarList = null; try { localStorage.removeItem(AVATAR_CACHE_KEY); } catch (e) {} }
-
 function openPfpModal() {
   if (!auth || !auth.currentUser) return;
   const imgGrid = document.getElementById("pfpImages");
@@ -1338,7 +1423,6 @@ function applySettings() {
 }
 function loadSettings() { try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) settingsState = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(raw)); } catch (e) {} }
 function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsState)); } catch (e) {} }
-
 function refreshSettingsUi() {
   document.querySelectorAll(".setting-color").forEach(function(input) {
     const key = input.dataset.setting;
@@ -1383,7 +1467,6 @@ function refreshSettingsUi() {
     else prev.style.background = settingsState.bannerColor;
   }
 }
-
 function renderThemePresets() {
   const wrap = document.getElementById("themePresets"); if (!wrap) return;
   wrap.innerHTML = "";
@@ -1470,11 +1553,10 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   const postUid = ownerUid || (userDoc ? profileUid : null);
   const iSaved = mySavedIds.has(postId);
   const iPinnedThis = myPinned.includes(postId);
-
   let mediaHtml = "";
   if (data.mediaUrl) {
     if (data.mediaType === "video") {
-      mediaHtml = '<div class="post-media"><video src="' + escapeHtml(data.mediaUrl) + '" controls preload="metadata" playsinline' + (settingsState.autoPlayVideos ? " autoplay muted" : "") + '></video></div>';
+      mediaHtml = '<div class="post-media"><video src="' + escapeHtml(data.mediaUrl) + '" controls preload="metadata" playsinline data-lightbox-video="1"' + (settingsState.autoPlayVideos ? " autoplay muted" : "") + '></video></div>';
     } else if (data.mediaType === "gif") {
       const isSavedGif = isGifSaved(data.mediaUrl);
       mediaHtml = '<div class="post-media"><div class="media-hover-wrap"><img src="' + escapeHtml(data.mediaUrl) + '" alt="" loading="lazy" data-lightbox="1" /><button class="gif-save-btn' + (isSavedGif ? " saved" : "") + '" title="' + (isSavedGif ? "Remove from saved" : "Save this GIF") + '">' + twe(EYE, 20) + '</button></div></div>';
@@ -1482,7 +1564,6 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       mediaHtml = '<div class="post-media"><img src="' + escapeHtml(data.mediaUrl) + '" alt="" loading="lazy" data-lightbox="1" /></div>';
     }
   }
-
   const pollHtml = data.poll ? renderPollHtml(data.poll, postId, auth && auth.currentUser ? auth.currentUser.uid : "") : "";
   const firstUrl = extractFirstUrl(data.text || "");
   let linkCard = "";
@@ -1491,10 +1572,8 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
     try { domain = new URL(firstUrl).hostname; } catch (e) {}
     linkCard = '<div class="link-preview-card" data-url="' + escapeHtml(firstUrl) + '"><div>' + twe("1f517", 22) + '</div><div class="lp-info"><div class="lp-domain">' + escapeHtml(domain) + '</div><div class="lp-hint">Tap to open</div></div></div>';
   }
-
   const isMuted = mutedWordsMatch(data.text);
   const mutedOverlay = isMuted ? '<div class="muted-post-overlay">' + twe("1f507", 16) + ' muted content — tap to reveal</div>' : "";
-
   article.innerHTML =
     (isPinned ? '<div class="pinned-badge">' + twe("1f4cc", 12) + " Pinned</div>" : "") +
     '<div class="post-head"><div class="avatar" data-uid="' + (postUid || "") + '"><img src="' + emoji + '" alt="" /></div><span class="p-name" data-uid="' + (postUid || "") + '"></span>' + verifiedBadge(name) + ' <span class="time">| ' + timeAgo(data.createdAt) + "</span>" + (data.edited ? '<span class="edited-tag">(edited)</span>' : "") + "</div>" +
@@ -1509,26 +1588,29 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       (isMyPost ? '<button class="action del-post" title="Delete"><img src="' + TRASH + '" alt="" /></button>' : "") +
     "</div>" +
     '<div class="comments" style="display:none"><div class="comment-list"></div><div class="reply-chip"></div><div class="comment-row"><input type="text" placeholder="Write a comment..." /><button class="comment-gif-btn" title="Send GIF">' + twe(EYE, 20) + '</button><button class="btn btn-primary send-comment">Send</button></div></div>';
-
   article.querySelector(".p-name").textContent = name;
   setRichText(article.querySelector(".post-body"), data.text || "");
   bindRichClickHandlers(article.querySelector(".post-body"));
-
   if (isMuted) {
     const ov = article.querySelector(".muted-post-overlay");
     const content = article.querySelector(".muted-post-content");
     ov.addEventListener("click", function() { ov.style.display = "none"; content.classList.remove("hidden"); });
   }
-
-  article.querySelectorAll('.post-media img[data-lightbox]').forEach(function(img) { img.addEventListener("click", function() { openLightbox(img.src); }); });
-
+  article.querySelectorAll('.post-media img[data-lightbox]').forEach(function(img) { img.addEventListener("click", function() { openLightbox(img.src, false); }); });
+  article.querySelectorAll('.post-media video[data-lightbox-video]').forEach(function(vid) {
+    vid.addEventListener("click", function(e) {
+      const rect = vid.getBoundingClientRect();
+      const relY = e.clientY - rect.top;
+      if (relY > rect.height - 60) return;
+      openLightbox(vid.src, true);
+    });
+  });
   if (linkCard) article.querySelector(".link-preview-card").addEventListener("click", function(e) { e.stopPropagation(); confirmOpenLink(firstUrl); });
   if (pollHtml) article.querySelectorAll(".poll-option").forEach(function(opt) { opt.addEventListener("click", function(e) { e.stopPropagation(); votePoll(postId, parseInt(opt.dataset.pollIdx, 10)); }); });
   if (postUid) {
     article.querySelector(".p-name").addEventListener("click", function() { openProfile(postUid); });
     article.querySelector(".post-head .avatar").addEventListener("click", function() { openProfile(postUid); });
   }
-
   article.querySelectorAll(".post-media .gif-save-btn").forEach(function(btn) {
     btn.addEventListener("click", async function(e) {
       e.stopPropagation();
@@ -1539,7 +1621,6 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       else { await starGif({ url: url, previewUrl: url, title: "GIF from post" }); btn.classList.add("saved"); }
     });
   });
-
   const likeBtn = article.querySelector(".like");
   likeBtn.addEventListener("click", async function() {
     if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
@@ -1570,12 +1651,11 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       if (settingsState.confirmDelete) showConfirm("Delete this post?", "This cannot be undone.", doDelete); else doDelete();
     });
   }
-  attachDoubleTapLike(article.querySelector(".post-media") || article.querySelector(".post-body"), likeBtn);
+  attachDoubleTapLike(article, likeBtn);
   article.querySelector(".comment-toggle").addEventListener("click", function() {
     const c = this.closest(".post").querySelector(".comments");
     c.style.display = c.style.display === "none" ? "block" : "none";
   });
-
   let replyTarget = null;
   const chip = article.querySelector(".reply-chip");
   const cInput = article.querySelector(".comment-row input");
@@ -1612,7 +1692,7 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
     if (cd.mediaUrl) {
       const mediaWrap = document.createElement("div"); mediaWrap.className = "comment-media";
       if (cd.mediaType === "video") { const vid = document.createElement("video"); vid.src = cd.mediaUrl; vid.controls = true; vid.playsInline = true; vid.style.maxWidth = "240px"; mediaWrap.appendChild(vid); }
-      else { const img = document.createElement("img"); img.src = cd.mediaUrl; img.loading = "lazy"; img.alt = ""; img.addEventListener("click", function() { openLightbox(cd.mediaUrl); }); mediaWrap.appendChild(img); }
+      else { const img = document.createElement("img"); img.src = cd.mediaUrl; img.loading = "lazy"; img.alt = ""; img.addEventListener("click", function() { openLightbox(cd.mediaUrl, false); }); mediaWrap.appendChild(img); }
       item.querySelector(".c-body").insertBefore(mediaWrap, item.querySelector(".c-actions"));
     }
     item.querySelector(".c-like").addEventListener("click", async function() {
@@ -1660,7 +1740,6 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       } catch (err) { toast("Comment failed.", true); }
     });
   });
-
   if (auth && auth.currentUser) {
     const unsub = db.collection("posts").doc(postId).collection("comments").orderBy("createdAt", "asc").onSnapshot(function(snap) {
       const list = article.querySelector(".comment-list"); list.innerHTML = "";
@@ -1676,7 +1755,6 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   }
   return article;
 }
-
 async function votePoll(postId, optionIdx) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const myUid = auth.currentUser.uid;
@@ -1708,7 +1786,6 @@ async function votePoll(postId, optionIdx) {
     await ref.update({ "poll.options": options });
   } catch (e) { toast("Vote failed: " + (e.code || e.message), true); }
 }
-
 async function togglePin(postId) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const isPinned = myPinned.includes(postId);
@@ -1737,10 +1814,8 @@ async function toggleSave(postId) {
     if (activeView === "saved") renderSavedPosts();
   } catch (e) { toast("Save failed.", true); }
 }
-
 function killCommentListeners() { commentUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); commentUnsubs = []; }
 function killProfPostsListener() { if (profPostsUnsub) { try { profPostsUnsub(); } catch (e) {} } profPostsUnsub = null; }
-
 function renderPosts() {
   const videoState = captureVideoState();
   killCommentListeners();
@@ -1770,7 +1845,6 @@ function renderPosts() {
   renderPagination(feedPaginationEl, homePage, totalPages, function(newPage) { homePage = newPage; renderPosts(); feedViewEl.scrollTop = 0; });
   requestAnimationFrame(function() { restoreVideoState(videoState); });
 }
-
 async function renderSavedPosts() {
   const list = document.getElementById("savedList");
   if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in.</div>'; return; }
@@ -1788,7 +1862,6 @@ async function renderSavedPosts() {
     bindRichClickHandlers(list);
   } catch (e) { list.innerHTML = '<div class="empty">Could not load: ' + (e.code || e.message) + "</div>"; }
 }
-
 async function renderSavedGifs() {
   const list = document.getElementById("savedGifsList");
   list.innerHTML = '<div class="chat-loading"><img src="loop.png" alt="" /><div class="chat-loading-text">loading…</div></div>';
@@ -1806,7 +1879,6 @@ async function renderSavedGifs() {
     grid.appendChild(item);
   });
 }
-
 async function renderProfile() {
   if (!profileUid || !db) return;
   const videoState = captureVideoState();
@@ -1917,7 +1989,6 @@ async function renderProfile() {
 }
 function formatJoinDate(ts) { if (!ts) return "unknown"; const d = ts.toDate(); const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]; return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
 function accountAgeText(ts) { if (!ts) return "unknown"; const days = Math.floor((Date.now() - ts.toMillis()) / 86400000); if (days < 1) return "today"; if (days < 30) return days + (days === 1 ? " day" : " days"); const months = Math.floor(days / 30); if (months < 12) return months + (months === 1 ? " month" : " months"); const years = Math.floor(months / 12); const rem = months - years * 12; if (rem === 0) return years + (years === 1 ? " year" : " years"); return years + (years === 1 ? " year" : " years") + ", " + rem + (rem === 1 ? " month" : " months"); }
-
 async function renderProfList() {
   const box = document.getElementById("profList");
   if (!profileUid || !db) return;
@@ -1956,10 +2027,8 @@ async function renderProfList() {
 }
 function openProfList(mode) { if (!profileUid) return; profListMode = mode; renderProfList(); }
 function closeProfList() { profListMode = null; document.getElementById("profList").style.display = "none"; document.getElementById("profPosts").style.display = "block"; if (profileUid) renderProfile(); }
-
 function openProfile(uid) { if (!uid) return; profileUid = uid; profListMode = null; profilePage = 1; showView("profile"); document.getElementById("profileView").scrollTop = 0; renderProfile(); }
 function closeProfile() { profileUid = null; killProfPostsListener(); showView("feed"); }
-
 function buildSearchUserRow(u, onFollowChange) {
   cacheUser(u.id, u.data);
   const num = userNumMap.get(u.id);
@@ -1988,7 +2057,6 @@ function buildSearchUserRow(u, onFollowChange) {
   }
   return row;
 }
-
 async function renderSearch(raw) {
   const box = document.getElementById("searchResults");
   const videoState = captureVideoState();
@@ -2001,7 +2069,11 @@ async function renderSearch(raw) {
     db.collection("users").get().then(function(snap) {
       let users = snap.docs.map(function(d) { return { id: d.id, data: d.data() }; }).filter(function(u) { return !isBlocked(u.id) && !u.data.banned; });
       if (q) users = users.filter(function(u) { return (u.data.username || "").toLowerCase().includes(q); });
-      users.sort(function(a, b) { return (a.data.username || "").localeCompare(b.data.username || ""); });
+      users.sort(function(a, b) {
+        const na = userNumMap.get(a.id) || 999999;
+        const nb = userNumMap.get(b.id) || 999999;
+        return na - nb;
+      });
       box.innerHTML = "";
       if (users.length === 0) { box.innerHTML = '<div class="empty">No accounts match.</div>'; return; }
       users.forEach(function(u) { box.appendChild(buildSearchUserRow(u, function() { renderSearch(raw); })); });
@@ -2041,7 +2113,6 @@ async function renderSearch(raw) {
   decorateAvatars(box); bindRichClickHandlers(box);
   requestAnimationFrame(function() { restoreVideoState(videoState); });
 }
-
 async function renderNotifications() {
   const list = document.getElementById("notifList");
   if (!auth || !auth.currentUser) { list.innerHTML = '<div class="empty">Log in.</div>'; return; }
@@ -2080,7 +2151,6 @@ async function renderNotifications() {
     setNotifBadge(0);
   } catch (err) { toast("Notifications error.", true); }
 }
-
 function renderBlockedList() {
   const box = document.getElementById("blockedList"); if (!box) return;
   if (!auth || !auth.currentUser) { box.innerHTML = '<div class="empty" style="font-size:13px;padding:8px 0">log in</div>'; return; }
@@ -2108,23 +2178,21 @@ function convIdFor(a, b) { return [a, b].sort().join("_"); }
 function shortTime(ts) { if (!ts) return ""; const t = ts.toMillis(); const diff = Date.now() - t; if (diff < 24 * 60 * 60 * 1000) { const d = ts.toDate(); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); } if (diff < 7 * 24 * 60 * 60 * 1000) { const days = ["sun","mon","tue","wed","thu","fri","sat"]; return days[ts.toDate().getDay()]; } return timeAgo(ts); }
 function convDisplayName(data, otherUid) { if (data.isGroup) return data.name || "group"; const u = userCache.get(otherUid) || {}; return u.username || "user"; }
 function convDisplayEmoji(data, otherUid) { if (data.isGroup) return data.emoji || TWE + "1f465.png"; const u = userCache.get(otherUid) || {}; return u.emoji || faceForUid(otherUid); }
-
 function buildConvItem(convId, data, otherUid) {
   const el = document.createElement("div");
-  el.className = "conv-item";
+  el.className = "conv-item" + (data.activeCall ? " active-call" : "");
   const isGroup = !!data.isGroup;
   const emoji = convDisplayEmoji(data, otherUid);
   const name = convDisplayName(data, otherUid);
   const isMine = data.lastMessageFrom === auth.currentUser.uid;
   const prefix = isMine ? "you: " : "";
-  el.innerHTML = '<div class="avatar" data-uid="' + (isGroup ? "" : otherUid) + '"><img src="' + emoji + '" alt="" /></div><div class="conv-item-info"><div class="conv-item-name"></div><div class="conv-item-last"></div></div><div class="conv-item-meta"><div class="conv-item-time">' + (data.lastAt ? shortTime(data.lastAt) : "") + '</div></div>';
+  el.innerHTML = '<div class="avatar" data-uid="' + (isGroup ? "" : otherUid) + '"><img src="' + emoji + '" alt="" /></div><div class="conv-item-info"><div class="conv-item-name"></div><div class="conv-item-last"></div></div><div class="conv-item-meta"><div class="conv-item-time">' + (data.activeCall ? '📞' : (data.lastAt ? shortTime(data.lastAt) : "")) + '</div></div>';
   el.querySelector(".conv-item-name").textContent = name;
-  el.querySelector(".conv-item-last").textContent = prefix + (data.lastMessage || "");
+  el.querySelector(".conv-item-last").textContent = data.activeCall ? (data.activeCall.type === "video" ? "video call in progress" : "voice call in progress") : (prefix + (data.lastMessage || ""));
   el.addEventListener("click", function() { if (isGroup) openGroupConversation(convId); else openConversation(otherUid); });
   if (!isGroup) decorateAvatars(el);
   return el;
 }
-
 function renderConversationsListToEl(list) {
   if (!list) return;
   if (!auth || !auth.currentUser) { list.innerHTML = '<div class="conv-empty">log in</div>'; return; }
@@ -2148,7 +2216,6 @@ function renderConversationsListToEl(list) {
 }
 function renderConversationsList() { renderConversationsListToEl(document.getElementById("convList")); }
 function renderConversationsListMobile() { renderConversationsListToEl(document.getElementById("convListMobile")); }
-
 function clearConvTyping() { if (convTypingUnsub) { try { convTypingUnsub(); } catch (e) {} convTypingUnsub = null; } }
 function watchTyping(convId, otherUid) {
   clearConvTyping();
@@ -2168,7 +2235,6 @@ function watchTyping(convId, otherUid) {
     } else { sub.classList.remove("show"); }
   }, function() {});
 }
-
 async function openConversation(otherUid) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const me = auth.currentUser.uid;
@@ -2202,7 +2268,6 @@ async function openConversation(otherUid) {
   renderConversationsList(); renderConversationsListMobile();
   setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
 }
-
 async function openGroupConversation(convId) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const me = auth.currentUser.uid;
@@ -2234,7 +2299,6 @@ async function openGroupConversation(convId) {
   renderConversationsList(); renderConversationsListMobile();
   setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
 }
-
 function renderChatMessages(snap, otherUid) {
   const msgsEl = document.getElementById("chatMessages");
   if (!auth || !auth.currentUser) return;
@@ -2272,7 +2336,6 @@ function renderChatMessages(snap, otherUid) {
     setTimeout(function() { msgsEl.querySelectorAll(".chat-msg-enter").forEach(function(el) { el.classList.remove("chat-msg-enter"); }); }, 350);
   }
 }
-
 function buildChatMessageRow(m, ctx) {
   const me = ctx.me, isGroup = ctx.isGroup, theirLastReadMs = ctx.theirLastReadMs;
   const mine = m.data.from === me;
@@ -2303,7 +2366,7 @@ function buildChatMessageRow(m, ctx) {
     const mediaEl = document.createElement(m.data.mediaType === "video" ? "video" : "img");
     mediaEl.src = m.data.mediaUrl; mediaEl.className = "chat-bubble-media";
     if (m.data.mediaType === "video") { mediaEl.controls = true; mediaEl.playsInline = true; mediaEl.preload = "metadata"; }
-    else { mediaEl.loading = "lazy"; mediaEl.alt = ""; mediaEl.addEventListener("click", function() { openLightbox(m.data.mediaUrl); }); }
+    else { mediaEl.loading = "lazy"; mediaEl.alt = ""; mediaEl.addEventListener("click", function() { openLightbox(m.data.mediaUrl, false); }); }
     mediaWrap.appendChild(mediaEl);
     if (m.data.mediaType === "gif") {
       const isSaved = isGifSaved(m.data.mediaUrl);
@@ -2327,7 +2390,7 @@ function buildChatMessageRow(m, ctx) {
   }
   const reactions = m.data.reactions || {};
   const reactionEntries = Object.entries(reactions).filter(function(e) { return Array.isArray(e[1]) && e[1].length > 0; });
-  if (reactionEntries.length > 0) {
+  if (reactionEntries.length > 0 && !isGroup) {
     const chips = document.createElement("div"); chips.className = "reaction-chips";
     reactionEntries.forEach(function(entry) {
       const hex = entry[0]; const uids = entry[1];
@@ -2347,35 +2410,39 @@ function buildChatMessageRow(m, ctx) {
     const msgMs = m.data.createdAt ? m.data.createdAt.toMillis() : 0;
     const seen = msgMs > 0 && msgMs <= theirLastReadMs;
     const tick = document.createElement("span"); tick.className = "chat-seen" + (seen ? " read" : ""); tick.textContent = "✓✓";
+    if (isGroup) {
+      tick.style.cursor = "pointer";
+      tick.title = "Who's seen this?";
+      tick.addEventListener("click", function(e) { e.stopPropagation(); openSeenByModal(m.data.createdAt ? m.data.createdAt.toMillis() : 0); });
+    }
     if (settingsState.readReceipts) { timeRow.appendChild(document.createTextNode(timeText + " ")); timeRow.appendChild(tick); }
     else { timeRow.textContent = timeText; }
   } else { timeRow.textContent = timeText; }
   wrap.appendChild(timeRow);
-
   let pressTimer = null;
-  const openPicker = function(e) { if (e) e.preventDefault(); showReactionPicker(e, m.id, mine, m.data); };
+  const openPicker = function(e) { if (e) e.preventDefault(); showReactionPicker(e, m.id, mine, m.data, isGroup); };
   bubble.addEventListener("contextmenu", openPicker);
-  bubble.addEventListener("touchstart", function(e) { pressTimer = setTimeout(function() { haptic(15); showReactionPicker(e.touches[0], m.id, mine, m.data); }, 500); }, { passive: true });
+  bubble.addEventListener("touchstart", function(e) { pressTimer = setTimeout(function() { haptic(15); showReactionPicker(e.touches[0], m.id, mine, m.data, isGroup); }, 500); }, { passive: true });
   bubble.addEventListener("touchend", function() { clearTimeout(pressTimer); });
   bubble.addEventListener("touchmove", function() { clearTimeout(pressTimer); });
-
   row.appendChild(wrap);
   return row;
 }
-
-function showReactionPicker(evt, msgId, isMine, msgData) {
+function showReactionPicker(evt, msgId, isMine, msgData, isGroup) {
   if (!evt) return;
   reactionTargetMsgId = msgId;
   const reactionPicker = document.getElementById("reactionPicker");
   reactionPicker.innerHTML = "";
-  REACTION_EMOJI_HEX.forEach(function(hex) {
-    const b = document.createElement("button");
-    b.innerHTML = '<img class="tw-emoji" src="' + TWE + hex + '.png" alt="" />';
-    b.addEventListener("click", function() { toggleReaction(msgId, hex); reactionPicker.classList.remove("open"); });
-    reactionPicker.appendChild(b);
-  });
+  if (!isGroup) {
+    REACTION_EMOJI_HEX.forEach(function(hex) {
+      const b = document.createElement("button");
+      b.innerHTML = '<img class="tw-emoji" src="' + TWE + hex + '.png" alt="" />';
+      b.addEventListener("click", function() { toggleReaction(msgId, hex); reactionPicker.classList.remove("open"); });
+      reactionPicker.appendChild(b);
+    });
+  }
   if (isMine) {
-    const divider = document.createElement("div"); divider.className = "reaction-picker-divider"; reactionPicker.appendChild(divider);
+    if (!isGroup) { const divider = document.createElement("div"); divider.className = "reaction-picker-divider"; reactionPicker.appendChild(divider); }
     const editBtn = document.createElement("button"); editBtn.className = "reaction-picker-edit"; editBtn.innerHTML = twe("270f", 18); editBtn.title = "Edit";
     editBtn.addEventListener("click", function() { reactionPicker.classList.remove("open"); editChatMessage(msgId, msgData); });
     reactionPicker.appendChild(editBtn);
@@ -2393,7 +2460,6 @@ function showReactionPicker(evt, msgId, isMine, msgData) {
   reactionPicker.style.top = Math.max(12, y - 60) + "px";
   reactionPicker.classList.add("open");
 }
-
 async function toggleReaction(msgId, emojiHex) {
   if (!auth || !auth.currentUser || !currentConvId) return;
   const me = auth.currentUser.uid;
@@ -2408,9 +2474,9 @@ async function toggleReaction(msgId, emojiHex) {
     if (idx >= 0) list.splice(idx, 1); else list.push(me);
     if (list.length === 0) delete reactions[emojiHex]; else reactions[emojiHex] = list;
     await ref.update({ reactions: reactions });
+    _lastRenderedMsgCount = 0;
   } catch (e) { toast("Reaction failed.", true); }
 }
-
 async function deleteChatMessage(msgId) {
   if (!auth || !auth.currentUser || !currentConvId) return;
   try {
@@ -2422,7 +2488,6 @@ async function deleteChatMessage(msgId) {
     haptic(15); status("Deleted.");
   } catch (e) { toast("Delete failed.", true); }
 }
-
 async function editChatMessage(msgId, msgData) {
   const currentText = prompt("Edit message:", msgData.text || "");
   if (currentText === null) return;
@@ -2433,7 +2498,6 @@ async function editChatMessage(msgId, msgData) {
     haptic(10); status("Edited.");
   } catch (e) { toast("Edit failed.", true); }
 }
-
 function signalTyping() {
   if (!currentConvId || currentConvIsGroup) return;
   if (!auth || !auth.currentUser) return;
@@ -2442,7 +2506,6 @@ function signalTyping() {
   const me = auth.currentUser.uid;
   try { db.collection("conversations").doc(currentConvId).set({ ["typing." + me]: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }).catch(function() {}); } catch (e) {}
 }
-
 async function sendChatMessage() {
   const input = document.getElementById("chatInput");
   const text = input.value.trim(); if (!text) return;
@@ -2461,7 +2524,6 @@ async function sendChatMessage() {
     if (!currentConvIsGroup) notify(otherUid, "dm", { text: text.slice(0, 60) });
   } catch (e) { toast("Send failed.", true); }
 }
-
 async function sendChatMedia(file) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   if (!currentConvId) { toast("No conversation open.", true); return; }
@@ -2493,7 +2555,6 @@ async function sendChatMedia(file) {
   } catch (e) { toast("Upload failed.", true); }
   finally { isUploadingChatMedia = false; attachBtn.disabled = false; attachBtn.innerHTML = oldHtml; hideLoader(); }
 }
-
 async function sendChatGif(gifUrl) {
   if (!auth || !auth.currentUser) return;
   if (!currentConvId) return;
@@ -2509,7 +2570,6 @@ async function sendChatGif(gifUrl) {
     if (!currentConvIsGroup) notify(otherUid, "dm", { text: "GIF" });
   } catch (e) { toast("Send failed.", true); }
 }
-
 async function sendVoiceMessage(blob, duration) {
   if (!auth || !auth.currentUser || !currentConvId) return;
   const me = auth.currentUser.uid; const otherUid = currentConvOtherUid;
@@ -2529,7 +2589,6 @@ async function sendVoiceMessage(blob, duration) {
   } catch (e) { toast("Voice failed.", true); }
   finally { hideLoader(); }
 }
-
 async function startVoiceRecording() {
   if (!currentConvId) { toast("No conversation open.", true); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Voice not supported.", true); return; }
@@ -2563,7 +2622,6 @@ async function startVoiceRecording() {
     }, 200);
   } catch (e) { toast("Mic denied.", true); }
 }
-
 function closeConversation() {
   if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
   clearConvTyping();
@@ -2587,6 +2645,46 @@ function closeConversation() {
   chatReturnView = "feed";
 }
 
+/* ==== SEEN BY ==== */
+function openSeenByModal(msgTimestampMs) {
+  if (!currentConvId || !currentConvIsGroup) return;
+  const conv = conversationsCache.get(currentConvId);
+  if (!conv || !auth || !auth.currentUser) return;
+  const me = auth.currentUser.uid;
+  const members = (conv.members || []).filter(function(uid) { return uid !== me; });
+  const lastRead = conv.lastRead || {};
+  const seen = [], notSeen = [];
+  members.forEach(function(uid) {
+    const tlr = lastRead[uid];
+    const readMs = (tlr && typeof tlr.toMillis === "function") ? tlr.toMillis() : 0;
+    (msgTimestampMs > 0 && msgTimestampMs <= readMs ? seen : notSeen).push(uid);
+  });
+  const box = document.getElementById("seenByList");
+  box.innerHTML = "";
+  if (seen.length === 0 && notSeen.length === 0) { box.innerHTML = '<div class="empty">No other members.</div>'; }
+  else {
+    [["Seen by " + seen.length, seen], ["Delivered to " + notSeen.length, notSeen]].forEach(function(pair) {
+      const label = pair[0], uids = pair[1];
+      if (uids.length === 0 && label.indexOf("Seen") === 0) return;
+      const h = document.createElement("div"); h.className = "seen-by-section"; h.textContent = label;
+      box.appendChild(h);
+      uids.forEach(function(uid) {
+        const u = userCache.get(uid) || {};
+        const row = document.createElement("div"); row.className = "list-row";
+        row.innerHTML = '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || faceForUid(uid)) + '" alt="" /></div><div style="flex:1;min-width:0"><div class="l-name"></div><div class="l-handle">@' + escapeHtml(u.username || "user") + '</div></div>';
+        row.querySelector(".l-name").textContent = u.username || "user";
+        row.addEventListener("click", function() { document.getElementById("seenByModal").classList.remove("open"); const targetUid = uid; closeConversation(); openProfile(targetUid); });
+        box.appendChild(row);
+      });
+    });
+    if (notSeen.length === 0) { const h = document.createElement("div"); h.className = "seen-by-section"; h.textContent = "Delivered to 0"; box.appendChild(h); }
+  }
+  document.getElementById("seenByModal").classList.add("open");
+  decorateAvatars(box);
+}
+document.getElementById("seenByClose").addEventListener("click", function() { document.getElementById("seenByModal").classList.remove("open"); });
+document.getElementById("seenByModal").addEventListener("click", function(e) { if (e.target.id === "seenByModal") document.getElementById("seenByModal").classList.remove("open"); });
+
 /* ==== EDIT POST ==== */
 function openEditPost(postId, data) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
@@ -2603,7 +2701,6 @@ function openEditPost(postId, data) {
 /* ==== QUICK ACTIONS ==== */
 function openQuickActions(uid, evt) {
   if (!uid || !evt) return;
-  const u = userCache.get(uid) || {};
   const menu = document.getElementById("quickActionMenu");
   menu.innerHTML = "";
   const isMe = auth && auth.currentUser && auth.currentUser.uid === uid;
@@ -2630,27 +2727,425 @@ function openQuickActions(uid, evt) {
   menu.classList.add("open");
 }
 function closeQuickActions() { const m = document.getElementById("quickActionMenu"); if (m) m.classList.remove("open"); }
-
 function attachDoubleTapLike(el, likeBtn) {
   if (!el || !likeBtn) return;
   let lastTap = 0;
-  el.addEventListener("touchstart", function() {
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  let touchMoved = false;
+  function doLike() {
+    if (!likeBtn.classList.contains("active")) likeBtn.click();
+    haptic(20);
+    if (!el.querySelector(".dbl-heart")) {
+      const wrap = document.createElement("div"); wrap.className = "dbl-heart";
+      wrap.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+      try { el.style.position = "relative"; } catch (e) {}
+      el.appendChild(wrap);
+      setTimeout(function() { try { wrap.remove(); } catch (e) {} }, 750);
+    }
+  }
+  function isIgnored(target) {
+    if (!target || !target.closest) return false;
+    return !!target.closest("button, a, input, textarea, video, .link-preview-card, .poll-option, .comment-row, .comment-item, .action");
+  }
+  el.addEventListener("dblclick", function(e) { if (isIgnored(e.target)) return; doLike(); });
+  el.addEventListener("touchstart", function(e) { touchMoved = false; touchStartY = e.touches[0].clientY; touchStartTime = Date.now(); }, { passive: true });
+  el.addEventListener("touchmove", function(e) { if (Math.abs(e.touches[0].clientY - touchStartY) > 12) touchMoved = true; }, { passive: true });
+  el.addEventListener("touchend", function(e) {
+    if (touchMoved) return;
+    if (Date.now() - touchStartTime > 550) return;
+    if (isIgnored(e.target)) return;
     const now = Date.now();
-    if (now - lastTap < 300) {
-      if (!likeBtn.classList.contains("active")) likeBtn.click();
-      haptic(20);
-      if (!el.querySelector(".dbl-heart")) {
-        const wrap = document.createElement("div"); wrap.className = "dbl-heart";
-        wrap.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
-        el.style.position = "relative"; el.appendChild(wrap);
-        setTimeout(function() { wrap.remove(); }, 750);
-      }
-      lastTap = 0;
-    } else { lastTap = now; }
-  }, { passive: true });
+    if (now - lastTap < 400) { doLike(); lastTap = 0; } else { lastTap = now; }
+  });
 }
 
-/* ==== USER DATA ==== */
+/* =====================================================================
+   CALLS
+   ===================================================================== */
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" }
+  ]
+};
+function callIdGen() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8); }
+function pairKey(a, b) { return [a, b].sort().join("_"); }
+function getLocalMedia(type) {
+  const constraints = type === "video"
+    ? { audio: true, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } }
+    : { audio: true, video: false };
+  return navigator.mediaDevices.getUserMedia(constraints);
+}
+function startRingtone() {
+  if (callRingCtx) return;
+  try {
+    callRingCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const beep = function(freq) {
+      if (!callRingCtx) return;
+      const o = callRingCtx.createOscillator(), g = callRingCtx.createGain();
+      o.type = "sine"; o.frequency.value = freq; g.gain.value = 0.18;
+      o.connect(g); g.connect(callRingCtx.destination);
+      o.start(); o.stop(callRingCtx.currentTime + 0.4);
+    };
+    const ring = function() { beep(660); setTimeout(function() { beep(550); }, 500); };
+    ring();
+    callRingTimer = setInterval(ring, 2000);
+  } catch (e) {}
+}
+function stopRingtone() {
+  if (callRingTimer) clearInterval(callRingTimer);
+  callRingTimer = null;
+  if (callRingCtx) { try { callRingCtx.close(); } catch (e) {} callRingCtx = null; }
+}
+async function startCall(type) {
+  if (!navigator.onLine) { toast("You're offline — can't start a call.", true); return; }
+  if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
+  if (!currentConvId) { toast("No conversation open.", true); return; }
+  if (currentCall) { toast("Already in a call.", true); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Calls not supported in this browser.", true); return; }
+  const me = auth.currentUser.uid;
+  const conv = conversationsCache.get(currentConvId) || {};
+  const isGroup = !!conv.isGroup;
+  if (isGroup && (conv.members || []).length > MAX_GROUP_MEMBERS) { toast("Group is too big for calls.", true); return; }
+  let localStream;
+  try {
+    showLoader("starting " + type + " call…");
+    localStream = await getLocalMedia(type);
+  } catch (e) { hideLoader(); toast("Could not access " + (type === "video" ? "camera/mic" : "microphone") + ".", true); return; }
+  hideLoader();
+  const callId = callIdGen();
+  const videoOff = type === "voice";
+  currentCall = { callId, convId: currentConvId, isGroup, type, localStream, peers: new Map(), muted: false, videoOff: videoOff, startTime: Date.now(), durationTimer: null };
+  try {
+    await db.collection("calls").doc(callId).set({ conversationId: currentConvId, isGroup: isGroup, type: type, createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: videoOff });
+    await db.collection("conversations").doc(currentConvId).update({ activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() } });
+  } catch (e) {
+    toast("Could not start call (check Firestore rules for 'calls').", true);
+    try { localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e2) {}
+    currentCall = null;
+    return;
+  }
+  showCallOverlay();
+  attachLocalTile();
+  setupCallListeners();
+  startDurationTimer();
+  setupLocalSpeakingDetection();
+}
+async function joinCall(callId, type) {
+  if (currentCall) return;
+  if (!navigator.onLine) { toast("You're offline.", true); return; }
+  const me = auth.currentUser.uid;
+  let localStream;
+  try { showLoader("joining call…"); localStream = await getLocalMedia(type); }
+  catch (e) { hideLoader(); toast("Could not access mic/camera.", true); return; }
+  hideLoader();
+  const callSnap = await db.collection("calls").doc(callId).get();
+  if (!callSnap.exists) { toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
+  const callData = callSnap.data();
+  currentCall = { callId, convId: callData.conversationId, isGroup: !!callData.isGroup, type: callData.type, localStream, peers: new Map(), muted: false, videoOff: callData.type === "voice", startTime: Date.now(), durationTimer: null };
+  try { await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: currentCall.videoOff }); }
+  catch (e) {}
+  showCallOverlay();
+  attachLocalTile();
+  setupCallListeners();
+  startDurationTimer();
+  setupLocalSpeakingDetection();
+}
+function showCallOverlay() {
+  const overlay = document.getElementById("callOverlay");
+  overlay.classList.add("open");
+  if (!currentCall) return;
+  const conv = conversationsCache.get(currentCall.convId) || {};
+  const titleEl = document.getElementById("callHeaderTitle");
+  const subEl = document.getElementById("callHeaderSub");
+  const av = document.querySelector("#callHeaderAvatar img");
+  if (currentCall.isGroup) { titleEl.textContent = conv.name || "group call"; subEl.textContent = "Group " + (currentCall.type === "video" ? "video" : "voice") + " call"; av.src = conv.emoji || TWE + "1f465.png"; }
+  else {
+    const otherUid = (conv.members || []).find(function(u) { return u !== auth.currentUser.uid; });
+    const u = userCache.get(otherUid) || {};
+    titleEl.textContent = u.username || "call";
+    subEl.textContent = (currentCall.type === "video" ? "Video" : "Voice") + " call";
+    av.src = u.emoji || faceForUid(otherUid);
+  }
+  document.getElementById("callVideoBtn").style.display = currentCall.type === "video" ? "" : "none";
+}
+function startDurationTimer() {
+  const el = document.getElementById("callDuration");
+  currentCall.durationTimer = setInterval(function() {
+    if (!currentCall) return;
+    const s = Math.floor((Date.now() - currentCall.startTime) / 1000);
+    el.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }, 500);
+}
+function attachLocalTile() {
+  const container = document.getElementById("callVideos");
+  container.classList.toggle("voice-mode", currentCall.type === "voice");
+  let tile = document.getElementById("call-tile-local");
+  if (!tile) { tile = document.createElement("div"); tile.id = "call-tile-local"; tile.className = "call-tile local-mirror"; container.appendChild(tile); }
+  tile.innerHTML = "";
+  if (currentCall.type === "video" && !currentCall.videoOff) {
+    const v = document.createElement("video"); v.autoplay = true; v.muted = true; v.playsInline = true; v.srcObject = currentCall.localStream; tile.appendChild(v);
+  } else {
+    tile.classList.add("voice-only");
+    const av = document.createElement("div"); av.className = "call-avatar"; av.innerHTML = '<img src="' + myEmoji + '" alt="" />'; tile.appendChild(av);
+  }
+  const lbl = document.createElement("div"); lbl.className = "call-tile-label";
+  lbl.innerHTML = '<span class="name-text">You</span>' + (currentCall.muted ? '<span class="call-muted-icon">🔇</span>' : "");
+  tile.appendChild(lbl);
+}
+function attachRemoteTile(uid, stream) {
+  const container = document.getElementById("callVideos");
+  let tile = document.getElementById("call-tile-" + uid);
+  if (!tile) { tile = document.createElement("div"); tile.id = "call-tile-" + uid; tile.className = "call-tile"; container.appendChild(tile); }
+  tile.innerHTML = "";
+  const peer = currentCall.peers.get(uid) || {};
+  const user = userCache.get(uid) || {};
+  const showVideo = currentCall.type === "video" && !peer.videoOff && stream && stream.getVideoTracks().length > 0;
+  if (showVideo) { const v = document.createElement("video"); v.autoplay = true; v.playsInline = true; v.srcObject = stream; tile.appendChild(v); }
+  else { tile.classList.add("voice-only"); const av = document.createElement("div"); av.className = "call-avatar"; av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />'; tile.appendChild(av); }
+  const lbl = document.createElement("div"); lbl.className = "call-tile-label";
+  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : "");
+  tile.appendChild(lbl);
+}
+function createPeerConnection(peerUid) {
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+  if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { pc.addTrack(t, currentCall.localStream); });
+  pc.onicecandidate = function(e) {
+    if (!e.candidate || !currentCall) return;
+    const key = pairKey(auth.currentUser.uid, peerUid);
+    const amCaller = auth.currentUser.uid < peerUid;
+    const field = amCaller ? "fromCandidates" : "toCandidates";
+    const update = {}; update[field] = firebase.firestore.FieldValue.arrayUnion(e.candidate.toJSON());
+    db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set(update, { merge: true }).catch(function() {});
+  };
+  pc.ontrack = function(e) {
+    const stream = e.streams[0];
+    const peer = currentCall.peers.get(peerUid); if (peer) peer.stream = stream;
+    attachRemoteTile(peerUid, stream);
+    setupRemoteSpeakingDetection(peerUid, stream);
+  };
+  pc.onconnectionstatechange = function() { if (!currentCall) return; if (pc.connectionState === "failed" || pc.connectionState === "closed") removePeer(peerUid); };
+  return pc;
+}
+function setupCallListeners() {
+  const callId = currentCall.callId;
+  const me = auth.currentUser.uid;
+  const partsRef = db.collection("calls").doc(callId).collection("participants");
+  const partsUnsub = partsRef.onSnapshot(async function(snap) {
+    if (!currentCall) return;
+    const seen = new Set();
+    const pendingNew = [];
+    snap.forEach(function(d) {
+      const uid = d.id; seen.add(uid);
+      const data = d.data();
+      if (uid === me) return;
+      if (!currentCall.peers.has(uid)) pendingNew.push({ uid: uid, data: data });
+      else {
+        const peer = currentCall.peers.get(uid);
+        peer.muted = !!data.muted; peer.videoOff = !!data.videoOff;
+        peer.username = data.username; peer.emoji = data.emoji;
+      }
+    });
+    currentCall.peers.forEach(function(_, uid) { if (!seen.has(uid)) removePeer(uid); });
+    for (const item of pendingNew) {
+      if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
+      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, username: item.data.username, emoji: item.data.emoji }); }
+    }
+    if (currentCall) attachRemoteTilesRefresh();
+  });
+  callUnsubs.push(partsUnsub);
+  const signalsRef = db.collection("calls").doc(callId).collection("signals");
+  const signalsUnsub = signalsRef.onSnapshot(function(snap) {
+    snap.docChanges().forEach(async function(change) {
+      if (change.type === "removed") return;
+      const key = change.doc.id;
+      const parts = key.split("_");
+      if (parts.indexOf(me) === -1) return;
+      const otherUid = parts.find(function(p) { return p !== me; });
+      if (!otherUid) return;
+      const data = change.doc.data();
+      try { await processSignal(otherUid, data); } catch (e) {}
+    });
+  });
+  callUnsubs.push(signalsUnsub);
+}
+function attachRemoteTilesRefresh() {
+  if (!currentCall) return;
+  document.querySelectorAll("#callVideos .call-tile").forEach(function(t) {
+    const id = t.id.replace("call-tile-", "");
+    if (id === "local") return;
+    if (!currentCall.peers.has(id)) t.remove();
+  });
+  currentCall.peers.forEach(function(peer, uid) { attachRemoteTile(uid, peer.stream); });
+}
+async function initiateOfferTo(peerUid, peerData) {
+  const me = auth.currentUser.uid;
+  const pc = createPeerConnection(peerUid);
+  currentCall.peers.set(peerUid, { pc: pc, stream: null, muted: !!peerData.muted, videoOff: !!peerData.videoOff, username: peerData.username, emoji: peerData.emoji });
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const key = pairKey(me, peerUid);
+  await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ fromUid: me, toUid: peerUid, offer: { type: offer.type, sdp: offer.sdp }, fromCandidates: [], toCandidates: [] }, { merge: true });
+}
+async function processSignal(peerUid, data) {
+  const me = auth.currentUser.uid;
+  let peer = currentCall.peers.get(peerUid);
+  if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false }; currentCall.peers.set(peerUid, peer); }
+  if (!peer.pc) peer.pc = createPeerConnection(peerUid);
+  const pc = peer.pc;
+  if (data.offer && !pc.currentRemoteDescription) {
+    await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    const key = pairKey(me, peerUid);
+    await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).update({ answer: { type: answer.type, sdp: answer.sdp } });
+  }
+  if (data.answer && !pc.currentRemoteDescription) { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
+  const amCaller = me < peerUid;
+  const candidates = amCaller ? (data.toCandidates || []) : (data.fromCandidates || []);
+  for (const c of candidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {} }
+}
+function removePeer(uid) {
+  const peer = currentCall && currentCall.peers.get(uid);
+  if (!peer) return;
+  try { if (peer.pc) peer.pc.close(); } catch (e) {}
+  try { if (peer.audioCtx) peer.audioCtx.close(); } catch (e) {}
+  currentCall.peers.delete(uid);
+  const tile = document.getElementById("call-tile-" + uid); if (tile) tile.remove();
+}
+function setupLocalSpeakingDetection() {
+  if (!currentCall || !currentCall.localStream) return;
+  const audioTracks = currentCall.localStream.getAudioTracks(); if (!audioTracks.length) return;
+  try {
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(currentCall.localStream);
+    const analyser = ctx.createAnalyser(); analyser.fftSize = 512;
+    src.connect(analyser);
+    const arr = new Uint8Array(analyser.frequencyBinCount);
+    currentCall.localAudioCtx = ctx;
+    const check = function() {
+      if (!currentCall) { try { ctx.close(); } catch (e) {} return; }
+      analyser.getByteFrequencyData(arr);
+      let sum = 0; for (let i = 0; i < arr.length; i++) sum += arr[i];
+      const avg = sum / arr.length;
+      const tile = document.getElementById("call-tile-local");
+      if (tile) tile.classList.toggle("speaking", avg > 18 && !currentCall.muted);
+      requestAnimationFrame(check);
+    };
+    check();
+  } catch (e) {}
+}
+function setupRemoteSpeakingDetection(uid, stream) {
+  if (!stream || !stream.getAudioTracks().length) return;
+  try {
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser(); analyser.fftSize = 512;
+    src.connect(analyser);
+    const arr = new Uint8Array(analyser.frequencyBinCount);
+    const peer = currentCall && currentCall.peers.get(uid);
+    if (peer) { peer.audioCtx = ctx; peer.analyser = analyser; }
+    const check = function() {
+      if (!currentCall || !currentCall.peers.has(uid)) { try { ctx.close(); } catch (e) {} return; }
+      analyser.getByteFrequencyData(arr);
+      let sum = 0; for (let i = 0; i < arr.length; i++) sum += arr[i];
+      const avg = sum / arr.length;
+      const p = currentCall.peers.get(uid);
+      const speaking = avg > 18 && !(p && p.muted);
+      const tile = document.getElementById("call-tile-" + uid);
+      if (tile) tile.classList.toggle("speaking", speaking);
+      requestAnimationFrame(check);
+    };
+    check();
+  } catch (e) {}
+}
+async function endCall() {
+  stopRingtone();
+  if (!currentCall) { document.getElementById("incomingCall").classList.remove("open"); pendingIncomingCall = null; return; }
+  const callId = currentCall.callId, convId = currentCall.convId;
+  const me = auth.currentUser && auth.currentUser.uid;
+  callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
+  currentCall.peers.forEach(function(_, uid) { removePeer(uid); });
+  try { if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
+  try { if (currentCall.localAudioCtx) currentCall.localAudioCtx.close(); } catch (e) {}
+  if (currentCall.durationTimer) clearInterval(currentCall.durationTimer);
+  document.getElementById("callOverlay").classList.remove("open");
+  document.getElementById("callVideos").innerHTML = "";
+  currentCall = null;
+  try {
+    if (callId && me) {
+      await db.collection("calls").doc(callId).collection("participants").doc(me).delete();
+      const remaining = await db.collection("calls").doc(callId).collection("participants").get();
+      if (remaining.size === 0) {
+        const sigs = await db.collection("calls").doc(callId).collection("signals").get();
+        const batch = db.batch(); sigs.forEach(function(s) { batch.delete(s.ref); }); batch.delete(db.collection("calls").doc(callId));
+        await batch.commit();
+        if (convId) { try { await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() }); } catch (e) {} }
+      }
+    }
+  } catch (e) {}
+}
+function checkForIncomingCall(convSnapDocs) {
+  if (!auth || !auth.currentUser) return;
+  const me = auth.currentUser.uid;
+  if (currentCall) return;
+  let found = null;
+  convSnapDocs.forEach(function(d) {
+    const data = d.data();
+    const ac = data.activeCall;
+    if (!ac || ac.createdBy === me) return;
+    const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
+    if (started && Date.now() - started > 90000) return;
+    found = { convId: d.id, conv: data, call: ac };
+  });
+  if (found && !pendingIncomingCall) { pendingIncomingCall = found; showIncomingCallModal(found); }
+  else if (!found && pendingIncomingCall) { pendingIncomingCall = null; document.getElementById("incomingCall").classList.remove("open"); stopRingtone(); }
+}
+function showIncomingCallModal(found) {
+  const { conv, call } = found;
+  const av = document.querySelector("#incomingCallAvatar img");
+  const nameEl = document.getElementById("incomingCallName");
+  const typeEl = document.getElementById("incomingCallType");
+  if (conv.isGroup) { av.src = conv.emoji || TWE + "1f465.png"; nameEl.textContent = conv.name || "group"; typeEl.textContent = "Incoming group " + (call.type === "video" ? "video" : "voice") + " call"; }
+  else {
+    const fromUid = call.createdBy;
+    const u = userCache.get(fromUid) || {};
+    av.src = u.emoji || faceForUid(fromUid);
+    nameEl.textContent = u.username || "user";
+    typeEl.textContent = "Incoming " + (call.type === "video" ? "video" : "voice") + " call";
+  }
+  document.getElementById("incomingCall").classList.add("open");
+  startRingtone();
+}
+
+/* =====================================================================
+   NO INTERNET DETECTION
+   ===================================================================== */
+function updateOnlineStatus() {
+  const ov = document.getElementById("noInternetOverlay");
+  if (!ov) return;
+  if (navigator.onLine) ov.classList.remove("open");
+  else ov.classList.add("open");
+}
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
+setInterval(function() {
+  const ov = document.getElementById("noInternetOverlay");
+  if (!ov) return;
+  const shouldShow = !navigator.onLine;
+  if (shouldShow && !ov.classList.contains("open")) ov.classList.add("open");
+  if (!shouldShow && ov.classList.contains("open")) ov.classList.remove("open");
+}, 3000);
+document.getElementById("retryConnectionBtn").addEventListener("click", function() {
+  if (navigator.onLine) { updateOnlineStatus(); toast("Back online!"); }
+  else toast("Still offline.", true);
+});
+
+/* =====================================================================
+   USER DATA
+   ===================================================================== */
 async function fuzzUser() {
   if (auth && auth.currentUser) await auth.signOut();
   myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); myPinned = []; mySavedIds = new Set(); mySavedGifs = [];
@@ -2658,7 +3153,6 @@ async function fuzzUser() {
   updateSidebar(); closeProfile(); showView("feed"); renderPosts();
   document.getElementById("fuzzedModal").classList.add("open");
 }
-
 async function loadProfile(user) {
   if (!myUsername) { myUsername = fallbackName(user); updateSidebar(); }
   try {
@@ -2691,28 +3185,22 @@ async function loadProfile(user) {
     loadSavedIds();
   } catch (err) { status("Profile error: " + (err.code || err.message), true); }
 }
-
 async function loadSavedIds() {
   if (!auth || !auth.currentUser) return;
-  try {
-    const snap = await db.collection("users").doc(auth.currentUser.uid).collection("saved").get();
-    mySavedIds = new Set(snap.docs.map(function(d) { return d.id; }));
-  } catch (e) { mySavedIds = new Set(); }
+  try { const snap = await db.collection("users").doc(auth.currentUser.uid).collection("saved").get(); mySavedIds = new Set(snap.docs.map(function(d) { return d.id; })); }
+  catch (e) { mySavedIds = new Set(); }
 }
-
 async function notify(targetUid, type, extra) {
   if (!targetUid || !auth || !auth.currentUser) return;
   if (targetUid === auth.currentUser.uid) return;
   if (isBlocked(targetUid) || isBanned(targetUid)) return;
   try { await db.collection("notifications").add(Object.assign({ targetUid: targetUid, fromUid: auth.currentUser.uid, fromUsername: myUsername, fromEmoji: myEmoji, type: type, read: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() }, extra || {})); } catch (e) {}
 }
-
 function touchLastSeen() {
   if (!auth || !auth.currentUser || !db) return;
   if (!settingsState.showOnline) return;
   db.collection("users").doc(auth.currentUser.uid).update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(function() {});
 }
-
 function setupUsersListener() {
   if (usersUnsub) { usersUnsub(); usersUnsub = null; }
   if (!db) return;
@@ -2751,7 +3239,6 @@ function setupUsersListener() {
     updateSidebar();
   }, function() {});
 }
-
 function setupNotifListener(user) {
   if (notifUnsub) { notifUnsub(); notifUnsub = null; }
   seenNotifIds = new Set(); notifFirstLoad = true;
@@ -2771,7 +3258,6 @@ function setupNotifListener(user) {
     notifFirstLoad = false;
   }, function() {});
 }
-
 function startConversationsListener() {
   if (conversationsUnsub) { conversationsUnsub(); conversationsUnsub = null; }
   if (!db || !auth || !auth.currentUser) return;
@@ -2781,15 +3267,15 @@ function startConversationsListener() {
     snap.forEach(function(d) { conversationsCache.set(d.id, d.data()); });
     renderConversationsList();
     renderConversationsListMobile();
+    checkForIncomingCall(snap.docs);
     if (currentConvId && currentMsgsSnap) renderChatMessages(currentMsgsSnap, currentConvOtherUid);
     if (currentConvId && !currentConvIsGroup) watchTyping(currentConvId, currentConvOtherUid);
     if (currentConvId && currentConvIsGroup) {
       const cd = conversationsCache.get(currentConvId);
-      if (cd) { const n = (cd.members || []).length; const subEl = document.getElementById("chatHeaderSub"); if (subEl) { subEl.textContent = n + " member" + (n === 1 ? "" : "s"); subEl.classList.add("show"); } }
+      if (cd) { const n = (cd.members || []).length; const subEl = document.getElementById("chatHeaderSub"); if (subEl && !cd.activeCall) { subEl.textContent = n + " member" + (n === 1 ? "" : "s"); subEl.classList.add("show"); } }
     }
   }, function() {});
 }
-
 function openUserPicker() {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const box = document.getElementById("userPickerList");
@@ -2812,7 +3298,6 @@ function openUserPicker() {
     decorateAvatars(box);
   }).catch(function() { box.innerHTML = '<div class="empty">could not load</div>'; });
 }
-
 let selectedGroupMembers = new Set();
 function openGroupPicker() {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
@@ -2832,19 +3317,22 @@ function openGroupPicker() {
       row.innerHTML = '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div><div class="pick-name">' + escapeHtml(u.data.username || "user") + '</div><div class="pick-check">✓</div>';
       row.addEventListener("click", function() {
         if (selectedGroupMembers.has(u.id)) { selectedGroupMembers.delete(u.id); row.classList.remove("selected"); }
-        else { selectedGroupMembers.add(u.id); row.classList.add("selected"); }
+        else {
+          if (selectedGroupMembers.size >= MAX_GROUP_MEMBERS - 1) { toast("Max " + MAX_GROUP_MEMBERS + " members (including you).", true); return; }
+          selectedGroupMembers.add(u.id); row.classList.add("selected");
+        }
       });
       box.appendChild(row);
     });
     decorateAvatars(box);
   }).catch(function() { box.innerHTML = '<div class="empty">could not load</div>'; });
 }
-
 async function createGroupChat() {
   if (!auth || !auth.currentUser) return;
   const name = document.getElementById("groupNameInput").value.trim();
   if (!name) { toast("Name it.", true); return; }
   if (selectedGroupMembers.size < 1) { toast("Pick 1+ members.", true); return; }
+  if (selectedGroupMembers.size > MAX_GROUP_MEMBERS - 1) { toast("Max " + MAX_GROUP_MEMBERS + " members (including you).", true); return; }
   const me = auth.currentUser.uid;
   const members = [me].concat(Array.from(selectedGroupMembers)).sort();
   const convId = "g_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -2858,7 +3346,6 @@ async function createGroupChat() {
     setTimeout(function() { openGroupConversation(convId); }, 400);
   } catch (e) { hideLoader(); toast("Create failed.", true); }
 }
-
 async function openGroupMembers() {
   if (!currentConvIsGroup || !currentConvId) return;
   const data = conversationsCache.get(currentConvId); if (!data) { toast("Not found.", true); return; }
@@ -2883,7 +3370,6 @@ async function openGroupMembers() {
     decorateAvatars(box);
   } catch (e) { box.innerHTML = '<div class="empty">could not load</div>'; }
 }
-
 function openGroupAvatarPicker() {
   if (!currentConvIsGroup || !currentConvId) return;
   if (!auth || !auth.currentUser) return;
@@ -2948,25 +3434,16 @@ async function deleteUserContent(targetUid) {
   showLoader("deleting…");
   try {
     const posts = await db.collection("posts").where("uid", "==", targetUid).get();
-    for (let i = 0; i < posts.docs.length; i++) {
-      const p = posts.docs[i];
-      try { const cs = await p.ref.collection("comments").get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } await p.ref.delete(); } catch (e) {}
-    }
+    for (let i = 0; i < posts.docs.length; i++) { const p = posts.docs[i]; try { const cs = await p.ref.collection("comments").get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } await p.ref.delete(); } catch (e) {} }
     const allPosts = await db.collection("posts").get();
-    for (let i = 0; i < allPosts.docs.length; i++) {
-      const p = allPosts.docs[i];
-      try { const cs = await p.ref.collection("comments").where("uid", "==", targetUid).get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } } catch (e) {}
-    }
+    for (let i = 0; i < allPosts.docs.length; i++) { const p = allPosts.docs[i]; try { const cs = await p.ref.collection("comments").where("uid", "==", targetUid).get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } } catch (e) {} }
     const f1 = await db.collection("follows").where("followerUid", "==", targetUid).get();
     const f2 = await db.collection("follows").where("followeeUid", "==", targetUid).get();
     const b1 = db.batch(); f1.forEach(function(d) { b1.delete(d.ref); }); f2.forEach(function(d) { b1.delete(d.ref); }); await b1.commit();
     const n1 = await db.collection("notifications").where("targetUid", "==", targetUid).get();
     const b2 = db.batch(); n1.forEach(function(d) { b2.delete(d.ref); }); await b2.commit();
     const convs = await db.collection("conversations").where("members", "array-contains", targetUid).get();
-    for (let i = 0; i < convs.docs.length; i++) {
-      const c = convs.docs[i];
-      try { const msgs = await c.ref.collection("messages").get(); if (msgs.size) { const b = db.batch(); msgs.forEach(function(m) { b.delete(m.ref); }); await b.commit(); } await c.ref.delete(); } catch (e) {}
-    }
+    for (let i = 0; i < convs.docs.length; i++) { const c = convs.docs[i]; try { const msgs = await c.ref.collection("messages").get(); if (msgs.size) { const b = db.batch(); msgs.forEach(function(m) { b.delete(m.ref); }); await b.commit(); } await c.ref.delete(); } catch (e) {} }
     hideLoader(); return true;
   } catch (e) { hideLoader(); return false; }
 }
@@ -3005,10 +3482,15 @@ function getTrackAudio(track) {
   if (track.audioEl) { track.audioEl.loop = true; return track.audioEl; }
   const src = track.kind === "builtin" ? track.src : track.blobUrl;
   const a = new Audio(src);
-  a.loop = true;
+  a.loop = true; a.preload = "auto";
   a.addEventListener("play", function() { musicTracks.forEach(function(t) { if (t.id !== track.id && t.audioEl && !t.audioEl.paused) { try { t.audioEl.pause(); } catch (e) {} } }); activeTrackId = track.id; });
+  a.addEventListener("timeupdate", function() {
+    if (!a.duration || !isFinite(a.duration) || a.duration <= 0) return;
+    if (a.currentTime >= a.duration - 0.12) { try { a.currentTime = 0; } catch (e) {} if (!a.paused) a.play().catch(function() {}); }
+  });
   a.addEventListener("ended", function() { try { a.currentTime = 0; a.play().catch(function() {}); } catch (e) {} });
-  track.audioEl = a; return a;
+  track.audioEl = a;
+  return a;
 }
 function toggleTrack(trackId) {
   const track = musicTracks.find(function(t) { return t.id === trackId; });
@@ -3071,12 +3553,8 @@ async function initFcm() {
 /* =====================================================================
    FIREBASE INIT
    ===================================================================== */
-try {
-  firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.firestore();
-} catch (err) { status("Firebase FAILED: " + err.message, true); }
-
+try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.firestore(); }
+catch (err) { status("Firebase FAILED: " + err.message, true); }
 loadSettings();
 applySettings();
 POST_TTL = (settingsState.postTTL || 24) * 60 * 60 * 1000;
@@ -3086,29 +3564,18 @@ myEmoji = DEFAULT_FACE;
    BOOT
    ===================================================================== */
 const lightboxEl = document.getElementById("lightbox");
-
 window.onerror = function(msg) { try { toast("ERROR: " + msg, true); } catch (e) {} };
-
-/* Try to register a service worker early (helps Android notifications) */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(function () {});
-}
-
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(function () {}); }
 runIntro();
-
+updateOnlineStatus();
 document.addEventListener("play", function(e) {
   const v = e.target;
-  if (v && v.tagName === "VIDEO") {
-    document.querySelectorAll("video").forEach(function(other) { if (other !== v && !other.paused) { try { other.pause(); } catch (err) {} } });
-  }
+  if (v && v.tagName === "VIDEO") { document.querySelectorAll("video").forEach(function(other) { if (other !== v && !other.paused) { try { other.pause(); } catch (err) {} } }); }
 }, true);
-
 lightboxEl.addEventListener("click", function(e) { if (e.target === lightboxEl || e.target.id === "lbClose") closeLightbox(); });
 document.getElementById("lbClose").addEventListener("click", function(e) { e.stopPropagation(); closeLightbox(); });
 document.getElementById("linkWarnCancel").addEventListener("click", function() { pendingLinkUrl = null; document.getElementById("linkWarnModal").classList.remove("open"); });
 document.getElementById("linkWarnOpen").addEventListener("click", function() { if (pendingLinkUrl) window.open(pendingLinkUrl, "_blank", "noopener,noreferrer"); pendingLinkUrl = null; document.getElementById("linkWarnModal").classList.remove("open"); });
-
-/* Logo easter egg — boop.mp3, only if no video or music is playing */
 document.querySelector(".logo").addEventListener("click", function () {
   const videoPlaying = Array.from(document.querySelectorAll("video")).some(function (v) { return !v.paused; });
   const musicPlaying = musicTracks.some(function (t) { return t.audioEl && !t.audioEl.paused; });
@@ -3116,8 +3583,6 @@ document.querySelector(".logo").addEventListener("click", function () {
   haptic(15);
   try { new Audio("boop.mp3").play().catch(function () {}); } catch (e) {}
 });
-
-/* Auth */
 document.getElementById("authSwitch").addEventListener("click", function() {
   isSignup = !isSignup;
   document.getElementById("authTitle").textContent = isSignup ? "Sign up" : "Log in";
@@ -3128,7 +3593,6 @@ document.getElementById("authSwitch").addEventListener("click", function() {
 document.getElementById("authModal").addEventListener("click", function(e) { if (e.target === document.getElementById("authModal")) document.getElementById("authModal").classList.remove("open"); });
 document.getElementById("bannedOk").addEventListener("click", function() { document.getElementById("bannedModal").classList.remove("open"); });
 document.getElementById("fuzzedLogout").addEventListener("click", async function() { if (auth && auth.currentUser) await auth.signOut(); document.getElementById("fuzzedModal").classList.remove("open"); document.getElementById("authModal").classList.remove("open"); myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; updateSidebar(); showView("feed"); renderPosts(); });
-
 document.getElementById("authSubmit").addEventListener("click", async function() {
   if (!auth) { document.getElementById("authError").textContent = "Firebase not loaded."; return; }
   const username = document.getElementById("authUsername").value.trim();
@@ -3164,11 +3628,8 @@ document.getElementById("authSubmit").addEventListener("click", async function()
     else errEl.textContent = err.message.replace("Firebase: ", "");
   }
 });
-
 document.getElementById("logoutBtn").addEventListener("click", async function(e) { e.stopPropagation(); if (auth) await auth.signOut(); myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); updateSidebar(); status("Logged out."); });
 document.getElementById("userRow").addEventListener("click", function() { if (auth && auth.currentUser) { openProfile(auth.currentUser.uid); return; } document.getElementById("authModal").classList.add("open"); document.getElementById("authUsername").focus(); });
-
-/* Nav */
 document.querySelectorAll(".nav-item").forEach(function(item) {
   item.addEventListener("click", function() {
     const nav = item.dataset.nav; if (!nav) return;
@@ -3184,7 +3645,6 @@ document.querySelectorAll(".nav-item").forEach(function(item) {
     else if (nav === "admin") { showView("admin"); renderAdminBanned(); }
   });
 });
-
 function goHome() {
   showView("feed");
   document.querySelectorAll(".nav-item").forEach(function(i) { i.classList.remove("active"); });
@@ -3195,8 +3655,6 @@ function goHome() {
   if (tEl) tEl.classList.add("active");
   activeTab = wantTab; homePage = 1; renderPosts();
 }
-
-/* Feed tabs */
 document.querySelectorAll("#feedView .tab").forEach(function(tab) {
   tab.addEventListener("click", function() {
     document.querySelectorAll("#feedView .tab").forEach(function(t) { t.classList.remove("active"); });
@@ -3211,8 +3669,6 @@ document.querySelectorAll(".stab").forEach(function(stab) {
   });
 });
 document.getElementById("searchInput").addEventListener("input", function() { renderSearch(this.value); });
-
-/* Profile */
 document.getElementById("backBtn").addEventListener("click", closeProfile);
 document.getElementById("statFollowing").addEventListener("click", function() { openProfList("following"); });
 document.getElementById("statFollowers").addEventListener("click", function() { openProfList("followers"); });
@@ -3245,13 +3701,8 @@ document.getElementById("bioCancel").addEventListener("click", function() { docu
 document.getElementById("bioSave").addEventListener("click", async function() {
   if (!auth || !auth.currentUser) return;
   const bio = document.getElementById("bioInput").value.trim();
-  try {
-    await db.collection("users").doc(auth.currentUser.uid).set({ bio: bio }, { merge: true });
-    myBio = bio;
-    setRichText(document.getElementById("profBio"), bio || "No bio.");
-    document.getElementById("bioEdit").classList.remove("open");
-    status("Bio saved.");
-  } catch (err) { status("Bio failed.", true); }
+  try { await db.collection("users").doc(auth.currentUser.uid).set({ bio: bio }, { merge: true }); myBio = bio; setRichText(document.getElementById("profBio"), bio || "No bio."); document.getElementById("bioEdit").classList.remove("open"); status("Bio saved."); }
+  catch (err) { status("Bio failed.", true); }
 });
 document.querySelectorAll(".status-opt").forEach(function(b) {
   b.addEventListener("click", async function() {
@@ -3262,13 +3713,10 @@ document.querySelectorAll(".status-opt").forEach(function(b) {
       await db.collection("users").doc(auth.currentUser.uid).update({ status: s === null ? firebase.firestore.FieldValue.delete() : s });
       const cached = userCache.get(auth.currentUser.uid) || {};
       userCache.set(auth.currentUser.uid, Object.assign({}, cached, { status: s }));
-      refreshStatusDots();
-      status(s ? "Status: " + s : "Status auto.");
+      refreshStatusDots(); status(s ? "Status: " + s : "Status auto.");
     } catch (err) { toast("Status failed.", true); }
   });
 });
-
-/* Post modal */
 document.getElementById("openPost").addEventListener("click", function() {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   document.getElementById("postText").value = "";
@@ -3299,11 +3747,9 @@ document.getElementById("submitPost").addEventListener("click", async function()
     clearMediaPreview();
     document.getElementById("pollComposer").classList.remove("open");
     document.getElementById("pollOptionsList").innerHTML = "";
-    goHome();
-    status("Posted!");
+    goHome(); status("Posted!");
   } catch (err) { toast("Post failed.", true); }
 });
-
 document.getElementById("uploadMediaBtn").addEventListener("click", function() { if (isUploadingMedia) { toast("Uploading.", true); return; } document.getElementById("mediaInput").click(); });
 document.getElementById("mediaInput").addEventListener("change", async function() {
   const rawFile = this.files && this.files[0]; if (!rawFile) return;
@@ -3327,17 +3773,12 @@ document.getElementById("mediaInput").addEventListener("change", async function(
   } catch (err) { toast("Upload failed.", true); clearMediaPreview(); }
   finally { isUploadingMedia = false; btn.disabled = false; document.getElementById("mediaInput").value = ""; hideLoader(); }
 });
-
 document.getElementById("pollToggleBtn").addEventListener("click", function() {
   const pc = document.getElementById("pollComposer");
   const list = document.getElementById("pollOptionsList");
   if (!pc.classList.contains("open")) {
     list.innerHTML = "";
-    [0, 1].forEach(function() {
-      const row = document.createElement("div"); row.className = "poll-input-row";
-      row.innerHTML = '<input type="text" maxlength="60" placeholder="Option" />';
-      list.appendChild(row);
-    });
+    [0, 1].forEach(function() { const row = document.createElement("div"); row.className = "poll-input-row"; row.innerHTML = '<input type="text" maxlength="60" placeholder="Option" />'; list.appendChild(row); });
     pc.classList.add("open");
   } else pc.classList.remove("open");
 });
@@ -3348,7 +3789,6 @@ document.getElementById("pollAddOpt").addEventListener("click", function() {
   row.innerHTML = '<input type="text" maxlength="60" placeholder="Option" />';
   list.appendChild(row);
 });
-
 document.getElementById("gifPickerBtn").addEventListener("click", function() {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   openGifPicker(function(gifUrl) { clearMediaPreview(); pendingMediaUrl = gifUrl; pendingMediaType = "gif"; showMediaPreview(gifUrl, "gif", false); toast("GIF ready!"); });
@@ -3362,8 +3802,6 @@ document.getElementById("gifSearchInput").addEventListener("input", function() {
   gifSearchDebounce = setTimeout(function() { searchGifs(q); }, 300);
 });
 document.querySelectorAll(".gif-tab").forEach(function(t) { t.addEventListener("click", function() { setGifTab(t.dataset.gifTab); }); });
-
-/* Edit post modal */
 document.getElementById("cancelEditPost").addEventListener("click", function() { document.getElementById("editPostModal").classList.remove("open"); clearEditMediaPreview(); currentEditPostId = null; });
 document.getElementById("editPostModal").addEventListener("click", function(e) { if (e.target === document.getElementById("editPostModal")) { document.getElementById("editPostModal").classList.remove("open"); clearEditMediaPreview(); currentEditPostId = null; } });
 document.getElementById("editUploadMediaBtn").addEventListener("click", function() { document.getElementById("editMediaInput").click(); });
@@ -3395,24 +3833,15 @@ document.getElementById("saveEditPost").addEventListener("click", async function
   const update = { text: newText, edited: true, editedAt: firebase.firestore.FieldValue.serverTimestamp() };
   if (editPendingMediaRemoved && !editPendingMediaUrl) { update.mediaUrl = firebase.firestore.FieldValue.delete(); update.mediaType = firebase.firestore.FieldValue.delete(); }
   else if (editPendingMediaUrl) { update.mediaUrl = editPendingMediaUrl; update.mediaType = editPendingMediaType; }
-  try {
-    await db.collection("posts").doc(currentEditPostId).update(update);
-    document.getElementById("editPostModal").classList.remove("open");
-    clearEditMediaPreview();
-    currentEditPostId = null;
-    status("Updated.");
-  } catch (e) { toast("Save failed.", true); }
+  try { await db.collection("posts").doc(currentEditPostId).update(update); document.getElementById("editPostModal").classList.remove("open"); clearEditMediaPreview(); currentEditPostId = null; status("Updated."); }
+  catch (e) { toast("Save failed.", true); }
 });
-
-/* Settings listeners */
 document.querySelectorAll(".setting-color").forEach(function(input) {
   input.addEventListener("input", function() {
     const key = input.dataset.setting;
     settingsState[key] = input.value;
     applySettings(); saveSettings(); refreshSettingsUi();
-    if ((key === "bannerColor" || key === "bannerColor2") && auth && auth.currentUser) {
-      db.collection("users").doc(auth.currentUser.uid).update({ bannerColor: settingsState.bannerColor, bannerColor2: settingsState.bannerColor2 }).catch(function() {});
-    }
+    if ((key === "bannerColor" || key === "bannerColor2") && auth && auth.currentUser) { db.collection("users").doc(auth.currentUser.uid).update({ bannerColor: settingsState.bannerColor, bannerColor2: settingsState.bannerColor2 }).catch(function() {}); }
   });
 });
 document.querySelectorAll(".setting-opt").forEach(function(btn) {
@@ -3436,19 +3865,10 @@ document.querySelectorAll(".setting-opt").forEach(function(btn) {
     else if (key === "avatarShape") settingsState.avatarShape = val;
     else if (key === "sidebarWidth") settingsState.sidebarWidth = val;
     else if (key === "accentGradient") settingsState.accentGradient = (val === "on");
-    else if (key === "bannerGradient") {
-      settingsState.bannerGradient = (val === "on");
-      if (auth && auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ bannerGradient: settingsState.bannerGradient }).catch(function() {});
-    }
-    else if (key === "bannerAngle") {
-      settingsState.bannerAngle = parseInt(val, 10) || 135;
-      if (auth && auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ bannerAngle: settingsState.bannerAngle }).catch(function() {});
-    }
+    else if (key === "bannerGradient") { settingsState.bannerGradient = (val === "on"); if (auth && auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ bannerGradient: settingsState.bannerGradient }).catch(function() {}); }
+    else if (key === "bannerAngle") { settingsState.bannerAngle = parseInt(val, 10) || 135; if (auth && auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ bannerAngle: settingsState.bannerAngle }).catch(function() {}); }
     else if (key === "postTTL") { settingsState.postTTL = parseInt(val, 10) || 24; POST_TTL = settingsState.postTTL * 60 * 60 * 1000; homePage = 1; renderPosts(); }
-    else if (key === "notifications") {
-      settingsState.notifications = (val === "on");
-      if (settingsState.notifications && "Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(function() {});
-    }
+    else if (key === "notifications") { settingsState.notifications = (val === "on"); if (settingsState.notifications && "Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(function() {}); }
     applySettings(); saveSettings(); refreshSettingsUi();
   });
 });
@@ -3462,37 +3882,15 @@ document.getElementById("mutedWordsInput").addEventListener("input", function() 
     if (activeView === "search") renderSearch(document.getElementById("searchInput").value);
   }, 400);
 });
-
-/* Test notification — plays selected sound + fires a system notification (works on mobile via SW) */
 document.getElementById("testNotifBtn").addEventListener("click", async function() {
   playSelectedSound();
-
   if (!("Notification" in window) && !("serviceWorker" in navigator)) { toast("Not supported here.", true); return; }
   if ("Notification" in window && Notification.permission === "denied") { toast("Notifications blocked in browser.", true); return; }
-  if ("Notification" in window && Notification.permission !== "granted") {
-    const p = await Notification.requestPermission();
-    if (p !== "granted") { toast("Blocked.", true); return; }
-  }
-
-  // Prefer SW path (required on Android Chrome — `new Notification` throws there)
-  if ("serviceWorker" in navigator) {
-    try {
-      const reg = await navigator.serviceWorker.getRegistration();
-      if (reg) {
-        await reg.showNotification("Fuzzy", { body: "test!", icon: "icon.png", badge: "icon.png", tag: "fuzzy-test" });
-        toast("Sent!");
-        return;
-      }
-    } catch (e) { /* fall through */ }
-  }
-
-  // Desktop fallback
-  try {
-    new Notification("Fuzzy", { body: "test!", icon: "icon.png" });
-    toast("Sent!");
-  } catch (e) { toast("Could not show notification.", true); }
+  if ("Notification" in window && Notification.permission !== "granted") { const p = await Notification.requestPermission(); if (p !== "granted") { toast("Blocked.", true); return; } }
+  if ("serviceWorker" in navigator) { try { const reg = await navigator.serviceWorker.getRegistration(); if (reg) { await reg.showNotification("Fuzzy", { body: "test!", icon: "icon.png", badge: "icon.png", tag: "fuzzy-test" }); toast("Sent!"); return; } } catch (e) {} }
+  try { new Notification("Fuzzy", { body: "test!", icon: "icon.png" }); toast("Sent!"); }
+  catch (e) { toast("Could not show notification.", true); }
 });
-
 document.getElementById("settingsReset").addEventListener("click", function() {
   settingsState = Object.assign({}, DEFAULT_SETTINGS);
   POST_TTL = settingsState.postTTL * 60 * 60 * 1000;
@@ -3516,20 +3914,14 @@ document.getElementById("deleteAccountBtn").addEventListener("click", function()
     showLoader("deleting…");
     try {
       const myPosts = await db.collection("posts").where("uid", "==", me).get();
-      for (let i = 0; i < myPosts.docs.length; i++) {
-        const p = myPosts.docs[i];
-        try { const cs = await p.ref.collection("comments").get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } await p.ref.delete(); } catch (e) {}
-      }
+      for (let i = 0; i < myPosts.docs.length; i++) { const p = myPosts.docs[i]; try { const cs = await p.ref.collection("comments").get(); if (cs.size) { const b = db.batch(); cs.forEach(function(c) { b.delete(c.ref); }); await b.commit(); } await p.ref.delete(); } catch (e) {} }
       try { const saved = await db.collection("users").doc(me).collection("saved").get(); if (saved.size) { const b = db.batch(); saved.forEach(function(d) { b.delete(d.ref); }); await b.commit(); } } catch (e) {}
       try { await db.collection("users").doc(me).delete(); } catch (e) {}
       try { await auth.currentUser.delete(); } catch (e) { await auth.signOut(); }
-      hideLoader();
-      status("Deleted.");
+      hideLoader(); status("Deleted.");
     } catch (e) { hideLoader(); toast("Failed.", true); }
   }, "Delete forever");
 });
-
-/* Sound upload */
 document.getElementById("soundUploadBtn").addEventListener("click", function() {
   if (customSounds.length >= MAX_CUSTOM_SOUNDS) { toast("Max " + MAX_CUSTOM_SOUNDS + ".", true); return; }
   document.getElementById("soundUploadInput").click();
@@ -3546,12 +3938,8 @@ document.getElementById("soundUploadInput").addEventListener("change", async fun
   await saveCustomSounds(); renderSoundList();
   status("Sound added.");
 });
-
-/* Music */
 document.getElementById("addMusicBtn").addEventListener("click", function() { document.getElementById("musicFileInput").click(); });
 document.getElementById("musicFileInput").addEventListener("change", function() { const file = this.files && this.files[0]; this.value = ""; if (!file) return; addMusicFile(file); });
-
-/* PFP */
 document.getElementById("pfpUploadBtn").addEventListener("click", function() { document.getElementById("pfpUploadInput").click(); });
 document.getElementById("pfpUploadInput").addEventListener("change", async function() {
   const file = this.files && this.files[0]; this.value = "";
@@ -3567,19 +3955,11 @@ document.getElementById("pfpClose").addEventListener("click", function() { docum
 document.getElementById("pfpModal").addEventListener("click", function(e) { if (e.target === document.getElementById("pfpModal")) document.getElementById("pfpModal").classList.remove("open"); });
 document.getElementById("myAvatar").addEventListener("click", function(e) { e.stopPropagation(); if (auth && auth.currentUser) openPfpModal(); });
 document.getElementById("profAvatar").addEventListener("click", function() { if (profileUid && auth && auth.currentUser && profileUid === auth.currentUser.uid) openPfpModal(); });
-
-/* Confirm */
 document.getElementById("confirmCancel").addEventListener("click", function() { document.getElementById("confirmModal").classList.remove("open"); confirmCb = null; });
 document.getElementById("confirmOk").addEventListener("click", function() { document.getElementById("confirmModal").classList.remove("open"); if (confirmCb) { const fn = confirmCb; confirmCb = null; fn(); } });
-
-/* Quick actions close */
 document.addEventListener("click", function(e) { const m = document.getElementById("quickActionMenu"); if (m && m.classList.contains("open") && !m.contains(e.target)) m.classList.remove("open"); }, true);
-
-/* Reaction picker close */
 document.addEventListener("click", function(e) { const rp = document.getElementById("reactionPicker"); if (rp && !rp.contains(e.target)) rp.classList.remove("open"); });
 document.getElementById("chatMessages").addEventListener("scroll", function() { document.getElementById("reactionPicker").classList.remove("open"); }, { passive: true });
-
-/* Chat listeners */
 document.getElementById("chatClose").addEventListener("click", closeConversation);
 document.getElementById("chatSend").addEventListener("click", sendChatMessage);
 document.getElementById("chatInput").addEventListener("keydown", function(e) {
@@ -3587,20 +3967,10 @@ document.getElementById("chatInput").addEventListener("keydown", function(e) {
   else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendChatMessage(); }
 });
 document.getElementById("chatInput").addEventListener("input", function() { signalTyping(); });
-document.getElementById("chatGifBtn").addEventListener("click", function() {
-  if (!currentConvId) { toast("No conversation open.", true); return; }
-  openGifPicker(function(gifUrl) { sendChatGif(gifUrl); });
-});
-document.getElementById("chatAttachBtn").addEventListener("click", function() {
-  if (!currentConvId) { toast("No conversation open.", true); return; }
-  if (isUploadingChatMedia) { toast("Uploading.", true); return; }
-  document.getElementById("chatMediaInput").click();
-});
+document.getElementById("chatGifBtn").addEventListener("click", function() { if (!currentConvId) { toast("No conversation open.", true); return; } openGifPicker(function(gifUrl) { sendChatGif(gifUrl); }); });
+document.getElementById("chatAttachBtn").addEventListener("click", function() { if (!currentConvId) { toast("No conversation open.", true); return; } if (isUploadingChatMedia) { toast("Uploading.", true); return; } document.getElementById("chatMediaInput").click(); });
 document.getElementById("chatMediaInput").addEventListener("change", function() { const file = this.files && this.files[0]; this.value = ""; if (!file) return; sendChatMedia(file); });
-document.getElementById("chatMicBtn").addEventListener("click", function() {
-  if (mediaRecorder && mediaRecorder.state === "recording") { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }
-  else { startVoiceRecording(); }
-});
+document.getElementById("chatMicBtn").addEventListener("click", function() { if (mediaRecorder && mediaRecorder.state === "recording") { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); } else { startVoiceRecording(); } });
 document.getElementById("chatSearchBtn").addEventListener("click", function() {
   const bar = document.getElementById("chatSearchBar");
   bar.classList.toggle("open");
@@ -3611,8 +3981,6 @@ document.getElementById("chatSearchClose").addEventListener("click", function() 
 document.getElementById("chatSearchInput").addEventListener("input", function() { msgSearchQuery = this.value.trim(); if (currentMsgsSnap) renderChatMessages(currentMsgsSnap, currentConvOtherUid); });
 document.getElementById("chatHeaderAvatar").addEventListener("click", function() { if (currentConvIsGroup) { openGroupAvatarPicker(); return; } if (currentConvOtherUid) { const uid = currentConvOtherUid; closeConversation(); openProfile(uid); } });
 document.getElementById("chatHeaderInfo").addEventListener("click", function() { if (currentConvIsGroup) { openGroupMembers(); return; } if (currentConvOtherUid) { const uid = currentConvOtherUid; closeConversation(); openProfile(uid); } });
-
-/* User/group picker */
 document.getElementById("newConvBtn").addEventListener("click", openUserPicker);
 document.getElementById("userPickerClose").addEventListener("click", function() { document.getElementById("userPickerModal").classList.remove("open"); });
 document.getElementById("userPickerModal").addEventListener("click", function(e) { if (e.target === document.getElementById("userPickerModal")) document.getElementById("userPickerModal").classList.remove("open"); });
@@ -3624,17 +3992,9 @@ document.getElementById("groupMembersClose").addEventListener("click", function(
 document.getElementById("groupMembersModal").addEventListener("click", function(e) { if (e.target === document.getElementById("groupMembersModal")) document.getElementById("groupMembersModal").classList.remove("open"); });
 document.getElementById("groupAvatarClose").addEventListener("click", function() { document.getElementById("groupAvatarModal").classList.remove("open"); });
 document.getElementById("groupAvatarModal").addEventListener("click", function(e) { if (e.target === document.getElementById("groupAvatarModal")) document.getElementById("groupAvatarModal").classList.remove("open"); });
-
-/* Admin */
-document.getElementById("adminBackBtn").addEventListener("click", function() {
-  document.querySelectorAll(".nav-item").forEach(function(i) { i.classList.remove("active"); });
-  document.querySelector('.nav-item[data-nav="home"]').classList.add("active");
-  goHome();
-});
+document.getElementById("adminBackBtn").addEventListener("click", function() { document.querySelectorAll(".nav-item").forEach(function(i) { i.classList.remove("active"); }); document.querySelector('.nav-item[data-nav="home"]').classList.add("active"); goHome(); });
 document.getElementById("adminLookupBtn").addEventListener("click", function() { const t = adminResolveTarget(document.getElementById("adminLookupInput").value); renderAdminLookupResult(t); });
 document.getElementById("adminLookupInput").addEventListener("keydown", function(e) { if (e.key === "Enter") document.getElementById("adminLookupBtn").click(); });
-
-/* Scroll to top */
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 function updateScrollTopBtn() {
   if (!settingsState.showScrollTop) { scrollTopBtn.classList.remove("show"); return; }
@@ -3644,12 +4004,7 @@ function updateScrollTopBtn() {
   if (scrolled) scrollTopBtn.classList.add("show"); else scrollTopBtn.classList.remove("show");
 }
 ["feedView", "profileView", "searchView", "savedView", "savedGifsView", "chatView"].forEach(function(id) { const el = document.getElementById(id); if (el) el.addEventListener("scroll", updateScrollTopBtn, { passive: true }); });
-scrollTopBtn.addEventListener("click", function() {
-  const candidates = ["feedView", "profileView", "searchView", "savedView", "savedGifsView", "chatView"];
-  candidates.forEach(function(id) { const el = document.getElementById(id); if (el && el.style.display !== "none") el.scrollTo({ top: 0, behavior: "smooth" }); });
-});
-
-/* Mobile global haptics */
+scrollTopBtn.addEventListener("click", function() { const candidates = ["feedView", "profileView", "searchView", "savedView", "savedGifsView", "chatView"]; candidates.forEach(function(id) { const el = document.getElementById(id); if (el && el.style.display !== "none") el.scrollTo({ top: 0, behavior: "smooth" }); }); });
 (function() {
   if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
   const isInteractive = function(el) {
@@ -3661,8 +4016,6 @@ scrollTopBtn.addEventListener("click", function() {
   };
   document.addEventListener("pointerdown", function(e) { if (!settingsState.haptics) return; if (isInteractive(e.target)) haptic(8); }, { passive: true });
 })();
-
-/* Music bubble + popup — opens where the bubble was dragged */
 (function() {
   const bubble = document.getElementById("musicBubble");
   const popup = document.getElementById("musicPopup");
@@ -3670,155 +4023,95 @@ scrollTopBtn.addEventListener("click", function() {
   const POS_KEY = "fuzzy-music-bubble-pos-v2";
   const BUBBLE_SIZE = 54;
   const MARGIN = 8;
-
-  function getDefaultPos() {
-    const isMobile = window.innerWidth <= 768;
-    return { x: window.innerWidth - BUBBLE_SIZE - 20, y: isMobile ? (window.innerHeight - 200) : (window.innerHeight - 140) };
-  }
-
+  function getDefaultPos() { const isMobile = window.innerWidth <= 768; return { x: window.innerWidth - BUBBLE_SIZE - 20, y: isMobile ? (window.innerHeight - 200) : (window.innerHeight - 140) }; }
   let pos = getDefaultPos();
-  try {
-    const raw = localStorage.getItem(POS_KEY);
-    if (raw) {
-      const p = JSON.parse(raw);
-      if (typeof p.x === "number" && typeof p.y === "number") pos = p;
-    }
-  } catch (e) {}
-
-  function clampBubble() {
-    const isMobile = window.innerWidth <= 768;
-    const bottomReserve = isMobile ? 90 : 12;
-    const maxX = window.innerWidth - BUBBLE_SIZE - MARGIN;
-    const maxY = window.innerHeight - BUBBLE_SIZE - bottomReserve;
-    pos.x = Math.max(MARGIN, Math.min(maxX, pos.x));
-    pos.y = Math.max(MARGIN, Math.min(maxY, pos.y));
-  }
-
-  function applyBubblePos() {
-    clampBubble();
-    bubble.style.left = pos.x + "px";
-    bubble.style.top = pos.y + "px";
-    bubble.style.right = "auto";
-    bubble.style.bottom = "auto";
-  }
-
+  try { const raw = localStorage.getItem(POS_KEY); if (raw) { const p = JSON.parse(raw); if (typeof p.x === "number" && typeof p.y === "number") pos = p; } } catch (e) {}
+  function clampBubble() { const isMobile = window.innerWidth <= 768; const bottomReserve = isMobile ? 90 : 12; const maxX = window.innerWidth - BUBBLE_SIZE - MARGIN, maxY = window.innerHeight - BUBBLE_SIZE - bottomReserve; pos.x = Math.max(MARGIN, Math.min(maxX, pos.x)); pos.y = Math.max(MARGIN, Math.min(maxY, pos.y)); }
+  function applyBubblePos() { clampBubble(); bubble.style.left = pos.x + "px"; bubble.style.top = pos.y + "px"; bubble.style.right = "auto"; bubble.style.bottom = "auto"; }
   function openPopupAtBubble() {
     popup.classList.add("open");
-    // Measure invisibly to get real size
     popup.style.visibility = "hidden";
-    const pw = popup.offsetWidth || 340;
-    const ph = popup.offsetHeight || 300;
-
-    let px = pos.x - pw - MARGIN;                 // try left of bubble
-    if (px < MARGIN) px = pos.x + BUBBLE_SIZE + MARGIN;  // else right
+    const pw = popup.offsetWidth || 340, ph = popup.offsetHeight || 300;
+    let px = pos.x - pw - MARGIN;
+    if (px < MARGIN) px = pos.x + BUBBLE_SIZE + MARGIN;
     if (px + pw > window.innerWidth - MARGIN) px = window.innerWidth - pw - MARGIN;
-
-    let py = pos.y;                                // top-aligned with bubble
+    let py = pos.y;
     if (py + ph > window.innerHeight - MARGIN) py = window.innerHeight - ph - MARGIN;
     if (py < MARGIN) py = MARGIN;
-
     px = Math.max(MARGIN, px);
-
-    popup.style.left = px + "px";
-    popup.style.top = py + "px";
-    popup.style.right = "auto";
-    popup.style.bottom = "auto";
-    popup.style.visibility = "";
+    popup.style.left = px + "px"; popup.style.top = py + "px"; popup.style.right = "auto"; popup.style.bottom = "auto"; popup.style.visibility = "";
     bubble.style.display = "none";
   }
-
   applyBubblePos();
-
   let dragging = false, dragStart = null, moved = false;
-  bubble.addEventListener("pointerdown", function(e) {
-    dragging = true; moved = false;
-    dragStart = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y };
-    try { bubble.setPointerCapture(e.pointerId); } catch (err) {}
-  });
-  bubble.addEventListener("pointermove", function(e) {
-    if (!dragging) return;
-    const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y;
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
-    pos.x = dragStart.px + dx; pos.y = dragStart.py + dy;
-    applyBubblePos();
-  });
-  bubble.addEventListener("pointerup", function(e) {
-    if (!dragging) return;
-    dragging = false;
-    try { bubble.releasePointerCapture(e.pointerId); } catch (err) {}
-    if (!moved) { openPopupAtBubble(); }
-    else {
-      try { localStorage.setItem(POS_KEY, JSON.stringify(pos)); } catch (err) {}
-    }
-  });
-
-  window.addEventListener("resize", function() {
-    applyBubblePos();
-    if (popup.classList.contains("open")) {
-      // Reposition popup relative to bubble
-      const wasVisible = popup.style.display !== "none";
-      if (wasVisible) openPopupAtBubble();
-    }
-  });
-
-  closeBtn.addEventListener("click", function() {
-    popup.classList.remove("open");
-    bubble.style.display = "flex";
-  });
-
-  // Expose opener in case other code needs it
-  window.__openMusicPopup = openPopupAtBubble;
+  bubble.addEventListener("pointerdown", function(e) { dragging = true; moved = false; dragStart = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y }; try { bubble.setPointerCapture(e.pointerId); } catch (err) {} });
+  bubble.addEventListener("pointermove", function(e) { if (!dragging) return; const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y; if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true; pos.x = dragStart.px + dx; pos.y = dragStart.py + dy; applyBubblePos(); });
+  bubble.addEventListener("pointerup", function(e) { if (!dragging) return; dragging = false; try { bubble.releasePointerCapture(e.pointerId); } catch (err) {} if (!moved) openPopupAtBubble(); else { try { localStorage.setItem(POS_KEY, JSON.stringify(pos)); } catch (err) {} } });
+  window.addEventListener("resize", function() { applyBubblePos(); if (popup.classList.contains("open")) openPopupAtBubble(); });
+  closeBtn.addEventListener("click", function() { popup.classList.remove("open"); bubble.style.display = "flex"; });
 })();
-
-/* Init music */
+document.getElementById("chatVoiceCallBtn").addEventListener("click", function() { startCall("voice"); });
+document.getElementById("chatVideoCallBtn").addEventListener("click", function() { startCall("video"); });
+document.getElementById("callEndBtn").addEventListener("click", endCall);
+document.getElementById("callMuteBtn").addEventListener("click", function() {
+  if (!currentCall) return;
+  currentCall.muted = !currentCall.muted;
+  currentCall.localStream.getAudioTracks().forEach(function(t) { t.enabled = !currentCall.muted; });
+  this.classList.toggle("muted", currentCall.muted);
+  this.textContent = currentCall.muted ? "🔇" : "🎤";
+  attachLocalTile();
+  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ muted: currentCall.muted }).catch(function() {});
+});
+document.getElementById("callVideoBtn").addEventListener("click", function() {
+  if (!currentCall || currentCall.type !== "video") return;
+  currentCall.videoOff = !currentCall.videoOff;
+  currentCall.localStream.getVideoTracks().forEach(function(t) { t.enabled = !currentCall.videoOff; });
+  this.classList.toggle("muted", currentCall.videoOff);
+  attachLocalTile();
+  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ videoOff: currentCall.videoOff }).catch(function() {});
+});
+document.getElementById("incomingAccept").addEventListener("click", function() {
+  if (!pendingIncomingCall) return;
+  const found = pendingIncomingCall;
+  stopRingtone();
+  document.getElementById("incomingCall").classList.remove("open");
+  pendingIncomingCall = null;
+  joinCall(found.call.callId, found.call.type);
+});
+document.getElementById("incomingDecline").addEventListener("click", function() {
+  stopRingtone();
+  document.getElementById("incomingCall").classList.remove("open");
+  pendingIncomingCall = null;
+});
 (async function() {
   musicTracks.push({ id: "spooky-main", name: "main theme", kind: "builtin", src: "main.mp3", loop: true, audioEl: null });
-  try {
-    const arr = await musicIdbGet(MUSIC_IDB_KEY);
-    if (Array.isArray(arr)) arr.forEach(function(rec) { const blobUrl = URL.createObjectURL(rec.blob); musicTracks.push({ id: rec.id, name: rec.name, kind: "custom", blob: rec.blob, blobUrl: blobUrl, loop: true, audioEl: null }); });
-  } catch (e) {}
+  try { const arr = await musicIdbGet(MUSIC_IDB_KEY); if (Array.isArray(arr)) arr.forEach(function(rec) { const blobUrl = URL.createObjectURL(rec.blob); musicTracks.push({ id: rec.id, name: rec.name, kind: "custom", blob: rec.blob, blobUrl: blobUrl, loop: true, audioEl: null }); }); } catch (e) {}
   renderMusicTracks();
 })();
-
-/* Auth state */
 if (auth) {
   auth.onAuthStateChanged(function(user) {
-    if (user) {
-      loadProfile(user);
-      setupNotifListener(user);
-      setupUsersListener();
-      renderPosts();
-    } else {
+    if (user) { loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts(); }
+    else {
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); myPinned = []; mySavedIds = new Set(); mySavedGifs = [];
       myFollowing = new Set(); myFollowers = new Set();
-      killCommentListeners();
-      killProfPostsListener();
+      killCommentListeners(); killProfPostsListener();
       if (usersUnsub) { usersUnsub(); usersUnsub = null; }
       if (conversationsUnsub) { conversationsUnsub(); conversationsUnsub = null; }
-      closeConversation();
-      setupNotifListener(null);
-      updateSidebar();
-      showView("feed");
-      renderPosts();
-      renderConversationsList();
-      renderConversationsListMobile();
-      renderBlockedList();
+      if (currentCall) endCall();
+      closeConversation(); setupNotifListener(null); updateSidebar(); showView("feed"); renderPosts();
+      renderConversationsList(); renderConversationsListMobile(); renderBlockedList();
     }
   });
 }
-
 let followUnsubs = [];
 if (db && auth) {
   auth.onAuthStateChanged(function(user) {
-    followUnsubs.forEach(function(u) { try { u(); } catch (e) {} });
-    followUnsubs = [];
+    followUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); followUnsubs = [];
     if (!user) return;
     followUnsubs.push(db.collection("follows").where("followerUid", "==", user.uid).onSnapshot(function(snap) { myFollowing = new Set(snap.docs.map(function(d) { return d.data().followeeUid; })); renderPosts(); if (profileUid) renderProfile(); renderConversationsList(); renderConversationsListMobile(); }, function() {}));
     followUnsubs.push(db.collection("follows").where("followeeUid", "==", user.uid).onSnapshot(function(snap) { myFollowers = new Set(snap.docs.map(function(d) { return d.data().followerUid; })); renderConversationsList(); renderConversationsListMobile(); }, function() {}));
   });
 }
-
-/* Posts listener */
 let prevPostDocs = new Map();
 if (db) {
   db.collection("posts").orderBy("createdAt", "desc").onSnapshot(function(snap) {
@@ -3840,12 +4133,9 @@ if (db) {
     if (activeView === "search") renderSearch(document.getElementById("searchInput").value);
   }, function(err) { if (err && err.code === "permission-denied") document.getElementById("postsList").innerHTML = '<div class="empty">Posts blocked by rules.</div>'; });
 }
-
-/* Timers */
 setInterval(touchLastSeen, 30000);
 window.addEventListener("pagehide", touchLastSeen);
-
-/* Keyboard */
+window.addEventListener("beforeunload", function() { if (currentCall) { try { endCall(); } catch (e) {} } });
 document.addEventListener("keydown", function(e) {
   const tag = (e.target && e.target.tagName) || "";
   const isEditable = tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable);
@@ -3863,13 +4153,9 @@ document.addEventListener("keydown", function(e) {
   if (e.key === "n") { if (auth && auth.currentUser) { e.preventDefault(); document.getElementById("openPost").click(); } }
   else if (e.key === "/") { e.preventDefault(); document.querySelector('.nav-item[data-nav="search"]').click(); setTimeout(function() { try { document.getElementById("searchInput").focus(); } catch (err) {} }, 60); }
 });
-
-/* Init settings UI */
 refreshSettingsUi();
 renderThemePresets();
 loadCustomSounds().then(function() { renderSoundList(); });
-
-/* Initial state */
 updateSidebar();
 </script>
 </body>
