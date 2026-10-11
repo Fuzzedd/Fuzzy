@@ -449,7 +449,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 .call-header-title { font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .call-header-sub { font-size: 12px; color: #9a9a9a; margin-top: 2px; }
 .call-duration { font-size: 14px; color: #9a9a9a; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-.call-videos { flex: 1; display: grid; gap: 8px; padding: 12px; overflow: auto; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-content: start; }
+.call-videos { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 12px; overflow-y: auto; overflow-x: hidden; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); grid-auto-rows: min-content; align-content: start; }
 .call-videos.voice-mode { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .call-tile { position: relative; background: linear-gradient(180deg, #1d1d1d 0%, #0d0d0d 100%); border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; transition: box-shadow 0.15s ease; }
 .call-tile.speaking { box-shadow: 0 0 0 3px #22c55e, 0 0 24px rgba(34,197,94,0.45); }
@@ -506,7 +506,12 @@ body.avatar-square .avatar { border-radius: 4px; }
   #scrollTopBtn { left: 12px; right: auto; bottom: 82px; }
   #introOverlay img { width: 260px; }
   .theme-presets { grid-template-columns: repeat(2, 1fr); }
-  .call-videos { grid-template-columns: 1fr; }
+  .call-videos { grid-template-columns: 1fr; gap: 6px; padding: 8px; }
+  .call-tile { aspect-ratio: auto; min-height: 180px; max-height: 42vh; }
+  .call-controls { padding: 10px; gap: 10px; }
+  .call-btn { width: 50px; height: 50px; font-size: 20px; }
+  .call-header { padding: 10px 12px; }
+  .call-duration { font-size: 12px; }
   .incoming-call-avatar { width: 80px; height: 80px; }
 }
 </style>
@@ -742,6 +747,7 @@ body.avatar-square .avatar { border-radius: 4px; }
   <div class="call-controls">
     <button class="call-btn" id="callMuteBtn" title="Mute">🎤</button>
     <button class="call-btn" id="callVideoBtn" title="Camera">📹</button>
+    <button class="call-btn" id="callScreenBtn" title="Share screen">🖥️</button>
     <button class="call-btn end" id="callEndBtn" title="End call">📞</button>
   </div>
 </div>
@@ -2901,7 +2907,6 @@ async function startCall(type) {
   if (!currentConvId) { toast("No conversation open.", true); return; }
   if (currentCall) { toast("Already in a call.", true); return; }
 
-  // HTTPS / API guards (mobile browsers refuse getUserMedia otherwise)
   if (!window.isSecureContext) {
     toast("Calls need HTTPS. This page isn't secure.", true);
     console.error("[call] not a secure context, protocol:", location.protocol);
@@ -2923,7 +2928,6 @@ async function startCall(type) {
     return joinCall(existingCall.callId, existingCall.type);
   }
 
-  // === GET MEDIA IMMEDIATELY (mobile requires this inside the tap gesture) ===
   let localStream;
   try {
     console.log("[call] requesting", type, "media…");
@@ -2950,6 +2954,7 @@ async function startCall(type) {
   currentCall = {
     callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type,
     localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff,
+    screenTrack: null, screenStream: null,
     startTime: Date.now(), durationTimer: null, answerTimeout: null
   };
 
@@ -2961,7 +2966,7 @@ async function startCall(type) {
     await db.collection("calls").doc(callId).collection("participants").doc(me).set({
       uid: me, username: myUsername, emoji: myEmoji,
       joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      muted: false, videoOff: videoOff
+      muted: false, videoOff: videoOff, screenSharing: false
     });
     await db.collection("conversations").doc(convIdSnapshot).update({
       activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() }
@@ -2983,7 +2988,6 @@ async function startCall(type) {
   startDurationTimer();
   setupLocalSpeakingDetection();
 
-  // Auto-end if nobody answers within 20s
   currentCall.answerTimeout = setTimeout(async function() {
     if (!currentCall || currentCall.callId !== callId) return;
     try {
@@ -3006,7 +3010,6 @@ async function joinCall(callId, type) {
 
   const me = auth.currentUser.uid;
 
-  // Get media IMMEDIATELY (keeps the gesture chain alive on mobile)
   let localStream;
   try {
     console.log("[call] joining, requesting", type, "media…");
@@ -3036,13 +3039,14 @@ async function joinCall(callId, type) {
     callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup,
     type: callData.type, localStream: localStream, peers: new Map(),
     muted: false, videoOff: callData.type === "voice",
+    screenTrack: null, screenStream: null,
     startTime: Date.now(), durationTimer: null, answerTimeout: null
   };
   try {
     await db.collection("calls").doc(callId).collection("participants").doc(me).set({
       uid: me, username: myUsername, emoji: myEmoji,
       joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      muted: false, videoOff: currentCall.videoOff
+      muted: false, videoOff: currentCall.videoOff, screenSharing: false
     });
   } catch (e) {}
   hideLoader();
@@ -3069,7 +3073,12 @@ function showCallOverlay() {
     subEl.textContent = (currentCall.type === "video" ? "Video" : "Voice") + " call";
     av.src = u.emoji || faceForUid(otherUid);
   }
-  document.getElementById("callVideoBtn").style.display = currentCall.type === "video" ? "" : "none";
+  const vbtn = document.getElementById("callVideoBtn");
+  vbtn.style.display = "";
+  const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
+  vbtn.classList.toggle("muted", !hasVideo || !!currentCall.videoOff);
+  const sbtn = document.getElementById("callScreenBtn");
+  if (sbtn) { sbtn.classList.remove("muted"); sbtn.title = "Share screen"; }
 }
 function startDurationTimer() {
   const el = document.getElementById("callDuration");
@@ -3081,7 +3090,7 @@ function startDurationTimer() {
 }
 function attachLocalTile() {
   const container = document.getElementById("callVideos");
-  container.classList.toggle("voice-mode", currentCall.type === "voice");
+  container.classList.toggle("voice-mode", currentCall.type === "voice" && !currentCall.screenTrack);
   let tile = document.getElementById("call-tile-local");
   if (!tile) {
     tile = document.createElement("div");
@@ -3105,10 +3114,22 @@ function attachLocalTile() {
   const v = tile.querySelector("video");
   const av = tile.querySelector(".call-avatar");
   const lbl = tile.querySelector(".call-tile-label");
-  if (v.srcObject !== currentCall.localStream) {
-    v.srcObject = currentCall.localStream;
+
+  let streamToShow;
+  if (currentCall.screenTrack) {
+    if (!currentCall._localScreenStream || currentCall._localScreenStream.getVideoTracks()[0] !== currentCall.screenTrack) {
+      currentCall._localScreenStream = new MediaStream([currentCall.screenTrack]);
+    }
+    streamToShow = currentCall._localScreenStream;
+  } else {
+    streamToShow = currentCall.localStream;
   }
-  const showVideo = currentCall.type === "video" && !currentCall.videoOff;
+  if (v.srcObject !== streamToShow) {
+    v.srcObject = streamToShow;
+  }
+
+  const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
+  const showVideo = currentCall.screenTrack || (currentCall.type === "video" && !currentCall.videoOff && hasVideo);
   if (showVideo) {
     v.style.position = "";
     v.style.width = "100%";
@@ -3129,7 +3150,12 @@ function attachLocalTile() {
     av.style.display = "";
     av.innerHTML = '<img src="' + myEmoji + '" alt="" />';
   }
-  lbl.innerHTML = '<span class="name-text">You</span>' + (currentCall.muted ? '<span class="call-muted-icon">🔇</span>' : "");
+
+  let labelHtml = '<span class="name-text">You</span>';
+  if (currentCall.muted) labelHtml += '<span class="call-muted-icon">🔇</span>';
+  if (currentCall.screenTrack) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
+  lbl.innerHTML = labelHtml;
+
   try { v.play().catch(function(){}); } catch (e) {}
 }
 function attachRemoteTile(uid, stream) {
@@ -3164,7 +3190,7 @@ function attachRemoteTile(uid, stream) {
     v.srcObject = stream;
   }
   const hasVideo = stream && stream.getVideoTracks().length > 0;
-  const showVideo = currentCall.type === "video" && !peer.videoOff && hasVideo;
+  const showVideo = hasVideo && (peer.screenSharing || (currentCall.type === "video" && !peer.videoOff));
   if (showVideo) {
     v.style.position = "";
     v.style.width = "100%";
@@ -3185,9 +3211,11 @@ function attachRemoteTile(uid, stream) {
     av.style.display = "";
     av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />';
   }
-  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : "");
+  let labelHtml = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>';
+  if (peer.muted) labelHtml += '<span class="call-muted-icon">🔇</span>';
+  if (peer.screenSharing) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
+  lbl.innerHTML = labelHtml;
 
-  // Hard-enforce remote audio — never muted
   v.muted = false;
   v.volume = 1;
   v.defaultMuted = false;
@@ -3265,8 +3293,11 @@ function setupCallListeners() {
       if (!currentCall.peers.has(uid)) pendingNew.push({ uid: uid, data: data });
       else {
         const peer = currentCall.peers.get(uid);
-        peer.muted = !!data.muted; peer.videoOff = !!data.videoOff;
-        peer.username = data.username; peer.emoji = data.emoji;
+        peer.muted = !!data.muted;
+        peer.videoOff = !!data.videoOff;
+        peer.screenSharing = !!data.screenSharing;
+        peer.username = data.username;
+        peer.emoji = data.emoji;
       }
     });
     const leaving = [];
@@ -3275,9 +3306,8 @@ function setupCallListeners() {
     for (const item of pendingNew) {
       playJoinSound();
       if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
-      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, username: item.data.username, emoji: item.data.emoji, _processedInitialOffer: false, _processedAnswer: false }); }
+      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, screenSharing: !!item.data.screenSharing, username: item.data.username, emoji: item.data.emoji, _lastOfferSdp: null, _lastAnswerSdp: null }); }
     }
-    // Clear answer timeout once someone else joins
     if (currentCall && currentCall.answerTimeout && snap.size > 1) {
       clearTimeout(currentCall.answerTimeout);
       currentCall.answerTimeout = null;
@@ -3315,12 +3345,12 @@ async function initiateOfferTo(peerUid, peerData) {
   currentCall.peers.set(peerUid, {
     pc: pc, stream: null,
     muted: !!peerData.muted, videoOff: !!peerData.videoOff,
+    screenSharing: !!peerData.screenSharing,
     username: peerData.username, emoji: peerData.emoji,
-    _processedInitialOffer: false, _processedAnswer: false
+    _lastOfferSdp: null, _lastAnswerSdp: null
   });
   const offer = await pc.createOffer();
   const key = pairKey(me, peerUid);
-  // Write offer doc FIRST so ICE candidates from setLocalDescription aren't wiped
   await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({
     fromUid: me, toUid: peerUid,
     offer: { type: offer.type, sdp: offer.sdp }
@@ -3332,16 +3362,15 @@ async function processSignal(peerUid, data) {
   let peer = currentCall.peers.get(peerUid);
   if (!peer) {
     peer = { pc: null, stream: null, muted: false, videoOff: false,
-             _processedInitialOffer: false, _processedAnswer: false };
+             _lastOfferSdp: null, _lastAnswerSdp: null };
     currentCall.peers.set(peerUid, peer);
   }
   if (!peer.pc) peer.pc = createPeerConnection(peerUid);
   const pc = peer.pc;
   const iAmCaller = me < peerUid;
 
-  // Callee: process offer exactly once
-  if (!iAmCaller && data.offer && !peer._processedInitialOffer && !pc.currentRemoteDescription) {
-    peer._processedInitialOffer = true;
+  if (!iAmCaller && data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp) {
+    peer._lastOfferSdp = data.offer.sdp;
     try {
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
       const answer = await pc.createAnswer();
@@ -3349,17 +3378,15 @@ async function processSignal(peerUid, data) {
       const key = pairKey(me, peerUid);
       await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
         .set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
-    } catch (e) { peer._processedInitialOffer = false; }
+    } catch (e) { peer._lastOfferSdp = null; }
   }
 
-  // Caller: process answer exactly once
-  if (iAmCaller && data.answer && !peer._processedAnswer && !pc.currentRemoteDescription) {
-    peer._processedAnswer = true;
+  if (iAmCaller && data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp) {
+    peer._lastAnswerSdp = data.answer.sdp;
     try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
-    catch (e) { peer._processedAnswer = false; }
+    catch (e) { peer._lastAnswerSdp = null; }
   }
 
-  // Add ICE candidates only after we have a remote description
   if (pc.remoteDescription) {
     const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
     const candidates = data[fromField] || [];
@@ -3446,7 +3473,9 @@ async function endCall() {
 
   if (currentCall.answerTimeout) clearTimeout(currentCall.answerTimeout);
 
-  // Local cleanup
+  if (currentCall.screenTrack) { try { currentCall.screenTrack.stop(); } catch (e) {} }
+  if (currentCall.screenStream) { try { currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {} }
+
   callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
   currentCall.peers.forEach(function(_, uid) { removePeer(uid, true); });
   try { if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
@@ -3458,9 +3487,6 @@ async function endCall() {
   currentCall = null;
   playCallEndSound();
 
-  // === NETWORK CLEANUP ===
-  // 1) Always clear the activeCall flag if it still points at OUR call.
-  //    This fixes "it still says call in progress after we both leave".
   if (convId) {
     try {
       const convSnap = await db.collection("conversations").doc(convId).get();
@@ -3475,7 +3501,6 @@ async function endCall() {
     } catch (e) { console.warn("[call] clear activeCall failed:", e); }
   }
 
-  // 2) Write the "ended" system message (once)
   if (convId) {
     try {
       const alreadyWritten = await hasRecentCallEndMessage(convId);
@@ -3483,7 +3508,6 @@ async function endCall() {
     } catch (e) {}
   }
 
-  // 3) Remove self from participants; delete the call doc if last out
   if (callId && me) {
     try {
       await db.collection("calls").doc(callId).collection("participants").doc(me).delete();
@@ -3517,7 +3541,6 @@ function checkForIncomingCall(convSnapDocs) {
     const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
     const ageMs = started ? (Date.now() - started) : 0;
 
-    // Stale: older than 20s AND not ours → clean it up so it stops showing
     if (started && ageMs > CALL_RING_TIMEOUT_MS && ac.createdBy !== me) {
       console.log("[call] clearing stale activeCall on", d.id, "age", ageMs);
       db.collection("conversations").doc(d.id)
@@ -3526,7 +3549,6 @@ function checkForIncomingCall(convSnapDocs) {
       return;
     }
 
-    // Not ours → real incoming call
     if (ac.createdBy === me) return;
     if (started && ageMs > CALL_RING_TIMEOUT_MS) return;
 
@@ -3557,6 +3579,141 @@ function showIncomingCallModal(found) {
   }
   document.getElementById("incomingCall").classList.add("open");
   startRingtone();
+}
+
+/* ==== CAMERA ON VOICE CALL + SCREEN SHARE ==== */
+async function toggleCamera() {
+  if (!currentCall) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast("Camera not supported.", true);
+    return;
+  }
+  const hasVideo = currentCall.localStream.getVideoTracks().length > 0;
+
+  if (!hasVideo) {
+    let camStream;
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }
+      });
+    } catch (e) {
+      const name = (e && e.name) || "";
+      let msg = "Could not access camera";
+      if (name === "NotAllowedError") msg = "Camera permission denied.";
+      else if (name === "NotFoundError") msg = "No camera found.";
+      else if (name === "NotReadableError") msg = "Camera already in use.";
+      toast(msg, true);
+      return;
+    }
+    const camTrack = camStream.getVideoTracks()[0];
+    currentCall.localStream.addTrack(camTrack);
+    currentCall.videoOff = false;
+
+    for (const [uid, peer] of currentCall.peers) {
+      if (!peer.pc) continue;
+      try {
+        peer.pc.addTrack(camTrack, currentCall.localStream);
+        const offer = await peer.pc.createOffer();
+        await peer.pc.setLocalDescription(offer);
+        const key = pairKey(auth.currentUser.uid, uid);
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
+          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      } catch (e) {}
+    }
+
+    try { await db.collection("calls").doc(currentCall.callId).update({ type: "video" }); } catch (e) {}
+    currentCall.type = "video";
+
+    attachLocalTile();
+    document.getElementById("callVideoBtn").classList.remove("muted");
+    db.collection("calls").doc(currentCall.callId).collection("participants")
+      .doc(auth.currentUser.uid).update({ videoOff: false }).catch(function() {});
+    status("Camera on");
+  } else {
+    currentCall.videoOff = !currentCall.videoOff;
+    currentCall.localStream.getVideoTracks().forEach(function(t) { t.enabled = !currentCall.videoOff; });
+    document.getElementById("callVideoBtn").classList.toggle("muted", currentCall.videoOff);
+    attachLocalTile();
+    db.collection("calls").doc(currentCall.callId).collection("participants")
+      .doc(auth.currentUser.uid).update({ videoOff: currentCall.videoOff }).catch(function() {});
+  }
+}
+async function startScreenShare() {
+  if (!currentCall) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    toast("Screen share not supported on this device.", true);
+    return;
+  }
+  if (currentCall.screenTrack) return;
+
+  let screenStream;
+  try {
+    screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+      audio: true
+    });
+  } catch (e) {
+    if (e && e.name !== "NotAllowedError") toast("Screen share failed.", true);
+    return;
+  }
+
+  const screenTrack = screenStream.getVideoTracks()[0];
+  currentCall.screenTrack = screenTrack;
+  currentCall.screenStream = screenStream;
+
+  for (const [uid, peer] of currentCall.peers) {
+    if (!peer.pc) continue;
+    try {
+      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
+      if (sender) {
+        await sender.replaceTrack(screenTrack);
+      } else {
+        peer.pc.addTrack(screenTrack, currentCall.localStream);
+        const offer = await peer.pc.createOffer();
+        await peer.pc.setLocalDescription(offer);
+        const key = pairKey(auth.currentUser.uid, uid);
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
+          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      }
+    } catch (e) {}
+  }
+
+  const btn = document.getElementById("callScreenBtn");
+  if (btn) { btn.classList.add("muted"); btn.title = "Stop sharing"; }
+
+  db.collection("calls").doc(currentCall.callId).collection("participants")
+    .doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
+
+  screenTrack.onended = function() { stopScreenShare(); };
+
+  attachLocalTile();
+  status("Screen sharing");
+}
+async function stopScreenShare() {
+  if (!currentCall || !currentCall.screenTrack) return;
+  const track = currentCall.screenTrack;
+  try { track.stop(); } catch (e) {}
+  try { if (currentCall.screenStream) currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
+  currentCall.screenTrack = null;
+  currentCall.screenStream = null;
+  currentCall._localScreenStream = null;
+
+  const camTrack = currentCall.localStream.getVideoTracks()[0];
+  currentCall.peers.forEach(function(peer) {
+    if (!peer.pc) return;
+    try {
+      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
+      if (sender && camTrack) sender.replaceTrack(camTrack);
+    } catch (e) {}
+  });
+
+  const btn = document.getElementById("callScreenBtn");
+  if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; }
+
+  db.collection("calls").doc(currentCall.callId).collection("participants")
+    .doc(auth.currentUser.uid).update({ screenSharing: false }).catch(function() {});
+
+  attachLocalTile();
 }
 
 /* Self-healing sweep: clear any stale activeCall flags on boot */
@@ -3644,7 +3801,6 @@ async function loadProfile(user) {
     status("Signed in as " + myUsername);
     startConversationsListener();
     loadSavedIds();
-    // Boot sweep: clear stale call flags
     sweepStaleCalls();
   } catch (err) { status("Profile error: " + (err.code || err.message), true); }
 }
@@ -4535,13 +4691,14 @@ document.getElementById("callMuteBtn").addEventListener("click", function() {
   attachLocalTile();
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ muted: currentCall.muted }).catch(function() {});
 });
-document.getElementById("callVideoBtn").addEventListener("click", function() {
-  if (!currentCall || currentCall.type !== "video") return;
-  currentCall.videoOff = !currentCall.videoOff;
-  currentCall.localStream.getVideoTracks().forEach(function(t) { t.enabled = !currentCall.videoOff; });
-  this.classList.toggle("muted", currentCall.videoOff);
-  attachLocalTile();
-  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ videoOff: currentCall.videoOff }).catch(function() {});
+document.getElementById("callVideoBtn").addEventListener("click", async function() {
+  if (!currentCall) return;
+  await toggleCamera();
+});
+document.getElementById("callScreenBtn").addEventListener("click", async function() {
+  if (!currentCall) return;
+  if (currentCall.screenTrack) await stopScreenShare();
+  else await startScreenShare();
 });
 document.getElementById("incomingAccept").addEventListener("click", function() {
   if (!pendingIncomingCall) return;
