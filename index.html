@@ -808,6 +808,7 @@ const SOUNDS_IDB_KEY = "customSounds";
 const MUSIC_IDB_KEY = "customTracksV2";
 const SETTINGS_KEY = "fuzzy-settings-v3";
 const POSTS_PER_PAGE = 20;
+const CALL_RING_TIMEOUT_MS = 20000; // auto-end if nobody picks up in 20s
 const DEFAULT_SETTINGS = {
   bgColor: "#161616", surfaceColor: "#1d1d1d",
   accentColor: "#e7e7e7", accentColor2: "#4fc3f7", accentGradient: false, accentGradientAngle: 135,
@@ -1286,6 +1287,19 @@ function playJoinSound() { playToneSequence([{ freq: 620, dur: 0.09, vol: 0.18 }
 function playLeaveSound() { playToneSequence([{ freq: 880, dur: 0.09, vol: 0.18 }, { freq: 520, dur: 0.14, vol: 0.18 }]); }
 function playCallStartSound() { playToneSequence([{ freq: 500, dur: 0.10, vol: 0.15 }, { freq: 700, dur: 0.10, vol: 0.15 }, { freq: 950, dur: 0.16, vol: 0.15 }]); }
 function playCallEndSound() { playToneSequence([{ freq: 950, dur: 0.10, vol: 0.15 }, { freq: 700, dur: 0.10, vol: 0.15 }, { freq: 500, dur: 0.18, vol: 0.15 }]); }
+
+/* ==== AUDIO UNLOCK (mobile autoplay policy) ==== */
+function unlockAudioForCalls() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = ctx.createBuffer(1, 1, 22050);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
+    setTimeout(function() { try { ctx.close(); } catch (e) {} }, 200);
+  } catch (e) {}
+}
 
 /* ==== CALL SYSTEM MESSAGES ==== */
 async function writeCallSystemMessage(convId, eventName, callType, durationSecs) {
@@ -2847,7 +2861,9 @@ function attachDoubleTapLike(el, likeBtn) {
 const ICE_SERVERS = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
-    { urls: "stun:stun1.l.google.com:19302" }
+    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "stun:stun2.l.google.com:19302" },
+    { urls: "stun:stun3.l.google.com:19302" }
   ]
 };
 function callIdGen() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8); }
@@ -2885,6 +2901,10 @@ async function startCall(type) {
   if (!currentConvId) { toast("No conversation open.", true); return; }
   if (currentCall) { toast("Already in a call.", true); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Calls not supported in this browser.", true); return; }
+
+  // Unlock audio output on user gesture
+  unlockAudioForCalls();
+
   const me = auth.currentUser.uid;
   const conv = conversationsCache.get(currentConvId) || {};
   const isGroup = !!conv.isGroup;
@@ -2902,15 +2922,15 @@ async function startCall(type) {
           currentCall.peers.forEach(function(peer) {
             if (peer.pc) { try { peer.pc.addTrack(videoTrack, currentCall.localStream); } catch (e) {} }
           });
-          currentCall.peers.forEach(async function(peer, uid) {
-            if (!peer.pc) return;
+          for (const [uid, peer] of currentCall.peers) {
+            if (!peer.pc) continue;
             try {
               const offer = await peer.pc.createOffer();
               await peer.pc.setLocalDescription(offer);
               const key = pairKey(me, uid);
               await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
             } catch (e) {}
-          });
+          }
           currentCall.type = "video";
           currentCall.videoOff = false;
           attachLocalTile();
@@ -2928,11 +2948,24 @@ async function startCall(type) {
   const callId = callIdGen();
   const videoOff = type === "voice";
   const convIdSnapshot = currentConvId;
-  currentCall = { callId, convId: convIdSnapshot, isGroup, type, localStream, peers: new Map(), muted: false, videoOff: videoOff, startTime: Date.now(), durationTimer: null };
+  currentCall = {
+    callId, convId: convIdSnapshot, isGroup, type, localStream,
+    peers: new Map(), muted: false, videoOff: videoOff,
+    startTime: Date.now(), durationTimer: null, answerTimeout: null
+  };
   try {
-    await db.collection("calls").doc(callId).set({ conversationId: convIdSnapshot, isGroup: isGroup, type: type, createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: videoOff });
-    await db.collection("conversations").doc(convIdSnapshot).update({ activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() } });
+    await db.collection("calls").doc(callId).set({
+      conversationId: convIdSnapshot, isGroup: isGroup, type: type,
+      createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await db.collection("calls").doc(callId).collection("participants").doc(me).set({
+      uid: me, username: myUsername, emoji: myEmoji,
+      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      muted: false, videoOff: videoOff
+    });
+    await db.collection("conversations").doc(convIdSnapshot).update({
+      activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() }
+    });
   } catch (e) {
     toast("Could not start call (check Firestore rules for 'calls').", true);
     try { localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e2) {}
@@ -2946,10 +2979,23 @@ async function startCall(type) {
   setupCallListeners();
   startDurationTimer();
   setupLocalSpeakingDetection();
+
+  // Auto-end if nobody answers in 20 seconds
+  currentCall.answerTimeout = setTimeout(async function() {
+    if (!currentCall || currentCall.callId !== callId) return;
+    try {
+      const snap = await db.collection("calls").doc(callId).collection("participants").get();
+      if (snap.size <= 1) {
+        toast("No answer — call ended.", true);
+        endCall();
+      }
+    } catch (e) {}
+  }, CALL_RING_TIMEOUT_MS);
 }
 async function joinCall(callId, type) {
   if (currentCall) return;
   if (!navigator.onLine) { toast("You're offline.", true); return; }
+  unlockAudioForCalls();
   const me = auth.currentUser.uid;
   let localStream;
   try { showLoader("joining call…"); localStream = await getLocalMedia(type); }
@@ -2958,9 +3004,20 @@ async function joinCall(callId, type) {
   const callSnap = await db.collection("calls").doc(callId).get();
   if (!callSnap.exists) { toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
   const callData = callSnap.data();
-  currentCall = { callId, convId: callData.conversationId, isGroup: !!callData.isGroup, type: callData.type, localStream, peers: new Map(), muted: false, videoOff: callData.type === "voice", startTime: Date.now(), durationTimer: null };
-  try { await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: currentCall.videoOff }); }
-  catch (e) {}
+  currentCall = {
+    callId, convId: callData.conversationId, isGroup: !!callData.isGroup,
+    type: callData.type, localStream, peers: new Map(),
+    muted: false, videoOff: callData.type === "voice",
+    startTime: Date.now(), durationTimer: null, answerTimeout: null
+  };
+  try {
+    await db.collection("calls").doc(callId).collection("participants").doc(me).set({
+      uid: me, username: myUsername, emoji: myEmoji,
+      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      muted: false, videoOff: currentCall.videoOff
+    });
+  } catch (e) {}
+  playJoinSound();
   showCallOverlay();
   attachLocalTile();
   setupCallListeners();
@@ -3099,12 +3156,15 @@ function attachRemoteTile(uid, stream) {
     av.style.display = "";
     av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />';
   }
-  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : "");
-  // Do NOT mute remote audio. Ever. Retry playing on every lifecycle event.
-  if (v.muted) v.muted = false;
+  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : '');
+
+  // HARD-ENFORCE remote audio — never muted
+  v.muted = false;
   v.volume = 1;
+  v.defaultMuted = false;
+  v.removeAttribute("muted");
+
   const tryPlay = function() {
-    if (!v.paused) return;
     const p = v.play();
     if (p && p.catch) {
       p.catch(function(err) {
@@ -3128,6 +3188,7 @@ function attachRemoteTile(uid, stream) {
   tryPlay();
   v.addEventListener("loadedmetadata", tryPlay);
   v.addEventListener("canplay", tryPlay);
+  v.addEventListener("canplaythrough", tryPlay);
   v.addEventListener("playing", function() {
     const btn = tile.querySelector(".enable-audio-btn");
     if (btn) btn.remove();
@@ -3185,7 +3246,12 @@ function setupCallListeners() {
     for (const item of pendingNew) {
       playJoinSound();
       if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
-      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, username: item.data.username, emoji: item.data.emoji }); }
+      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, username: item.data.username, emoji: item.data.emoji, _processedInitialOffer: false, _processedAnswer: false }); }
+    }
+    // Clear answer timeout once someone else joins
+    if (currentCall && currentCall.answerTimeout && snap.size > 1) {
+      clearTimeout(currentCall.answerTimeout);
+      currentCall.answerTimeout = null;
     }
     if (currentCall) attachRemoteTilesRefresh();
   });
@@ -3217,50 +3283,61 @@ function attachRemoteTilesRefresh() {
 async function initiateOfferTo(peerUid, peerData) {
   const me = auth.currentUser.uid;
   const pc = createPeerConnection(peerUid);
-  currentCall.peers.set(peerUid, { pc: pc, stream: null, muted: !!peerData.muted, videoOff: !!peerData.videoOff, username: peerData.username, emoji: peerData.emoji });
+  currentCall.peers.set(peerUid, {
+    pc: pc, stream: null,
+    muted: !!peerData.muted, videoOff: !!peerData.videoOff,
+    username: peerData.username, emoji: peerData.emoji,
+    _processedInitialOffer: false, _processedAnswer: false
+  });
   const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
   const key = pairKey(me, peerUid);
-  await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ fromUid: me, toUid: peerUid, offer: { type: offer.type, sdp: offer.sdp }, fromCandidates: [], toCandidates: [] }, { merge: true });
+  // Write the offer doc FIRST so ICE candidates generated by setLocalDescription
+  // aren't wiped by an empty-array overwrite from a later set().
+  await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({
+    fromUid: me, toUid: peerUid,
+    offer: { type: offer.type, sdp: offer.sdp }
+  }, { merge: true });
+  await pc.setLocalDescription(offer);
 }
 async function processSignal(peerUid, data) {
   const me = auth.currentUser.uid;
   let peer = currentCall.peers.get(peerUid);
-  if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false }; currentCall.peers.set(peerUid, peer); }
+  if (!peer) {
+    peer = { pc: null, stream: null, muted: false, videoOff: false,
+             _processedInitialOffer: false, _processedAnswer: false };
+    currentCall.peers.set(peerUid, peer);
+  }
   if (!peer.pc) peer.pc = createPeerConnection(peerUid);
   const pc = peer.pc;
-  const hasRemote = !!pc.currentRemoteDescription;
-  const hasLocal = !!pc.currentLocalDescription;
   const iAmCaller = me < peerUid;
-  // Caller: process answer. Callee: process offer.
-  if (!iAmCaller && data.offer && (!hasLocal || pc.signalingState === "stable")) {
+
+  // Callee: process offer exactly once
+  if (!iAmCaller && data.offer && !peer._processedInitialOffer && !pc.currentRemoteDescription) {
+    peer._processedInitialOffer = true;
     try {
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       const key = pairKey(me, peerUid);
-      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
-    } catch (e) {}
+      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
+        .set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
+    } catch (e) { peer._processedInitialOffer = false; }
   }
-  if (iAmCaller && data.answer && !hasRemote) {
+
+  // Caller: process answer exactly once
+  if (iAmCaller && data.answer && !peer._processedAnswer && !pc.currentRemoteDescription) {
+    peer._processedAnswer = true;
     try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
-    catch (e) {}
+    catch (e) { peer._processedAnswer = false; }
   }
-  // Also handle renegotiation: if we're caller and there's a NEW offer (peer added video), process it
-  if (iAmCaller && data.offer && hasLocal && pc.signalingState === "stable") {
-    try {
-      await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      const key = pairKey(me, peerUid);
-      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
-    } catch (e) {}
-  }
-  // Candidates — add whichever side applies
-  const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
-  const candidates = data[fromField] || [];
-  for (const c of candidates) {
-    try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {}
+
+  // Add ICE candidates only after we have a remote description
+  if (pc.remoteDescription) {
+    const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
+    const candidates = data[fromField] || [];
+    for (const c of candidates) {
+      try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {}
+    }
   }
 }
 function removePeer(uid, silent) {
@@ -3301,7 +3378,6 @@ function setupRemoteSpeakingDetection(uid, stream) {
   if (!currentCall || !stream || !stream.getAudioTracks().length) return;
   const peer = currentCall.peers.get(uid);
   if (!peer) return;
-  // Prefer getSynchronizationSources — most reliable across browsers
   const check = function() {
     if (!currentCall || !currentCall.peers.has(uid)) return;
     let level = 0;
@@ -3328,30 +3404,60 @@ function setupRemoteSpeakingDetection(uid, stream) {
 }
 async function endCall() {
   stopRingtone();
-  if (!currentCall) { document.getElementById("incomingCall").classList.remove("open"); pendingIncomingCall = null; return; }
-  const callId = currentCall.callId, convId = currentCall.convId, callType = currentCall.type;
+  const incomingEl = document.getElementById("incomingCall");
+  if (incomingEl) incomingEl.classList.remove("open");
+  pendingIncomingCall = null;
+
+  if (!currentCall) return;
+
+  const callId = currentCall.callId;
+  const convId = currentCall.convId;
+  const callType = currentCall.type;
   const durationSecs = Math.floor((Date.now() - currentCall.startTime) / 1000);
   const me = auth.currentUser && auth.currentUser.uid;
+
+  if (currentCall.answerTimeout) clearTimeout(currentCall.answerTimeout);
+
+  let iWasCaller = false;
+  try {
+    const callSnap = await db.collection("calls").doc(callId).get();
+    if (callSnap.exists) iWasCaller = callSnap.data().createdBy === me;
+  } catch (e) {}
+
   callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
   currentCall.peers.forEach(function(_, uid) { removePeer(uid, true); });
   try { if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
   try { if (currentCall.localAudioCtx && currentCall.localAudioCtx.state !== "closed") currentCall.localAudioCtx.close().catch(function(){}); } catch (e) {}
   if (currentCall.durationTimer) clearInterval(currentCall.durationTimer);
+
   document.getElementById("callOverlay").classList.remove("open");
   document.getElementById("callVideos").innerHTML = "";
   currentCall = null;
   playCallEndSound();
+
   try {
     if (callId && me) {
       await db.collection("calls").doc(callId).collection("participants").doc(me).delete();
       const remaining = await db.collection("calls").doc(callId).collection("participants").get();
-      if (remaining.size === 0) {
+
+      const shouldTearDown = iWasCaller || remaining.size === 0;
+
+      if (shouldTearDown) {
         const alreadyWritten = convId ? await hasRecentCallEndMessage(convId) : false;
         if (!alreadyWritten && convId) await writeCallSystemMessage(convId, "ended", callType, durationSecs);
-        const sigs = await db.collection("calls").doc(callId).collection("signals").get();
-        const batch = db.batch(); sigs.forEach(function(s) { batch.delete(s.ref); }); batch.delete(db.collection("calls").doc(callId));
-        await batch.commit();
-        if (convId) { try { await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() }); } catch (e) {} }
+
+        try {
+          const sigs = await db.collection("calls").doc(callId).collection("signals").get();
+          const batch = db.batch();
+          sigs.forEach(function(s) { batch.delete(s.ref); });
+          batch.delete(db.collection("calls").doc(callId));
+          await batch.commit();
+        } catch (e) {}
+
+        // Always clear activeCall flag so others stop seeing "in a call" banner
+        if (convId) {
+          try { await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() }); } catch (e) {}
+        }
       }
     }
   } catch (e) {}
@@ -3366,11 +3472,21 @@ function checkForIncomingCall(convSnapDocs) {
     const ac = data.activeCall;
     if (!ac || ac.createdBy === me) return;
     const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
-    if (started && Date.now() - started > 90000) return;
+    // Stale call (older than 20s) — clean it up so it stops showing as incoming
+    if (started && Date.now() - started > CALL_RING_TIMEOUT_MS) {
+      db.collection("conversations").doc(d.id)
+        .update({ activeCall: firebase.firestore.FieldValue.delete() })
+        .catch(function() {});
+      return;
+    }
     found = { convId: d.id, conv: data, call: ac };
   });
   if (found && !pendingIncomingCall) { pendingIncomingCall = found; showIncomingCallModal(found); }
-  else if (!found && pendingIncomingCall) { pendingIncomingCall = null; document.getElementById("incomingCall").classList.remove("open"); stopRingtone(); }
+  else if (!found && pendingIncomingCall) {
+    pendingIncomingCall = null;
+    document.getElementById("incomingCall").classList.remove("open");
+    stopRingtone();
+  }
 }
 function showIncomingCallModal(found) {
   const { conv, call } = found;
