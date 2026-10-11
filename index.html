@@ -461,6 +461,10 @@ body.avatar-square .avatar { border-radius: 4px; }
 .call-tile-label .call-muted-icon { color: #ff6b6b; font-size: 13px; }
 .call-tile-label .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .call-tile.local-mirror video { transform: scaleX(-1); }
+.call-tile.screen-share video { object-fit: contain; background: #000; }
+.call-tile.screen-share.local-mirror video { transform: none; }
+.call-tile .fs-btn { position: absolute; top: 8px; right: 8px; width: 38px; height: 38px; border-radius: 8px; background: rgba(0,0,0,0.7); color: #fff; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; z-index: 10; padding: 0; }
+.call-tile .fs-btn:hover { background: rgba(0,0,0,0.9); }
 .call-controls { display: flex; gap: 16px; padding: 16px; justify-content: center; background: rgba(0,0,0,0.4); border-top: 1px solid #1d1d1d; flex-shrink: 0; }
 .call-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: #2a2a2a; color: #fff; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.1s; }
 .call-btn:hover { background: #3a3a3a; }
@@ -3128,6 +3132,9 @@ function attachLocalTile() {
     v.srcObject = streamToShow;
   }
 
+  tile.classList.toggle("screen-share", !!currentCall.screenTrack);
+  tile.classList.toggle("local-mirror", !currentCall.screenTrack);
+
   const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
   const showVideo = currentCall.screenTrack || (currentCall.type === "video" && !currentCall.videoOff && hasVideo);
   if (showVideo) {
@@ -3186,11 +3193,16 @@ function attachRemoteTile(uid, stream) {
   const lbl = tile.querySelector(".call-tile-label");
   const peer = currentCall.peers.get(uid) || {};
   const user = userCache.get(uid) || {};
+
   if (stream && v.srcObject !== stream) {
     v.srcObject = stream;
   }
+
   const hasVideo = stream && stream.getVideoTracks().length > 0;
   const showVideo = hasVideo && (peer.screenSharing || (currentCall.type === "video" && !peer.videoOff));
+
+  tile.classList.toggle("screen-share", !!peer.screenSharing);
+
   if (showVideo) {
     v.style.position = "";
     v.style.width = "100%";
@@ -3216,6 +3228,28 @@ function attachRemoteTile(uid, stream) {
   if (peer.screenSharing) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
   lbl.innerHTML = labelHtml;
 
+  let fsBtn = tile.querySelector(".fs-btn");
+  if (peer.screenSharing) {
+    if (!fsBtn) {
+      fsBtn = document.createElement("button");
+      fsBtn.className = "fs-btn";
+      fsBtn.innerHTML = "⛶";
+      fsBtn.title = "Fullscreen";
+      fsBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        const target = tile.querySelector("video") || tile;
+        try {
+          if (target.requestFullscreen) target.requestFullscreen();
+          else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+          else if (target.msRequestFullscreen) target.msRequestFullscreen();
+        } catch (err) {}
+      });
+      tile.appendChild(fsBtn);
+    }
+  } else if (fsBtn) {
+    fsBtn.remove();
+  }
+
   v.muted = false;
   v.volume = 1;
   v.defaultMuted = false;
@@ -3230,7 +3264,7 @@ function attachRemoteTile(uid, stream) {
           const btn = document.createElement("button");
           btn.className = "enable-audio-btn";
           btn.textContent = "🔊 tap for audio";
-          btn.style.cssText = "position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.8);color:#fff;border:1px solid #4fc3f7;border-radius:9999px;padding:6px 12px;font-size:12px;cursor:pointer;z-index:10;font-family:inherit;";
+          btn.style.cssText = "position:absolute;top:8px;right:56px;background:rgba(0,0,0,0.8);color:#fff;border:1px solid #4fc3f7;border-radius:9999px;padding:6px 12px;font-size:12px;cursor:pointer;z-index:10;font-family:inherit;";
           btn.addEventListener("click", function(e) {
             e.stopPropagation();
             v.muted = false;
@@ -3361,7 +3395,7 @@ async function processSignal(peerUid, data) {
   const me = auth.currentUser.uid;
   let peer = currentCall.peers.get(peerUid);
   if (!peer) {
-    peer = { pc: null, stream: null, muted: false, videoOff: false,
+    peer = { pc: null, stream: null, muted: false, videoOff: false, screenSharing: false,
              _lastOfferSdp: null, _lastAnswerSdp: null };
     currentCall.peers.set(peerUid, peer);
   }
@@ -3369,22 +3403,36 @@ async function processSignal(peerUid, data) {
   const pc = peer.pc;
   const iAmCaller = me < peerUid;
 
-  if (!iAmCaller && data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp) {
+  if (data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp) {
     peer._lastOfferSdp = data.offer.sdp;
     try {
+      if (pc.signalingState === "have-local-offer") {
+        try { await pc.setLocalDescription({ type: "rollback" }); } catch (e) {}
+      }
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       const key = pairKey(me, peerUid);
       await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
         .set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
-    } catch (e) { peer._lastOfferSdp = null; }
+      console.log("[call] processed offer from", peerUid);
+    } catch (e) {
+      console.warn("[call] offer handling failed", e);
+      peer._lastOfferSdp = null;
+    }
   }
 
-  if (iAmCaller && data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp) {
+  if (data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp) {
     peer._lastAnswerSdp = data.answer.sdp;
-    try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
-    catch (e) { peer._lastAnswerSdp = null; }
+    try {
+      if (pc.signalingState === "have-local-offer") {
+        await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+        console.log("[call] processed answer from", peerUid);
+      }
+    } catch (e) {
+      console.warn("[call] answer handling failed", e);
+      peer._lastAnswerSdp = null;
+    }
   }
 
   if (pc.remoteDescription) {
@@ -3661,6 +3709,8 @@ async function startScreenShare() {
   currentCall.screenTrack = screenTrack;
   currentCall.screenStream = screenStream;
 
+  try { currentCall.localStream.addTrack(screenTrack); } catch (e) {}
+
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
@@ -3675,7 +3725,7 @@ async function startScreenShare() {
         await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
           .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
-    } catch (e) {}
+    } catch (e) { console.warn("[share] track swap failed", e); }
   }
 
   const btn = document.getElementById("callScreenBtn");
@@ -3694,18 +3744,29 @@ async function stopScreenShare() {
   const track = currentCall.screenTrack;
   try { track.stop(); } catch (e) {}
   try { if (currentCall.screenStream) currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
+  try { currentCall.localStream.removeTrack(track); } catch (e) {}
   currentCall.screenTrack = null;
   currentCall.screenStream = null;
   currentCall._localScreenStream = null;
 
-  const camTrack = currentCall.localStream.getVideoTracks()[0];
-  currentCall.peers.forEach(function(peer) {
-    if (!peer.pc) return;
+  const camTrack = currentCall.localStream.getVideoTracks().find(function(t) { return t.readyState === "live"; });
+  for (const [uid, peer] of currentCall.peers) {
+    if (!peer.pc) continue;
     try {
       const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
-      if (sender && camTrack) sender.replaceTrack(camTrack);
+      if (!sender) continue;
+      if (camTrack) {
+        await sender.replaceTrack(camTrack);
+      } else {
+        peer.pc.removeTrack(sender);
+        const offer = await peer.pc.createOffer();
+        await peer.pc.setLocalDescription(offer);
+        const key = pairKey(auth.currentUser.uid, uid);
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
+          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      }
     } catch (e) {}
-  });
+  }
 
   const btn = document.getElementById("callScreenBtn");
   if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; }
@@ -3716,7 +3777,7 @@ async function stopScreenShare() {
   attachLocalTile();
 }
 
-/* Self-healing sweep: clear any stale activeCall flags on boot */
+/* Self-healing sweep */
 async function sweepStaleCalls() {
   if (!auth || !auth.currentUser) return;
   try {
