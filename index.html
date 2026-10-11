@@ -808,7 +808,7 @@ const SOUNDS_IDB_KEY = "customSounds";
 const MUSIC_IDB_KEY = "customTracksV2";
 const SETTINGS_KEY = "fuzzy-settings-v3";
 const POSTS_PER_PAGE = 20;
-const CALL_RING_TIMEOUT_MS = 20000; // auto-end if nobody picks up in 20s
+const CALL_RING_TIMEOUT_MS = 20000;
 const DEFAULT_SETTINGS = {
   bgColor: "#161616", surfaceColor: "#1d1d1d",
   accentColor: "#e7e7e7", accentColor2: "#4fc3f7", accentGradient: false, accentGradientAngle: 135,
@@ -1288,7 +1288,7 @@ function playLeaveSound() { playToneSequence([{ freq: 880, dur: 0.09, vol: 0.18 
 function playCallStartSound() { playToneSequence([{ freq: 500, dur: 0.10, vol: 0.15 }, { freq: 700, dur: 0.10, vol: 0.15 }, { freq: 950, dur: 0.16, vol: 0.15 }]); }
 function playCallEndSound() { playToneSequence([{ freq: 950, dur: 0.10, vol: 0.15 }, { freq: 700, dur: 0.10, vol: 0.15 }, { freq: 500, dur: 0.18, vol: 0.15 }]); }
 
-/* ==== AUDIO UNLOCK (mobile autoplay policy) ==== */
+/* ==== AUDIO UNLOCK ==== */
 function unlockAudioForCalls() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2900,59 +2900,59 @@ async function startCall(type) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   if (!currentConvId) { toast("No conversation open.", true); return; }
   if (currentCall) { toast("Already in a call.", true); return; }
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Calls not supported in this browser.", true); return; }
 
-  // Unlock audio output on user gesture
-  unlockAudioForCalls();
+  // HTTPS / API guards (mobile browsers refuse getUserMedia otherwise)
+  if (!window.isSecureContext) {
+    toast("Calls need HTTPS. This page isn't secure.", true);
+    console.error("[call] not a secure context, protocol:", location.protocol);
+    return;
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast("This browser can't make calls (no getUserMedia).", true);
+    console.error("[call] navigator.mediaDevices missing");
+    return;
+  }
 
   const me = auth.currentUser.uid;
   const conv = conversationsCache.get(currentConvId) || {};
   const isGroup = !!conv.isGroup;
   if (isGroup && (conv.members || []).length > MAX_GROUP_MEMBERS) { toast("Group is too big for calls.", true); return; }
+
   const existingCall = conv.activeCall;
   if (existingCall && existingCall.createdBy && existingCall.createdBy !== me) {
-    const wantedType = type;
-    await joinCall(existingCall.callId, existingCall.type);
-    if (wantedType === "video" && currentCall && currentCall.type === "voice") {
-      try {
-        const videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const videoTrack = videoStream.getVideoTracks()[0];
-        if (videoTrack) {
-          currentCall.localStream.addTrack(videoTrack);
-          currentCall.peers.forEach(function(peer) {
-            if (peer.pc) { try { peer.pc.addTrack(videoTrack, currentCall.localStream); } catch (e) {} }
-          });
-          for (const [uid, peer] of currentCall.peers) {
-            if (!peer.pc) continue;
-            try {
-              const offer = await peer.pc.createOffer();
-              await peer.pc.setLocalDescription(offer);
-              const key = pairKey(me, uid);
-              await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
-            } catch (e) {}
-          }
-          currentCall.type = "video";
-          currentCall.videoOff = false;
-          attachLocalTile();
-          document.getElementById("callVideoBtn").style.display = "";
-          status("Joined with video on");
-        }
-      } catch (e) { toast("Joined as voice — camera unavailable", true); }
-    }
+    return joinCall(existingCall.callId, existingCall.type);
+  }
+
+  // === GET MEDIA IMMEDIATELY (mobile requires this inside the tap gesture) ===
+  let localStream;
+  try {
+    console.log("[call] requesting", type, "media…");
+    localStream = await getLocalMedia(type);
+    console.log("[call] got:", localStream.getTracks().map(function(t){return t.kind;}).join(","));
+  } catch (e) {
+    console.error("[call] getUserMedia failed:", e);
+    const name = (e && e.name) || "";
+    let msg = "Could not access " + (type === "video" ? "camera/mic" : "microphone");
+    if (name === "NotAllowedError" || name === "SecurityError") msg = "Permission denied. Allow " + (type === "video" ? "camera & mic" : "mic") + " in your browser settings and try again.";
+    else if (name === "NotFoundError" || name === "DevicesNotFoundError") msg = "No " + (type === "video" ? "camera" : "microphone") + " found on this device.";
+    else if (name === "NotReadableError" || name === "TrackStartError") msg = "Your " + (type === "video" ? "camera/mic" : "mic") + " is already in use by another app.";
+    else if (name === "OverconstrainedError") msg = "This device doesn't meet the call requirements.";
+    toast(msg, true);
     return;
   }
-  let localStream;
-  try { showLoader("starting " + type + " call…"); localStream = await getLocalMedia(type); }
-  catch (e) { hideLoader(); toast("Could not access " + (type === "video" ? "camera/mic" : "microphone") + ".", true); return; }
-  hideLoader();
+
+  try { unlockAudioForCalls(); } catch (e) {}
+  showLoader("starting " + type + " call…");
+
   const callId = callIdGen();
   const videoOff = type === "voice";
   const convIdSnapshot = currentConvId;
   currentCall = {
-    callId, convId: convIdSnapshot, isGroup, type, localStream,
-    peers: new Map(), muted: false, videoOff: videoOff,
+    callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type,
+    localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff,
     startTime: Date.now(), durationTimer: null, answerTimeout: null
   };
+
   try {
     await db.collection("calls").doc(callId).set({
       conversationId: convIdSnapshot, isGroup: isGroup, type: type,
@@ -2967,11 +2967,14 @@ async function startCall(type) {
       activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() }
     });
   } catch (e) {
+    hideLoader();
     toast("Could not start call (check Firestore rules for 'calls').", true);
     try { localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e2) {}
     currentCall = null;
     return;
   }
+
+  hideLoader();
   playCallStartSound();
   await writeCallSystemMessage(convIdSnapshot, "started", type, 0);
   showCallOverlay();
@@ -2980,7 +2983,7 @@ async function startCall(type) {
   startDurationTimer();
   setupLocalSpeakingDetection();
 
-  // Auto-end if nobody answers in 20 seconds
+  // Auto-end if nobody answers within 20s
   currentCall.answerTimeout = setTimeout(async function() {
     if (!currentCall || currentCall.callId !== callId) return;
     try {
@@ -2995,18 +2998,43 @@ async function startCall(type) {
 async function joinCall(callId, type) {
   if (currentCall) return;
   if (!navigator.onLine) { toast("You're offline.", true); return; }
-  unlockAudioForCalls();
+  if (!window.isSecureContext) { toast("Calls need HTTPS.", true); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast("This browser can't make calls.", true);
+    return;
+  }
+
   const me = auth.currentUser.uid;
+
+  // Get media IMMEDIATELY (keeps the gesture chain alive on mobile)
   let localStream;
-  try { showLoader("joining call…"); localStream = await getLocalMedia(type); }
-  catch (e) { hideLoader(); toast("Could not access mic/camera.", true); return; }
-  hideLoader();
+  try {
+    console.log("[call] joining, requesting", type, "media…");
+    localStream = await getLocalMedia(type);
+  } catch (e) {
+    console.error("[call] getUserMedia failed on join:", e);
+    const name = (e && e.name) || "";
+    let msg = "Could not access mic/camera.";
+    if (name === "NotAllowedError" || name === "SecurityError") msg = "Permission denied. Allow mic/camera in browser settings.";
+    else if (name === "NotReadableError") msg = "Mic/camera already in use by another app.";
+    toast(msg, true);
+    return;
+  }
+
+  try { unlockAudioForCalls(); } catch (e) {}
+  showLoader("joining call…");
+
   const callSnap = await db.collection("calls").doc(callId).get();
-  if (!callSnap.exists) { toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
+  if (!callSnap.exists) {
+    hideLoader();
+    toast("Call ended.", true);
+    localStream.getTracks().forEach(function(t) { t.stop(); });
+    return;
+  }
   const callData = callSnap.data();
   currentCall = {
-    callId, convId: callData.conversationId, isGroup: !!callData.isGroup,
-    type: callData.type, localStream, peers: new Map(),
+    callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup,
+    type: callData.type, localStream: localStream, peers: new Map(),
     muted: false, videoOff: callData.type === "voice",
     startTime: Date.now(), durationTimer: null, answerTimeout: null
   };
@@ -3017,6 +3045,7 @@ async function joinCall(callId, type) {
       muted: false, videoOff: currentCall.videoOff
     });
   } catch (e) {}
+  hideLoader();
   playJoinSound();
   showCallOverlay();
   attachLocalTile();
@@ -3156,9 +3185,9 @@ function attachRemoteTile(uid, stream) {
     av.style.display = "";
     av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />';
   }
-  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : '');
+  lbl.innerHTML = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>' + (peer.muted ? '<span class="call-muted-icon">🔇</span>' : "");
 
-  // HARD-ENFORCE remote audio — never muted
+  // Hard-enforce remote audio — never muted
   v.muted = false;
   v.volume = 1;
   v.defaultMuted = false;
@@ -3291,8 +3320,7 @@ async function initiateOfferTo(peerUid, peerData) {
   });
   const offer = await pc.createOffer();
   const key = pairKey(me, peerUid);
-  // Write the offer doc FIRST so ICE candidates generated by setLocalDescription
-  // aren't wiped by an empty-array overwrite from a later set().
+  // Write offer doc FIRST so ICE candidates from setLocalDescription aren't wiped
   await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({
     fromUid: me, toUid: peerUid,
     offer: { type: offer.type, sdp: offer.sdp }
@@ -3418,12 +3446,7 @@ async function endCall() {
 
   if (currentCall.answerTimeout) clearTimeout(currentCall.answerTimeout);
 
-  let iWasCaller = false;
-  try {
-    const callSnap = await db.collection("calls").doc(callId).get();
-    if (callSnap.exists) iWasCaller = callSnap.data().createdBy === me;
-  } catch (e) {}
-
+  // Local cleanup
   callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
   currentCall.peers.forEach(function(_, uid) { removePeer(uid, true); });
   try { if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
@@ -3435,17 +3458,40 @@ async function endCall() {
   currentCall = null;
   playCallEndSound();
 
-  try {
-    if (callId && me) {
+  // === NETWORK CLEANUP ===
+  // 1) Always clear the activeCall flag if it still points at OUR call.
+  //    This fixes "it still says call in progress after we both leave".
+  if (convId) {
+    try {
+      const convSnap = await db.collection("conversations").doc(convId).get();
+      if (convSnap.exists) {
+        const ac = convSnap.data().activeCall;
+        if (ac && ac.callId === callId) {
+          await db.collection("conversations").doc(convId).update({
+            activeCall: firebase.firestore.FieldValue.delete()
+          });
+        }
+      }
+    } catch (e) { console.warn("[call] clear activeCall failed:", e); }
+  }
+
+  // 2) Write the "ended" system message (once)
+  if (convId) {
+    try {
+      const alreadyWritten = await hasRecentCallEndMessage(convId);
+      if (!alreadyWritten) await writeCallSystemMessage(convId, "ended", callType, durationSecs);
+    } catch (e) {}
+  }
+
+  // 3) Remove self from participants; delete the call doc if last out
+  if (callId && me) {
+    try {
       await db.collection("calls").doc(callId).collection("participants").doc(me).delete();
+    } catch (e) {}
+
+    try {
       const remaining = await db.collection("calls").doc(callId).collection("participants").get();
-
-      const shouldTearDown = iWasCaller || remaining.size === 0;
-
-      if (shouldTearDown) {
-        const alreadyWritten = convId ? await hasRecentCallEndMessage(convId) : false;
-        if (!alreadyWritten && convId) await writeCallSystemMessage(convId, "ended", callType, durationSecs);
-
+      if (remaining.size === 0) {
         try {
           const sigs = await db.collection("calls").doc(callId).collection("signals").get();
           const batch = db.batch();
@@ -3453,36 +3499,44 @@ async function endCall() {
           batch.delete(db.collection("calls").doc(callId));
           await batch.commit();
         } catch (e) {}
-
-        // Always clear activeCall flag so others stop seeing "in a call" banner
-        if (convId) {
-          try { await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() }); } catch (e) {}
-        }
       }
-    }
-  } catch (e) {}
+    } catch (e) {}
+  }
 }
 function checkForIncomingCall(convSnapDocs) {
   if (!auth || !auth.currentUser) return;
   const me = auth.currentUser.uid;
   if (currentCall) return;
+
   let found = null;
   convSnapDocs.forEach(function(d) {
     const data = d.data();
     const ac = data.activeCall;
-    if (!ac || ac.createdBy === me) return;
+    if (!ac) return;
+
     const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
-    // Stale call (older than 20s) — clean it up so it stops showing as incoming
-    if (started && Date.now() - started > CALL_RING_TIMEOUT_MS) {
+    const ageMs = started ? (Date.now() - started) : 0;
+
+    // Stale: older than 20s AND not ours → clean it up so it stops showing
+    if (started && ageMs > CALL_RING_TIMEOUT_MS && ac.createdBy !== me) {
+      console.log("[call] clearing stale activeCall on", d.id, "age", ageMs);
       db.collection("conversations").doc(d.id)
         .update({ activeCall: firebase.firestore.FieldValue.delete() })
         .catch(function() {});
       return;
     }
+
+    // Not ours → real incoming call
+    if (ac.createdBy === me) return;
+    if (started && ageMs > CALL_RING_TIMEOUT_MS) return;
+
     found = { convId: d.id, conv: data, call: ac };
   });
-  if (found && !pendingIncomingCall) { pendingIncomingCall = found; showIncomingCallModal(found); }
-  else if (!found && pendingIncomingCall) {
+
+  if (found && !pendingIncomingCall) {
+    pendingIncomingCall = found;
+    showIncomingCallModal(found);
+  } else if (!found && pendingIncomingCall) {
     pendingIncomingCall = null;
     document.getElementById("incomingCall").classList.remove("open");
     stopRingtone();
@@ -3503,6 +3557,28 @@ function showIncomingCallModal(found) {
   }
   document.getElementById("incomingCall").classList.add("open");
   startRingtone();
+}
+
+/* Self-healing sweep: clear any stale activeCall flags on boot */
+async function sweepStaleCalls() {
+  if (!auth || !auth.currentUser) return;
+  try {
+    const snap = await db.collection("conversations")
+      .where("members", "array-contains", auth.currentUser.uid).get();
+    const batch = db.batch();
+    let hits = 0;
+    snap.forEach(function(d) {
+      const ac = d.data().activeCall;
+      if (!ac) return;
+      const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
+      if (started && Date.now() - started > CALL_RING_TIMEOUT_MS) {
+        batch.update(d.ref, { activeCall: firebase.firestore.FieldValue.delete() });
+        hits++;
+      }
+    });
+    if (hits > 0) await batch.commit();
+    if (hits) console.log("[call] swept", hits, "stale call flags");
+  } catch (e) {}
 }
 
 /* =====================================================================
@@ -3568,6 +3644,8 @@ async function loadProfile(user) {
     status("Signed in as " + myUsername);
     startConversationsListener();
     loadSavedIds();
+    // Boot sweep: clear stale call flags
+    sweepStaleCalls();
   } catch (err) { status("Profile error: " + (err.code || err.message), true); }
 }
 async function loadSavedIds() {
