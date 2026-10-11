@@ -1069,10 +1069,11 @@ function showView(name) {
     if (el) el.style.display = (k === name) ? (k === "chat" ? "flex" : "block") : "none";
   });
 }
-function pauseAllVideos() { document.querySelectorAll("video").forEach(function(v) { try { if (!v.paused) v.pause(); } catch (e) {} }); }
+function pauseAllVideos() { document.querySelectorAll("video").forEach(function(v) { try { if (!v.paused && v.dataset.callTile !== "1") v.pause(); } catch (e) {} }); }
 function captureVideoState() {
   const map = new Map();
   document.querySelectorAll("video").forEach(function(v) {
+    if (v.dataset.callTile === "1") return;
     const key = v.getAttribute("src") || v.src; if (!key) return;
     if (!map.has(key)) map.set(key, []);
     map.get(key).push({ currentTime: v.currentTime || 0, paused: v.paused, muted: v.muted, volume: v.volume });
@@ -1083,6 +1084,7 @@ function restoreVideoState(map) {
   if (!map || map.size === 0) return;
   const used = new Map();
   document.querySelectorAll("video").forEach(function(v) {
+    if (v.dataset.callTile === "1") return;
     const key = v.getAttribute("src") || v.src; if (!key || !map.has(key)) return;
     const arr = map.get(key); const idx = used.get(key) || 0; used.set(key, idx + 1);
     const s = arr[idx]; if (!s) return;
@@ -2403,7 +2405,6 @@ function renderChatMessages(snap, otherUid) {
 }
 function buildChatMessageRow(m, ctx) {
   const me = ctx.me, isGroup = ctx.isGroup, theirLastReadMs = ctx.theirLastReadMs;
-  // System call messages
   if (m.data.type === "call") {
     const row = document.createElement("div");
     row.className = "chat-msg-row system";
@@ -2888,6 +2889,39 @@ async function startCall(type) {
   const conv = conversationsCache.get(currentConvId) || {};
   const isGroup = !!conv.isGroup;
   if (isGroup && (conv.members || []).length > MAX_GROUP_MEMBERS) { toast("Group is too big for calls.", true); return; }
+  // Join existing call if one is already active
+  const existingCall = conv.activeCall;
+  if (existingCall && existingCall.createdBy && existingCall.createdBy !== me) {
+    const wantedType = type;
+    await joinCall(existingCall.callId, existingCall.type);
+    if (wantedType === "video" && currentCall && currentCall.type === "voice") {
+      try {
+        const videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        const videoTrack = videoStream.getVideoTracks()[0];
+        if (videoTrack) {
+          currentCall.localStream.addTrack(videoTrack);
+          currentCall.peers.forEach(function(peer) {
+            if (peer.pc) { try { peer.pc.addTrack(videoTrack, currentCall.localStream); } catch (e) {} }
+          });
+          currentCall.peers.forEach(async function(peer, uid) {
+            if (!peer.pc) return;
+            try {
+              const offer = await peer.pc.createOffer();
+              await peer.pc.setLocalDescription(offer);
+              const key = pairKey(me, uid);
+              await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+            } catch (e) {}
+          });
+          currentCall.type = "video";
+          currentCall.videoOff = false;
+          attachLocalTile();
+          document.getElementById("callVideoBtn").style.display = "";
+          status("Joined with video on");
+        }
+      } catch (e) { toast("Joined as voice — camera unavailable", true); }
+    }
+    return;
+  }
   let localStream;
   try { showLoader("starting " + type + " call…"); localStream = await getLocalMedia(type); }
   catch (e) { hideLoader(); toast("Could not access " + (type === "video" ? "camera/mic" : "microphone") + ".", true); return; }
@@ -2967,7 +3001,9 @@ function attachLocalTile() {
   if (!tile) { tile = document.createElement("div"); tile.id = "call-tile-local"; tile.className = "call-tile local-mirror"; container.appendChild(tile); }
   tile.innerHTML = "";
   if (currentCall.type === "video" && !currentCall.videoOff) {
-    const v = document.createElement("video"); v.autoplay = true; v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.srcObject = currentCall.localStream; tile.appendChild(v);
+    const v = document.createElement("video"); v.autoplay = true; v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.srcObject = currentCall.localStream; v.dataset.callTile = "1";
+    tile.appendChild(v);
+    try { v.play().catch(function(){}); } catch (e) {}
   } else {
     tile.classList.add("voice-only");
     const av = document.createElement("div"); av.className = "call-avatar"; av.innerHTML = '<img src="' + myEmoji + '" alt="" />'; tile.appendChild(av);
@@ -2979,18 +3015,35 @@ function attachLocalTile() {
 function attachRemoteTile(uid, stream) {
   const container = document.getElementById("callVideos");
   let tile = document.getElementById("call-tile-" + uid);
-  if (!tile) { tile = document.createElement("div"); tile.id = "call-tile-" + uid; tile.className = "call-tile"; container.appendChild(tile); }
+  if (!tile) {
+    tile = document.createElement("div");
+    tile.id = "call-tile-" + uid;
+    tile.className = "call-tile";
+    container.appendChild(tile);
+  }
   tile.innerHTML = "";
   const peer = currentCall.peers.get(uid) || {};
   const user = userCache.get(uid) || {};
-  const showVideo = currentCall.type === "video" && !peer.videoOff && stream && stream.getVideoTracks().length > 0;
-  // ALWAYS create a media element so audio plays (even in voice mode).
+  let realStream = stream;
+  if (!realStream || realStream.getTracks().length === 0) {
+    if (peer.videoTrack || peer.audioTrack) {
+      realStream = new MediaStream();
+      if (peer.audioTrack) realStream.addTrack(peer.audioTrack);
+      if (peer.videoTrack) realStream.addTrack(peer.videoTrack);
+    }
+  }
+  const hasVideo = realStream && realStream.getVideoTracks().length > 0;
+  const showVideo = currentCall.type === "video" && !peer.videoOff && hasVideo;
+  // ALWAYS create a media element so audio plays (even in voice mode)
   const v = document.createElement("video");
   v.autoplay = true;
   v.playsInline = true;
   v.setAttribute("playsinline", "");
-  if (stream) v.srcObject = stream;
+  v.setAttribute("webkit-playsinline", "");
+  v.dataset.callTile = "1";
+  if (realStream) v.srcObject = realStream;
   if (!showVideo) {
+    // Voice mode: hide the video element but keep audio playing
     v.style.position = "absolute";
     v.style.width = "1px";
     v.style.height = "1px";
@@ -2999,7 +3052,31 @@ function attachRemoteTile(uid, stream) {
     v.style.left = "-9999px";
   }
   tile.appendChild(v);
-  try { v.play().catch(function(){}); } catch (e) {}
+  // CRITICAL: explicitly call play() — autoplay attribute alone is unreliable for MediaStream
+  const tryPlay = function() {
+    if (!v.paused) return;
+    v.play().catch(function(err) {
+      console.warn("Autoplay blocked, falling back to muted:", err);
+      v.muted = true;
+      v.play().catch(function(){});
+      if (!tile.querySelector(".tap-unmute")) {
+        const unmuteBtn = document.createElement("button");
+        unmuteBtn.className = "tap-unmute";
+        unmuteBtn.textContent = "🔇 tap to unmute";
+        unmuteBtn.style.cssText = "position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:9999px;padding:6px 12px;font-size:12px;cursor:pointer;z-index:10;font-family:inherit;";
+        unmuteBtn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          v.muted = false;
+          v.play().catch(function(){});
+          unmuteBtn.remove();
+        });
+        tile.appendChild(unmuteBtn);
+      }
+    });
+  };
+  tryPlay();
+  v.addEventListener("loadedmetadata", tryPlay, { once: true });
+  v.addEventListener("canplay", tryPlay, { once: true });
   if (!showVideo) {
     tile.classList.add("voice-only");
     const av = document.createElement("div"); av.className = "call-avatar";
@@ -3024,8 +3101,18 @@ function createPeerConnection(peerUid) {
     db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set(update, { merge: true }).catch(function() {});
   };
   pc.ontrack = function(e) {
-    const stream = e.streams[0];
-    const peer = currentCall.peers.get(peerUid); if (peer) peer.stream = stream;
+    if (!currentCall) return;
+    const peer = currentCall.peers.get(peerUid);
+    if (!peer) return;
+    const track = e.track;
+    if (track.kind === "audio") peer.audioTrack = track;
+    if (track.kind === "video") peer.videoTrack = track;
+    let stream = e.streams && e.streams[0];
+    if (!stream || stream.getTracks().length === 0) {
+      stream = peer.stream instanceof MediaStream ? peer.stream : new MediaStream();
+      try { stream.addTrack(track); } catch (e2) {}
+    }
+    peer.stream = stream;
     attachRemoteTile(peerUid, stream);
     setupRemoteSpeakingDetection(peerUid, stream);
   };
@@ -3051,11 +3138,9 @@ function setupCallListeners() {
         peer.username = data.username; peer.emoji = data.emoji;
       }
     });
-    // Detect leaves
     const leaving = [];
     currentCall.peers.forEach(function(_, uid) { if (!seen.has(uid)) leaving.push(uid); });
     leaving.forEach(function(uid) { removePeer(uid, false); });
-    // Detect joins
     for (const item of pendingNew) {
       playJoinSound();
       if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
@@ -3103,14 +3188,21 @@ async function processSignal(peerUid, data) {
   if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false }; currentCall.peers.set(peerUid, peer); }
   if (!peer.pc) peer.pc = createPeerConnection(peerUid);
   const pc = peer.pc;
-  if (data.offer && !pc.currentRemoteDescription) {
-    await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    const key = pairKey(me, peerUid);
-    await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).update({ answer: { type: answer.type, sdp: answer.sdp } });
+  if (data.offer) {
+    // If we have an offer, take it as the new state. This handles renegotiation
+    // (e.g. someone turning on their camera mid-voice-call).
+    try {
+      await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      const key = pairKey(me, peerUid);
+      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
+    } catch (e) { console.warn("offer handling", e); }
   }
-  if (data.answer && !pc.currentRemoteDescription) { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
+  if (data.answer) {
+    try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
+    catch (e) { console.warn("answer handling", e); }
+  }
   const amCaller = me < peerUid;
   const candidates = amCaller ? (data.toCandidates || []) : (data.fromCandidates || []);
   for (const c of candidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {} }
@@ -3125,50 +3217,49 @@ function removePeer(uid, silent) {
   if (!silent) { try { playLeaveSound(); } catch (e) {} }
 }
 function setupLocalSpeakingDetection() {
-  if (!currentCall || !currentCall.localStream) return;
-  const audioTracks = currentCall.localStream.getAudioTracks(); if (!audioTracks.length) return;
-  try {
-    const ctx = new AudioContext();
-    const src = ctx.createMediaStreamSource(currentCall.localStream);
-    const analyser = ctx.createAnalyser(); analyser.fftSize = 512;
-    src.connect(analyser);
-    const arr = new Uint8Array(analyser.frequencyBinCount);
-    currentCall.localAudioCtx = ctx;
-    const check = function() {
-      if (!currentCall) { try { if (ctx.state !== "closed") ctx.close().catch(function(){}); } catch (e) {} return; }
-      analyser.getByteFrequencyData(arr);
-      let sum = 0; for (let i = 0; i < arr.length; i++) sum += arr[i];
-      const avg = sum / arr.length;
-      const tile = document.getElementById("call-tile-local");
-      if (tile) tile.classList.toggle("speaking", avg > 18 && !currentCall.muted);
-      requestAnimationFrame(check);
-    };
-    check();
-  } catch (e) {}
+  if (!currentCall) return;
+  const check = async function() {
+    if (!currentCall) return;
+    let maxLevel = 0;
+    for (const [uid, peer] of currentCall.peers.entries()) {
+      if (!peer.pc) continue;
+      try {
+        const stats = await peer.pc.getStats();
+        stats.forEach(function(report) {
+          if (report.type === "outbound-rtp" && report.kind === "audio" && report.audioLevel !== undefined) {
+            maxLevel = Math.max(maxLevel, report.audioLevel);
+          }
+        });
+      } catch (e) {}
+    }
+    const tile = document.getElementById("call-tile-local");
+    if (tile) tile.classList.toggle("speaking", maxLevel > 0.02 && !currentCall.muted);
+    setTimeout(check, 200);
+  };
+  check();
 }
 function setupRemoteSpeakingDetection(uid, stream) {
-  if (!stream || !stream.getAudioTracks().length) return;
-  try {
-    const ctx = new AudioContext();
-    const src = ctx.createMediaStreamSource(stream);
-    const analyser = ctx.createAnalyser(); analyser.fftSize = 512;
-    src.connect(analyser);
-    const arr = new Uint8Array(analyser.frequencyBinCount);
-    const peer = currentCall && currentCall.peers.get(uid);
-    if (peer) { peer.audioCtx = ctx; peer.analyser = analyser; }
-    const check = function() {
-      if (!currentCall || !currentCall.peers.has(uid)) { try { if (ctx.state !== "closed") ctx.close().catch(function(){}); } catch (e) {} return; }
-      analyser.getByteFrequencyData(arr);
-      let sum = 0; for (let i = 0; i < arr.length; i++) sum += arr[i];
-      const avg = sum / arr.length;
+  if (!currentCall) return;
+  const peer = currentCall.peers.get(uid);
+  if (!peer || !peer.pc) return;
+  const check = async function() {
+    if (!currentCall || !currentCall.peers.has(uid)) return;
+    try {
+      const stats = await peer.pc.getStats();
+      let audioLevel = 0;
+      stats.forEach(function(report) {
+        if (report.type === "inbound-rtp" && report.kind === "audio" && report.audioLevel !== undefined) {
+          audioLevel = report.audioLevel;
+        }
+      });
       const p = currentCall.peers.get(uid);
-      const speaking = avg > 18 && !(p && p.muted);
+      const speaking = audioLevel > 0.02 && !(p && p.muted);
       const tile = document.getElementById("call-tile-" + uid);
       if (tile) tile.classList.toggle("speaking", speaking);
-      requestAnimationFrame(check);
-    };
-    check();
-  } catch (e) {}
+    } catch (e) {}
+    setTimeout(check, 200);
+  };
+  check();
 }
 async function endCall() {
   stopRingtone();
@@ -3190,7 +3281,6 @@ async function endCall() {
       await db.collection("calls").doc(callId).collection("participants").doc(me).delete();
       const remaining = await db.collection("calls").doc(callId).collection("participants").get();
       if (remaining.size === 0) {
-        // I'm the last one — write end message + clean up
         const alreadyWritten = convId ? await hasRecentCallEndMessage(convId) : false;
         if (!alreadyWritten && convId) await writeCallSystemMessage(convId, "ended", callType, durationSecs);
         const sigs = await db.collection("calls").doc(callId).collection("signals").get();
@@ -3382,7 +3472,6 @@ function startConversationsListener() {
     renderConversationsList();
     renderConversationsListMobile();
     checkForIncomingCall(snap.docs);
-    // Update chat header call indicator
     if (currentConvId) {
       const cd = conversationsCache.get(currentConvId);
       const subEl = document.getElementById("chatHeaderSub");
@@ -3695,14 +3784,14 @@ runIntro();
 updateOnlineStatus();
 document.addEventListener("play", function(e) {
   const v = e.target;
-  if (v && v.tagName === "VIDEO") { document.querySelectorAll("video").forEach(function(other) { if (other !== v && !other.paused) { try { other.pause(); } catch (err) {} } }); }
+  if (v && v.tagName === "VIDEO" && v.dataset.callTile !== "1") { document.querySelectorAll("video").forEach(function(other) { if (other !== v && !other.paused && other.dataset.callTile !== "1") { try { other.pause(); } catch (err) {} } }); }
 }, true);
 lightboxEl.addEventListener("click", function(e) { if (e.target === lightboxEl || e.target.id === "lbClose") closeLightbox(); });
 document.getElementById("lbClose").addEventListener("click", function(e) { e.stopPropagation(); closeLightbox(); });
 document.getElementById("linkWarnCancel").addEventListener("click", function() { pendingLinkUrl = null; document.getElementById("linkWarnModal").classList.remove("open"); });
 document.getElementById("linkWarnOpen").addEventListener("click", function() { if (pendingLinkUrl) window.open(pendingLinkUrl, "_blank", "noopener,noreferrer"); pendingLinkUrl = null; document.getElementById("linkWarnModal").classList.remove("open"); });
 document.querySelector(".logo").addEventListener("click", function () {
-  const videoPlaying = Array.from(document.querySelectorAll("video")).some(function (v) { return !v.paused; });
+  const videoPlaying = Array.from(document.querySelectorAll("video")).some(function (v) { return !v.paused && v.dataset.callTile !== "1"; });
   const musicPlaying = musicTracks.some(function (t) { return t.audioEl && !t.audioEl.paused; });
   if (videoPlaying || musicPlaying) return;
   haptic(15);
