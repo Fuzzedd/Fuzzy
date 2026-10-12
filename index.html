@@ -789,7 +789,6 @@ const SAVE_SVG = '<span class="save-shape"><svg viewBox="0 0 24 24"><path d="M19
 const PIN_SVG = '<span class="pin-shape"><svg viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></span>';
 const COMMENT = TWE + "1f4ac.png";
 const TRASH = TWE + "1f5d1.png";
-const MI_GHOST = TWE + "1f47b.png";
 const REACTION_EMOJI_HEX = ["2764","1f602","1f62e","1f622","1f44d","1f525","1f389","1f60d"];
 const VERIFIED_STATIC = ["matu", "matu67"];
 const DEV_STATIC = ["matu", "matu67"];
@@ -2913,12 +2912,10 @@ async function startCall(type) {
 
   if (!window.isSecureContext) {
     toast("Calls need HTTPS. This page isn't secure.", true);
-    console.error("[call] not a secure context, protocol:", location.protocol);
     return;
   }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    toast("This browser can't make calls (no getUserMedia).", true);
-    console.error("[call] navigator.mediaDevices missing");
+    toast("This browser can't make calls.", true);
     return;
   }
 
@@ -2934,17 +2931,13 @@ async function startCall(type) {
 
   let localStream;
   try {
-    console.log("[call] requesting", type, "media…");
     localStream = await getLocalMedia(type);
-    console.log("[call] got:", localStream.getTracks().map(function(t){return t.kind;}).join(","));
   } catch (e) {
-    console.error("[call] getUserMedia failed:", e);
     const name = (e && e.name) || "";
     let msg = "Could not access " + (type === "video" ? "camera/mic" : "microphone");
-    if (name === "NotAllowedError" || name === "SecurityError") msg = "Permission denied. Allow " + (type === "video" ? "camera & mic" : "mic") + " in your browser settings and try again.";
-    else if (name === "NotFoundError" || name === "DevicesNotFoundError") msg = "No " + (type === "video" ? "camera" : "microphone") + " found on this device.";
-    else if (name === "NotReadableError" || name === "TrackStartError") msg = "Your " + (type === "video" ? "camera/mic" : "mic") + " is already in use by another app.";
-    else if (name === "OverconstrainedError") msg = "This device doesn't meet the call requirements.";
+    if (name === "NotAllowedError" || name === "SecurityError") msg = "Permission denied.";
+    else if (name === "NotFoundError") msg = "No device found.";
+    else if (name === "NotReadableError") msg = "Device already in use.";
     toast(msg, true);
     return;
   }
@@ -2977,7 +2970,7 @@ async function startCall(type) {
     });
   } catch (e) {
     hideLoader();
-    toast("Could not start call (check Firestore rules for 'calls').", true);
+    toast("Could not start call.", true);
     try { localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e2) {}
     currentCall = null;
     return;
@@ -2996,10 +2989,7 @@ async function startCall(type) {
     if (!currentCall || currentCall.callId !== callId) return;
     try {
       const snap = await db.collection("calls").doc(callId).collection("participants").get();
-      if (snap.size <= 1) {
-        toast("No answer — call ended.", true);
-        endCall();
-      }
+      if (snap.size <= 1) { toast("No answer — call ended.", true); endCall(); }
     } catch (e) {}
   }, CALL_RING_TIMEOUT_MS);
 }
@@ -3007,23 +2997,16 @@ async function joinCall(callId, type) {
   if (currentCall) return;
   if (!navigator.onLine) { toast("You're offline.", true); return; }
   if (!window.isSecureContext) { toast("Calls need HTTPS.", true); return; }
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    toast("This browser can't make calls.", true);
-    return;
-  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("This browser can't make calls.", true); return; }
 
   const me = auth.currentUser.uid;
-
   let localStream;
-  try {
-    console.log("[call] joining, requesting", type, "media…");
-    localStream = await getLocalMedia(type);
-  } catch (e) {
-    console.error("[call] getUserMedia failed on join:", e);
+  try { localStream = await getLocalMedia(type); }
+  catch (e) {
     const name = (e && e.name) || "";
     let msg = "Could not access mic/camera.";
-    if (name === "NotAllowedError" || name === "SecurityError") msg = "Permission denied. Allow mic/camera in browser settings.";
-    else if (name === "NotReadableError") msg = "Mic/camera already in use by another app.";
+    if (name === "NotAllowedError") msg = "Permission denied.";
+    else if (name === "NotReadableError") msg = "Device in use.";
     toast(msg, true);
     return;
   }
@@ -3163,6 +3146,28 @@ function attachLocalTile() {
   if (currentCall.screenTrack) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
   lbl.innerHTML = labelHtml;
 
+  let fsBtn = tile.querySelector(".fs-btn");
+  if (currentCall.screenTrack) {
+    if (!fsBtn) {
+      fsBtn = document.createElement("button");
+      fsBtn.className = "fs-btn";
+      fsBtn.innerHTML = "⛶";
+      fsBtn.title = "Fullscreen";
+      fsBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        const target = tile.querySelector("video") || tile;
+        try {
+          if (target.requestFullscreen) target.requestFullscreen();
+          else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+          else if (target.msRequestFullscreen) target.msRequestFullscreen();
+        } catch (err) {}
+      });
+      tile.appendChild(fsBtn);
+    }
+  } else if (fsBtn) {
+    fsBtn.remove();
+  }
+
   try { v.play().catch(function(){}); } catch (e) {}
 }
 function attachRemoteTile(uid, stream) {
@@ -3194,8 +3199,12 @@ function attachRemoteTile(uid, stream) {
   const peer = currentCall.peers.get(uid) || {};
   const user = userCache.get(uid) || {};
 
-  if (stream && v.srcObject !== stream) {
+  const sharingChanged = tile.dataset.lastSharing !== String(!!peer.screenSharing);
+  tile.dataset.lastSharing = String(!!peer.screenSharing);
+
+  if (stream && (v.srcObject !== stream || sharingChanged)) {
     v.srcObject = stream;
+    try { v.play().catch(function(){}); } catch (e) {}
   }
 
   const hasVideo = stream && stream.getVideoTracks().length > 0;
@@ -3376,14 +3385,15 @@ function attachRemoteTilesRefresh() {
 async function initiateOfferTo(peerUid, peerData) {
   const me = auth.currentUser.uid;
   const pc = createPeerConnection(peerUid);
+  const offer = await pc.createOffer();
   currentCall.peers.set(peerUid, {
     pc: pc, stream: null,
     muted: !!peerData.muted, videoOff: !!peerData.videoOff,
     screenSharing: !!peerData.screenSharing,
     username: peerData.username, emoji: peerData.emoji,
-    _lastOfferSdp: null, _lastAnswerSdp: null
+    _lastOfferSdp: offer.sdp,
+    _lastAnswerSdp: null
   });
-  const offer = await pc.createOffer();
   const key = pairKey(me, peerUid);
   await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({
     fromUid: me, toUid: peerUid,
@@ -3403,34 +3413,30 @@ async function processSignal(peerUid, data) {
   const pc = peer.pc;
   const iAmCaller = me < peerUid;
 
-  if (data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp) {
+  if (data.offer && data.offer.sdp
+      && data.offer.sdp !== peer._lastOfferSdp
+      && pc.signalingState === "stable") {
     peer._lastOfferSdp = data.offer.sdp;
     try {
-      if (pc.signalingState === "have-local-offer") {
-        try { await pc.setLocalDescription({ type: "rollback" }); } catch (e) {}
-      }
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
+      peer._lastAnswerSdp = answer.sdp;
       const key = pairKey(me, peerUid);
       await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
         .set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
-      console.log("[call] processed offer from", peerUid);
     } catch (e) {
-      console.warn("[call] offer handling failed", e);
       peer._lastOfferSdp = null;
     }
   }
 
-  if (data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp) {
+  if (data.answer && data.answer.sdp
+      && data.answer.sdp !== peer._lastAnswerSdp
+      && pc.signalingState === "have-local-offer") {
     peer._lastAnswerSdp = data.answer.sdp;
     try {
-      if (pc.signalingState === "have-local-offer") {
-        await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-        console.log("[call] processed answer from", peerUid);
-      }
+      await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
     } catch (e) {
-      console.warn("[call] answer handling failed", e);
       peer._lastAnswerSdp = null;
     }
   }
@@ -3546,7 +3552,7 @@ async function endCall() {
           });
         }
       }
-    } catch (e) { console.warn("[call] clear activeCall failed:", e); }
+    } catch (e) {}
   }
 
   if (convId) {
@@ -3590,7 +3596,6 @@ function checkForIncomingCall(convSnapDocs) {
     const ageMs = started ? (Date.now() - started) : 0;
 
     if (started && ageMs > CALL_RING_TIMEOUT_MS && ac.createdBy !== me) {
-      console.log("[call] clearing stale activeCall on", d.id, "age", ageMs);
       db.collection("conversations").doc(d.id)
         .update({ activeCall: firebase.firestore.FieldValue.delete() })
         .catch(function() {});
@@ -3663,6 +3668,7 @@ async function toggleCamera() {
         peer.pc.addTrack(camTrack, currentCall.localStream);
         const offer = await peer.pc.createOffer();
         await peer.pc.setLocalDescription(offer);
+        peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
         await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
           .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
@@ -3709,8 +3715,6 @@ async function startScreenShare() {
   currentCall.screenTrack = screenTrack;
   currentCall.screenStream = screenStream;
 
-  try { currentCall.localStream.addTrack(screenTrack); } catch (e) {}
-
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
@@ -3718,14 +3722,15 @@ async function startScreenShare() {
       if (sender) {
         await sender.replaceTrack(screenTrack);
       } else {
-        peer.pc.addTrack(screenTrack, currentCall.localStream);
+        peer.pc.addTrack(screenTrack, screenStream);
         const offer = await peer.pc.createOffer();
         await peer.pc.setLocalDescription(offer);
+        peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
         await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
           .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
-    } catch (e) { console.warn("[share] track swap failed", e); }
+    } catch (e) {}
   }
 
   const btn = document.getElementById("callScreenBtn");
@@ -3744,7 +3749,6 @@ async function stopScreenShare() {
   const track = currentCall.screenTrack;
   try { track.stop(); } catch (e) {}
   try { if (currentCall.screenStream) currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
-  try { currentCall.localStream.removeTrack(track); } catch (e) {}
   currentCall.screenTrack = null;
   currentCall.screenStream = null;
   currentCall._localScreenStream = null;
@@ -3761,6 +3765,7 @@ async function stopScreenShare() {
         peer.pc.removeTrack(sender);
         const offer = await peer.pc.createOffer();
         await peer.pc.setLocalDescription(offer);
+        peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
         await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
           .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
@@ -3795,7 +3800,6 @@ async function sweepStaleCalls() {
       }
     });
     if (hits > 0) await batch.commit();
-    if (hits) console.log("[call] swept", hits, "stale call flags");
   } catch (e) {}
 }
 
@@ -4022,7 +4026,7 @@ async function createGroupChat() {
   const name = document.getElementById("groupNameInput").value.trim();
   if (!name) { toast("Name it.", true); return; }
   if (selectedGroupMembers.size < 1) { toast("Pick 1+ members.", true); return; }
-  if (selectedGroupMembers.size > MAX_GROUP_MEMBERS - 1) { toast("Max " + MAX_GROUP_MEMBERS + " members (including you).", true); return; }
+  if (selectedGroupMembers.size > MAX_GROUP_MEMBERS - 1) { toast("Max " + MAX_GROUP_MEMBERS + ".", true); return; }
   const me = auth.currentUser.uid;
   const members = [me].concat(Array.from(selectedGroupMembers)).sort();
   const convId = "g_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -4575,7 +4579,7 @@ document.getElementById("mutedWordsInput").addEventListener("input", function() 
 document.getElementById("testNotifBtn").addEventListener("click", async function() {
   playSelectedSound();
   if (!("Notification" in window) && !("serviceWorker" in navigator)) { toast("Not supported here.", true); return; }
-  if ("Notification" in window && Notification.permission === "denied") { toast("Notifications blocked in browser.", true); return; }
+  if ("Notification" in window && Notification.permission === "denied") { toast("Notifications blocked.", true); return; }
   if ("Notification" in window && Notification.permission !== "granted") { const p = await Notification.requestPermission(); if (p !== "granted") { toast("Blocked.", true); return; } }
   if ("serviceWorker" in navigator) { try { const reg = await navigator.serviceWorker.getRegistration(); if (reg) { await reg.showNotification("Fuzzy", { body: "test!", icon: "icon.png", badge: "icon.png", tag: "fuzzy-test" }); toast("Sent!"); return; } } catch (e) {} }
   try { new Notification("Fuzzy", { body: "test!", icon: "icon.png" }); toast("Sent!"); }
