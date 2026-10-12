@@ -24,8 +24,8 @@ body.compact .post-body { font-size: calc(16px * var(--fs)); line-height: 1.35; 
 body.compact .chat-messages { gap: 6px; padding: 12px 12px 6px; }
 body.compact .chat-bubble { padding: 6px 10px; font-size: calc(13.5px * var(--fs)); }
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition: none !important; animation: none !important; }
-button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
-button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active { transform: scale(0.95); }
+button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn, .gif-cat { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
+button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active, .gif-cat:active { transform: scale(0.95); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
 .ui-emoji { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.2em; flex-shrink: 0; pointer-events: none; user-select: none; }
 button .ui-emoji, .btn .ui-emoji, .setting-opt .ui-emoji { margin-right: 4px; }
@@ -374,6 +374,12 @@ body.avatar-square .avatar { border-radius: 4px; }
 .gif-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
 .gif-tab { flex: 1; background: #2a2a2a; border: 1px solid #2f2f2f; color: #9a9a9a; padding: 8px 14px; border-radius: 9999px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .gif-tab.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.gif-cats { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; margin-bottom: 10px; padding-bottom: 6px; scrollbar-width: none; touch-action: pan-x; cursor: grab; -webkit-overflow-scrolling: touch; user-select: none; }
+.gif-cats:active { cursor: grabbing; }
+.gif-cats::-webkit-scrollbar { display: none; }
+.gif-cat { flex-shrink: 0; background: #2a2a2a; border: 1px solid #2f2f2f; color: #9a9a9a; padding: 7px 14px; border-radius: 9999px; font-size: 12.5px; cursor: pointer; font-family: inherit; font-weight: 500; white-space: nowrap; user-select: none; }
+.gif-cat:hover { background: #333; color: #e7e7e7; }
+.gif-cat.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
 .gif-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 340px; overflow-y: auto; margin-top: 10px; padding: 4px; }
 .gif-item { position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: #0d0d0d; border: 2px solid transparent; aspect-ratio: 1 / 1; }
 .gif-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -472,6 +478,32 @@ body.avatar-square .avatar { border-radius: 4px; }
 .call-btn.end { background: #f91818; }
 .call-btn.end:hover { background: #ff3030; }
 .call-btn.muted { background: #7a1414; color: #ffb3b3; }
+/* ==== FUZZ CLICKER ==== */
+.fuzz-game-overlay { position: fixed; inset: 0; z-index: 9000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); padding: 16px; }
+.fuzz-game-overlay.open { display: flex; }
+.fuzz-game-card { background: var(--surface); border: 1px solid #3a3a3a; border-radius: 16px; padding: 18px 16px 16px; width: 340px; max-width: 100%; max-height: 92vh; overflow-y: auto; position: relative; text-align: center; }
+.fuzz-game-close { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: #2a2a2a; border: 1px solid #3a3a3a; color: #e7e7e7; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; padding: 0; z-index: 2; }
+.fuzz-game-close:hover { background: #7a1414; }
+.fuzz-game-title { font-size: 15px; font-weight: 700; color: #d8c9ff; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.fuzz-game-fuzz { font-size: 15px; color: #f9c74f; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.fuzz-game-click { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform 0.06s ease; user-select: none; display: inline-block; }
+.fuzz-game-click:active { transform: scale(0.92); }
+.fuzz-game-click img { width: 96px; height: 96px; object-fit: contain; display: block; filter: drop-shadow(0 0 12px rgba(79,195,247,0.55)); pointer-events: none; }
+.fuzz-game-cps { font-size: 11px; color: #717171; margin: 4px 0 12px; }
+.fuzz-game-upgrades { display: flex; flex-direction: column; gap: 6px; }
+.fuzz-upg { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 10px; cursor: pointer; text-align: left; font-family: inherit; color: #e7e7e7; transition: background 0.15s, border-color 0.15s; }
+.fuzz-upg:hover:not(:disabled) { background: #1a1a1a; border-color: #4fc3f7; }
+.fuzz-upg:active:not(:disabled) { transform: scale(0.98); }
+.fuzz-upg:disabled { opacity: 0.4; cursor: not-allowed; }
+.fuzz-upg-emoji { width: 26px; height: 26px; flex-shrink: 0; }
+.fuzz-upg-info { flex: 1; min-width: 0; }
+.fuzz-upg-name { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 4px; }
+.fuzz-upg-name .lvl { font-size: 10px; color: #4fc3f7; font-weight: 700; background: rgba(79,195,247,0.12); padding: 1px 6px; border-radius: 9999px; }
+.fuzz-upg-desc { font-size: 11px; color: #717171; margin-top: 1px; }
+.fuzz-upg-cost { font-size: 11px; color: #f9c74f; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+.fuzz-float { position: fixed; pointer-events: none; font-size: 18px; font-weight: 700; color: #f9c74f; text-shadow: 0 2px 8px rgba(0,0,0,0.9); animation: fuzzFloatUp 0.75s ease-out forwards; z-index: 9100; }
+@keyframes fuzzFloatUp { 0% { opacity: 0; transform: translateY(0) scale(0.7); } 20% { opacity: 1; transform: translateY(-8px) scale(1.1); } 100% { opacity: 0; transform: translateY(-60px) scale(1); } }
+.bot-name { color: #22c55e !important; }
 @media (max-width: 768px) {
   .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: var(--bg); z-index: 50; overflow: visible; transition: none; }
   .right { display: none; }
@@ -490,6 +522,7 @@ body.avatar-square .avatar { border-radius: 4px; }
   .sidebar .nav-item[data-nav="settings"] { order: 7; }
   .sidebar .nav-item[data-nav="admin"] { order: 8; }
   .user { position: fixed; top: 10px; right: 10px; width: auto; max-width: calc(100vw - 20px); margin: 0; z-index: 60; background: rgba(29,29,29,0.98); border: 1px solid #3a3a3a; border-radius: 9999px; padding: 4px 10px 4px 4px; gap: 8px; font-size: 13px; flex-direction: row; min-height: 40px; }
+  body.in-chat .user { display: none !important; }
   .user .avatar { width: 32px; height: 32px; }
   .user #userName { font-size: 12px; max-width: 70px; }
   .user .logout { font-size: 11px; padding: 5px 10px; background: #2f2f2f; border-radius: 9999px; }
@@ -724,7 +757,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 
 <div class="modal-overlay" id="userPickerModal"><div class="modal"><h3>start conversation</h3><div id="userPickerList" style="max-height:400px;overflow-y:auto;margin:0 -20px -20px;padding:0;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="userPickerClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupModal"><div class="modal"><h3>new group chat <span style="font-size:12px;color:#717171;font-weight:400">(max 10 members)</span></h3><input class="auth-input" id="groupNameInput" placeholder="group name" maxlength="40" /><div class="pfp-section-label">members</div><div id="groupMemberList" style="max-height:340px;overflow-y:auto;margin:0 -20px;border-top:1px solid #2f2f2f;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupCancel">Cancel</button><button class="btn btn-primary" id="groupCreate">Create</button></div></div></div>
-<div class="modal-overlay" id="gifPickerModal"><div class="modal" style="width:540px"><h3>Pick a GIF</h3><div class="gif-tabs"><button class="gif-tab active" data-gif-tab="trending"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f525.png" alt="" /> Trending</button><button class="gif-tab" data-gif-tab="saved"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> Saved</button></div><input class="auth-input" id="gifSearchInput" placeholder="Search GIPHY..." autocomplete="off" /><div id="gifResultsGrid" class="gif-grid"><div class="empty">Loading...</div></div><div class="gif-attribution">Powered by GIPHY</div><div class="modal-btns"><button class="btn btn-ghost" id="gifPickerClose">Close</button></div></div></div>
+<div class="modal-overlay" id="gifPickerModal"><div class="modal" style="width:540px"><h3>Pick a GIF</h3><div class="gif-tabs"><button class="gif-tab active" data-gif-tab="trending"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f525.png" alt="" /> Trending</button><button class="gif-tab" data-gif-tab="saved"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> Saved</button></div><div class="gif-cats" id="gifCats"></div><input class="auth-input" id="gifSearchInput" placeholder="Search GIPHY..." autocomplete="off" /><div id="gifResultsGrid" class="gif-grid"><div class="empty">Loading...</div></div><div class="gif-attribution">Powered by GIPHY</div><div class="modal-btns"><button class="btn btn-ghost" id="gifPickerClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupMembersModal"><div class="modal"><h3 id="groupMembersTitle">group members</h3><div id="groupMembersList" style="max-height:400px;overflow-y:auto;margin:0 -20px;padding:0;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupMembersClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupAvatarModal"><div class="modal"><h3>Change group icon</h3><div class="pfp-section-label">Pick an image</div><div class="pfp-grid" id="groupAvatarImages"></div><div class="pfp-section-label" style="margin-top:16px">Or pick an emoji</div><div class="emoji-grid" id="groupAvatarEmojis"></div><div class="modal-btns"><button class="btn btn-ghost" id="groupAvatarClose">Close</button></div></div></div>
 <div class="modal-overlay" id="linkWarnModal"><div class="modal confirm-modal"><h3><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/26a0.png" alt="" /> Opening link</h3><p class="confirm-msg" id="linkWarnUrl"></p><p class="confirm-msg" style="margin-top:12px;color:#717171">Only continue if you trust the source.</p><div class="modal-btns" style="justify-content:center"><button class="btn btn-ghost" id="linkWarnCancel">Cancel</button><button class="btn btn-primary" id="linkWarnOpen">Open</button></div></div></div>
@@ -788,6 +821,17 @@ body.avatar-square .avatar { border-radius: 4px; }
 <div id="lightbox"><button class="lb-close" id="lbClose">✕</button><img id="lbImg" src="" alt="" /><video id="lbVideo" controls playsinline style="display:none"></video></div>
 <div id="toasts"></div>
 
+<div class="fuzz-game-overlay" id="fuzzGameOverlay">
+  <div class="fuzz-game-card">
+    <button class="fuzz-game-close" id="fuzzGameClose">✕</button>
+    <div class="fuzz-game-title"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f47b.png" alt="" style="width:18px;height:18px" /> Fuzz Clicker</div>
+    <div class="fuzz-game-fuzz"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4b0.png" alt="" style="width:18px;height:18px" /> <span id="fuzzCount">0</span> Fuzz</div>
+    <button class="fuzz-game-click" id="fuzzClickBtn"><img src="icon.png" alt="" /></button>
+    <div class="fuzz-game-cps" id="fuzzCps">0 Fuzz / sec</div>
+    <div class="fuzz-game-upgrades" id="fuzzUpgrades"></div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -836,6 +880,38 @@ const SETTINGS_KEY = "fuzzy-settings-v4";
 const POSTS_PER_PAGE = 20;
 const CALL_RING_TIMEOUT_MS = 20000;
 const TYPING_TTL_MS = 5000;
+const BOT_USERNAME = "bot";
+const BOT_INTERVAL_MS = 8 * 60 * 60 * 1000;
+const GIF_CATEGORIES = [
+  { key: "trending", label: "🔥 Trending", query: null },
+  { key: "funny", label: "😂 Funny", query: "funny" },
+  { key: "love", label: "❤️ Love", query: "love" },
+  { key: "reactions", label: "😮 Reactions", query: "reaction" },
+  { key: "hype", label: "🎉 Hype", query: "hype celebration" },
+  { key: "animals", label: "🐱 Animals", query: "cute animals" },
+  { key: "sad", label: "😢 Sad", query: "sad" },
+  { key: "angry", label: "😡 Angry", query: "angry" },
+  { key: "yes", label: "👍 Yes", query: "thumbs up yes" },
+  { key: "no", label: "👎 No", query: "no nope" },
+  { key: "hello", label: "👋 Hello", query: "hello wave" },
+  { key: "wow", label: "😱 Wow", query: "wow shocked" },
+  { key: "dance", label: "💃 Dance", query: "dancing" },
+  { key: "food", label: "🍕 Food", query: "food" },
+  { key: "cute", label: "🥺 Cute", query: "cute" },
+  { key: "clap", label: "👏 Clap", query: "applause clap" },
+  { key: "fire", label: "🔥 Fire", query: "fire flames lit" },
+  { key: "dead", label: "💀 Dead", query: "dead laughing" },
+  { key: "thinking", label: "🤔 Thinking", query: "thinking hmm" },
+  { key: "sparkle", label: "✨ Sparkle", query: "sparkle magic" },
+  { key: "tired", label: "😴 Tired", query: "tired sleep" },
+  { key: "party", label: "🥳 Party", query: "party celebrate" },
+  { key: "cool", label: "😎 Cool", query: "cool sunglasses" },
+  { key: "mindblown", label: "🤯 Mind blown", query: "mind blown" },
+  { key: "sus", label: "👀 Sus", query: "suspicious side eye" },
+  { key: "variety", label: "🎲 Variety", query: "variety" },
+  { key: "memes", label: "😂 Memes", query: "memes" },
+  { key: "random", label: "🎰 Random", query: "random" }
+];
 const DEFAULT_SETTINGS = {
   bgColor: "#161616", surfaceColor: "#1d1d1d",
   accentColor: "#e7e7e7", accentColor2: "#4fc3f7", accentGradient: false, accentGradientAngle: 135,
@@ -882,6 +958,7 @@ let confirmCb = null;
 let pendingLinkUrl = null;
 let currentGifSelectCallback = null;
 let currentGifTab = "trending";
+let currentGifCat = "trending";
 let gifSearchDebounce = null;
 let cachedAvatarList = null;
 let customSounds = [];
@@ -998,11 +1075,17 @@ function cacheUser(uid, data) { if (uid && data) userCache.set(uid, data); }
 function isAdminUser() { return (myUsername || "").toLowerCase() === "matu"; }
 function isBlocked(uid) { return myBlocked.has(uid); }
 function isBanned(uid) { const u = userCache.get(uid); return !!(u && u.banned === true); }
-function areMutual(otherUid) { if (!auth || !auth.currentUser) return false; if (!otherUid) return false; if (otherUid === auth.currentUser.uid) return false; if (isBlocked(otherUid) || isBanned(otherUid)) return false; return myFollowing.has(otherUid) && myFollowers.has(otherUid); }
+function isBotUid(uid) { const u = userCache.get(uid); return !!(u && String(u.username || "").toLowerCase() === BOT_USERNAME); }
+function findBotUid() { let found = null; userCache.forEach(function(data, uid) { if (!found && String(data.username || "").toLowerCase() === BOT_USERNAME) found = uid; }); return found; }
+function areMutual(otherUid) { if (!auth || !auth.currentUser) return false; if (!otherUid) return false; if (otherUid === auth.currentUser.uid) return false; if (isBlocked(otherUid) || isBanned(otherUid)) return false; if (isBotUid(otherUid)) return true; return myFollowing.has(otherUid) && myFollowers.has(otherUid); }
 function postOwnerUid(d) { if (!d) return null; return d.uid || d.author || d.userId || d.user || d.postedBy || d.creatorId || null; }
 function usernameToEmail(u) { return u.toLowerCase().replace(/[^a-z0-9]/g, "") + "@fuzzy.local"; }
 function setNotifBadge(n) { const b = document.getElementById("notifBadge"); if (!b) return; if (n <= 0) { b.style.display = "none"; b.textContent = ""; return; } b.textContent = n > 9 ? "9+" : String(n); b.style.display = "flex"; }
 function mutedWordsMatch(text) { if (!settingsState.mutedWords || settingsState.mutedWords.length === 0) return false; const t = String(text || "").toLowerCase(); return settingsState.mutedWords.some(function(w) { return w && t.includes(w); }); }
+function applyBotColor(el, username) {
+  if (!el) return;
+  if (String(username || "").toLowerCase() === BOT_USERNAME) el.classList.add("bot-name");
+}
 function userBadges(username) { const uname = (username || "").toLowerCase(); let html = ""; if (verifiedUsernames.has(uname)) html += '<img class="verified-check" src="check.png" alt="" />'; if (devUsernames.has(uname)) html += '<img class="dev-check" src="dev.png" alt="" />'; return html; }
 function verifiedBadge(username) { return userBadges(username); }
 function statusBadgeHtml(uid) {
@@ -1094,6 +1177,7 @@ function showConfirm(title, msg, cb, okText) {
 function showView(name) {
   if (activeView !== name) pauseAllVideos();
   activeView = name;
+  document.body.classList.toggle("in-chat", name === "chat");
   const views = { feed: "feedView", profile: "profileView", search: "searchView", notifications: "notificationsView", conversations: "conversationsView", settings: "settingsView", admin: "adminView", chat: "chatView", saved: "savedView", savedGifs: "savedGifsView" };
   Object.keys(views).forEach(function(k) {
     const el = document.getElementById(views[k]);
@@ -1319,12 +1403,9 @@ function playToneSequence(notes, gap) {
 
 /* ==== CALL SOUND PACKS ==== */
 function playCallSound(event, opts) {
-  // event: "ring" | "start" | "end"
-  // opts.force: true -> ignores DND/silenced check (used for preview)
   const force = !!(opts && opts.force);
   if (!force && isSilenced() && event === "ring") return null;
   const pack = settingsState.callSound || "default";
-
   if (pack === "default") {
     let src = null;
     if (event === "ring") src = "call.mp3";
@@ -1333,56 +1414,26 @@ function playCallSound(event, opts) {
     if (!src) return null;
     try { const a = new Audio(src); a.play().catch(function(){}); return a; } catch (e) { return null; }
   }
-
   if (pack === "chime") {
-    if (event === "ring") playToneSequence([
-      { freq: 660, dur: 0.14, vol: 0.14, type: "sine" },
-      { freq: 880, dur: 0.14, vol: 0.14, type: "sine" },
-      { freq: 1046, dur: 0.18, vol: 0.14, type: "sine" }
-    ], 0.17);
-    else if (event === "start") playToneSequence([
-      { freq: 700, dur: 0.12, vol: 0.15, type: "sine" },
-      { freq: 1000, dur: 0.18, vol: 0.15, type: "sine" }
-    ], 0.12);
-    else if (event === "end") playToneSequence([
-      { freq: 1000, dur: 0.12, vol: 0.15, type: "sine" },
-      { freq: 700, dur: 0.18, vol: 0.15, type: "sine" }
-    ], 0.12);
+    if (event === "ring") playToneSequence([{ freq: 660, dur: 0.14, vol: 0.14, type: "sine" }, { freq: 880, dur: 0.14, vol: 0.14, type: "sine" }, { freq: 1046, dur: 0.18, vol: 0.14, type: "sine" }], 0.17);
+    else if (event === "start") playToneSequence([{ freq: 700, dur: 0.12, vol: 0.15, type: "sine" }, { freq: 1000, dur: 0.18, vol: 0.15, type: "sine" }], 0.12);
+    else if (event === "end") playToneSequence([{ freq: 1000, dur: 0.12, vol: 0.15, type: "sine" }, { freq: 700, dur: 0.18, vol: 0.15, type: "sine" }], 0.12);
     return null;
   }
-
   if (pack === "retro") {
-    if (event === "ring") playToneSequence([
-      { freq: 880, dur: 0.06, vol: 0.15, type: "square" },
-      { freq: 880, dur: 0.06, vol: 0.15, type: "square" },
-      { freq: 1100, dur: 0.10, vol: 0.15, type: "square" }
-    ], 0.09);
-    else if (event === "start") playToneSequence([
-      { freq: 523, dur: 0.07, vol: 0.15, type: "square" },
-      { freq: 659, dur: 0.07, vol: 0.15, type: "square" },
-      { freq: 784, dur: 0.12, vol: 0.15, type: "square" }
-    ], 0.08);
-    else if (event === "end") playToneSequence([
-      { freq: 784, dur: 0.07, vol: 0.15, type: "square" },
-      { freq: 659, dur: 0.07, vol: 0.15, type: "square" },
-      { freq: 523, dur: 0.14, vol: 0.15, type: "square" }
-    ], 0.08);
+    if (event === "ring") playToneSequence([{ freq: 880, dur: 0.06, vol: 0.15, type: "square" }, { freq: 880, dur: 0.06, vol: 0.15, type: "square" }, { freq: 1100, dur: 0.10, vol: 0.15, type: "square" }], 0.09);
+    else if (event === "start") playToneSequence([{ freq: 523, dur: 0.07, vol: 0.15, type: "square" }, { freq: 659, dur: 0.07, vol: 0.15, type: "square" }, { freq: 784, dur: 0.12, vol: 0.15, type: "square" }], 0.08);
+    else if (event === "end") playToneSequence([{ freq: 784, dur: 0.07, vol: 0.15, type: "square" }, { freq: 659, dur: 0.07, vol: 0.15, type: "square" }, { freq: 523, dur: 0.14, vol: 0.15, type: "square" }], 0.08);
     return null;
   }
-
   return null;
 }
-
 function startRingtone() {
   if (isSilenced()) return;
   stopRingtone();
   const pack = settingsState.callSound || "default";
   if (pack === "default") {
-    try {
-      callRingtoneAudio = new Audio("call.mp3");
-      callRingtoneAudio.loop = true;
-      callRingtoneAudio.play().catch(function(){});
-    } catch (e) {}
+    try { callRingtoneAudio = new Audio("call.mp3"); callRingtoneAudio.loop = true; callRingtoneAudio.play().catch(function(){}); } catch (e) {}
   } else {
     const play = function() { playCallSound("ring"); };
     play();
@@ -1397,19 +1448,8 @@ function playCallStartSound() { playCallSound("start"); }
 function playCallEndSound() { playCallSound("end"); }
 function playJoinSound() { playCallSound("start"); }
 function playLeaveSound() { playCallSound("end"); }
-
-/* ==== UI CLICK SOUNDS ==== */
-function playMuteToggleSound(on) {
-  if (!settingsState.uiSounds) return;
-  playToneSequence([{ freq: on ? 380 : 640, dur: 0.07, vol: 0.12, type: "sine" }], 0.07);
-}
-function playCameraToggleSound(on) {
-  if (!settingsState.uiSounds) return;
-  playToneSequence([
-    { freq: on ? 700 : 400, dur: 0.045, vol: 0.10, type: "triangle" },
-    { freq: on ? 950 : 320, dur: 0.06, vol: 0.10, type: "triangle" }
-  ], 0.05);
-}
+function playMuteToggleSound(on) { if (!settingsState.uiSounds) return; playToneSequence([{ freq: on ? 380 : 640, dur: 0.07, vol: 0.12, type: "sine" }], 0.07); }
+function playCameraToggleSound(on) { if (!settingsState.uiSounds) return; playToneSequence([{ freq: on ? 700 : 400, dur: 0.045, vol: 0.10, type: "triangle" }, { freq: on ? 950 : 320, dur: 0.06, vol: 0.10, type: "triangle" }], 0.05); }
 
 /* ==== AUDIO UNLOCK ==== */
 function unlockAudioForCalls() {
@@ -1417,9 +1457,7 @@ function unlockAudioForCalls() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const buf = ctx.createBuffer(1, 1, 22050);
     const src = ctx.createBufferSource();
-    src.buffer = buf;
-    src.connect(ctx.destination);
-    src.start(0);
+    src.buffer = buf; src.connect(ctx.destination); src.start(0);
     setTimeout(function() { try { ctx.close(); } catch (e) {} }, 200);
   } catch (e) {}
 }
@@ -1429,42 +1467,83 @@ async function writeCallSystemMessage(convId, eventName, callType, durationSecs)
   if (!convId || !auth || !auth.currentUser) return;
   try {
     await db.collection("conversations").doc(convId).collection("messages").add({
-      type: "call",
-      callEvent: eventName,
-      callType: callType || "voice",
-      duration: durationSecs || 0,
-      from: auth.currentUser.uid,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      fromUsername: myUsername
+      type: "call", callEvent: eventName, callType: callType || "voice", duration: durationSecs || 0,
+      from: auth.currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp(), fromUsername: myUsername
     });
   } catch (e) {}
 }
 async function hasRecentCallEndMessage(convId) {
   if (!convId) return false;
   try {
-    const snap = await db.collection("conversations").doc(convId).collection("messages")
-      .where("type", "==", "call")
-      .where("callEvent", "==", "ended")
-      .limit(5)
-      .get();
+    const snap = await db.collection("conversations").doc(convId).collection("messages").where("type", "==", "call").where("callEvent", "==", "ended").limit(5).get();
     let recent = false;
-    snap.forEach(function(d) {
-      const t = d.data().createdAt;
-      if (t && typeof t.toMillis === "function" && Date.now() - t.toMillis() < 30000) recent = true;
-    });
+    snap.forEach(function(d) { const t = d.data().createdAt; if (t && typeof t.toMillis === "function" && Date.now() - t.toMillis() < 30000) recent = true; });
     return recent;
   } catch (e) { return false; }
 }
 
 /* ==== GIF PICKER ==== */
 async function fetchGiphy(path, params) { const q = new URLSearchParams(Object.assign({ api_key: GIPHY_API_KEY, limit: 24, rating: "g" }, params || {})); const res = await fetch(GIPHY_ENDPOINT + "/" + path + "?" + q.toString()); if (!res.ok) throw new Error("giphy " + res.status); return res.json(); }
-function openGifPicker(onSelect) { currentGifSelectCallback = onSelect; const modal = document.getElementById("gifPickerModal"); const input = document.getElementById("gifSearchInput"); input.value = ""; setGifTab("trending"); modal.classList.add("open"); setTimeout(function() { try { input.focus(); } catch (e) {} }, 100); }
+function openGifPicker(onSelect) {
+  currentGifSelectCallback = onSelect;
+  const modal = document.getElementById("gifPickerModal");
+  const input = document.getElementById("gifSearchInput");
+  input.value = "";
+  currentGifCat = "trending";
+  setGifTab("trending");
+  modal.classList.add("open");
+  setTimeout(function() { try { input.focus(); } catch (e) {} }, 100);
+}
+function renderGifCats() {
+  const box = document.getElementById("gifCats");
+  if (!box) return;
+  box.innerHTML = "";
+  GIF_CATEGORIES.forEach(function(cat) {
+    const b = document.createElement("button");
+    b.className = "gif-cat" + (currentGifCat === cat.key ? " active" : "");
+    b.textContent = cat.label;
+    b.dataset.cat = cat.key;
+    b.addEventListener("click", function() {
+      currentGifCat = cat.key;
+      renderGifCats();
+      loadGifCategory(cat.key);
+    });
+    box.appendChild(b);
+  });
+}
+async function loadGifCategory(key) {
+  const cat = GIF_CATEGORIES.find(function(c) { return c.key === key; });
+  if (!cat) return;
+  const grid = document.getElementById("gifResultsGrid");
+  grid.innerHTML = '<div class="chat-loading" style="padding:20px"><img src="loop.png" alt="" style="width:48px;height:48px" /><div class="chat-loading-text">loading…</div></div>';
+  try {
+    if (cat.query === null) {
+      const data = await fetchGiphy("trending", {});
+      renderGifGrid(data.data);
+    } else {
+      const data = await fetchGiphy("search", { q: cat.query });
+      renderGifGrid(data.data);
+    }
+  } catch (e) {
+    grid.innerHTML = '<div class="empty">Failed to load GIFs.</div>';
+  }
+}
 function setGifTab(tab) {
   currentGifTab = tab;
   document.querySelectorAll(".gif-tab").forEach(function(t) { t.classList.toggle("active", t.dataset.gifTab === tab); });
   const input = document.getElementById("gifSearchInput");
-  if (tab === "trending") { input.style.display = ""; input.placeholder = "Search GIPHY..."; loadTrendingGifs(); }
-  else { input.style.display = "none"; renderSavedInGrid(); }
+  const cats = document.getElementById("gifCats");
+  if (tab === "trending") {
+    input.style.display = "";
+    input.placeholder = "Search GIPHY...";
+    if (cats) cats.style.display = "flex";
+    renderGifCats();
+    loadGifCategory(currentGifCat);
+  } else {
+    input.style.display = "none";
+    if (cats) cats.style.display = "none";
+    renderSavedInGrid();
+  }
 }
 function renderSavedInGrid() {
   const grid = document.getElementById("gifResultsGrid"); grid.innerHTML = "";
@@ -1480,12 +1559,11 @@ function renderSavedInGrid() {
     grid.appendChild(item);
   });
 }
-async function loadTrendingGifs() {
+async function searchGifs(query) {
   const grid = document.getElementById("gifResultsGrid");
-  grid.innerHTML = '<div class="chat-loading" style="padding:20px"><img src="loop.png" alt="" style="width:48px;height:48px" /><div class="chat-loading-text">loading gifs…</div></div>';
-  try { const data = await fetchGiphy("trending", {}); renderGifGrid(data.data); } catch (e) { grid.innerHTML = '<div class="empty">Failed to load GIFs.</div>'; }
+  try { const data = await fetchGiphy("search", { q: query }); renderGifGrid(data.data); }
+  catch (e) { grid.innerHTML = '<div class="empty">Search failed.</div>'; }
 }
-async function searchGifs(query) { const grid = document.getElementById("gifResultsGrid"); try { const data = await fetchGiphy("search", { q: query }); renderGifGrid(data.data); } catch (e) { grid.innerHTML = '<div class="empty">Search failed.</div>'; } }
 function renderGifGrid(gifs) {
   const grid = document.getElementById("gifResultsGrid"); grid.innerHTML = "";
   if (!gifs || gifs.length === 0) { grid.innerHTML = '<div class="empty">No GIFs found.</div>'; return; }
@@ -1605,13 +1683,8 @@ function applySettings() {
   root.style.setProperty("--radius", settingsState.radius + "px");
   root.style.setProperty("--font", FONTS[settingsState.fontFamily] || FONTS.system);
   root.style.setProperty("--logo-glow", settingsState.logoGlowColor || settingsState.accentColor);
-  if (settingsState.buttonColor) {
-    root.style.setProperty("--btn-bg", settingsState.buttonColor);
-    root.style.setProperty("--btn-border", settingsState.buttonColor);
-  } else {
-    root.style.removeProperty("--btn-bg");
-    root.style.removeProperty("--btn-border");
-  }
+  if (settingsState.buttonColor) { root.style.setProperty("--btn-bg", settingsState.buttonColor); root.style.setProperty("--btn-border", settingsState.buttonColor); }
+  else { root.style.removeProperty("--btn-bg"); root.style.removeProperty("--btn-border"); }
   document.body.classList.toggle("reduce-motion", !!settingsState.reduceMotion);
   document.body.classList.toggle("compact", !!settingsState.compact);
   document.body.classList.toggle("hide-scrollbars", !!settingsState.hideScrollbars);
@@ -1629,8 +1702,7 @@ function loadSettings() { try { const raw = localStorage.getItem(SETTINGS_KEY); 
 function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsState)); } catch (e) {} }
 function refreshSettingsUi() {
   document.querySelectorAll(".setting-color").forEach(function(input) {
-    const key = input.dataset.setting;
-    const v = settingsState[key];
+    const key = input.dataset.setting; const v = settingsState[key];
     if (v !== undefined && v !== null && v !== "") input.value = v;
     else input.value = input.dataset.fallback || "#2a2a2a";
   });
@@ -1680,9 +1752,7 @@ function renderThemePresets() {
     const preset = THEME_PRESETS[key];
     const el = document.createElement("button"); el.className = "theme-preset";
     const bg = preset.accentGradient ? "linear-gradient(" + (preset.accentGradientAngle || 135) + "deg, " + preset.accentColor + ", " + preset.accentColor2 + ")" : preset.accentColor;
-    el.style.background  = preset.bgColor;
-    el.style.borderColor = preset.accentColor;
-    el.style.color       = preset.accentColor;
+    el.style.background = preset.bgColor; el.style.borderColor = preset.accentColor; el.style.color = preset.accentColor;
     el.innerHTML = '<div class="tp-swatch" style="background:' + bg + '"></div><span>' + key + '</span>';
     el.addEventListener("click", function() {
       settingsState.bgColor = preset.bgColor;
@@ -1796,18 +1866,17 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
     "</div>" +
     '<div class="comments" style="display:none"><div class="comment-list"></div><div class="reply-chip"></div><div class="comment-row"><input type="text" placeholder="Write a comment..." /><button class="comment-gif-btn" title="Send GIF">' + twe(EYE, 20) + '</button><button class="btn btn-primary send-comment">Send</button></div></div>';
   article.querySelector(".p-name").textContent = name;
+  applyBotColor(article.querySelector(".p-name"), name);
   setRichText(article.querySelector(".post-body"), data.text || "");
   bindRichClickHandlers(article.querySelector(".post-body"));
   if (isMuted) {
-    const ov = article.querySelector(".muted-post-overlay");
-    const content = article.querySelector(".muted-post-content");
+    const ov = article.querySelector(".muted-post-overlay"); const content = article.querySelector(".muted-post-content");
     ov.addEventListener("click", function() { ov.style.display = "none"; content.classList.remove("hidden"); });
   }
   article.querySelectorAll('.post-media img[data-lightbox]').forEach(function(img) { img.addEventListener("click", function() { openLightbox(img.src, false); }); });
   article.querySelectorAll('.post-media video[data-lightbox-video]').forEach(function(vid) {
     vid.addEventListener("click", function(e) {
-      const rect = vid.getBoundingClientRect();
-      const relY = e.clientY - rect.top;
+      const rect = vid.getBoundingClientRect(); const relY = e.clientY - rect.top;
       if (relY > rect.height - 60) return;
       openLightbox(vid.src, true);
     });
@@ -1821,8 +1890,7 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   article.querySelectorAll(".post-media .gif-save-btn").forEach(function(btn) {
     btn.addEventListener("click", async function(e) {
       e.stopPropagation();
-      const img = btn.parentElement.querySelector("img[data-lightbox]");
-      if (!img) return;
+      const img = btn.parentElement.querySelector("img[data-lightbox]"); if (!img) return;
       const url = img.src;
       if (isGifSaved(url)) { await unstarGif(url); btn.classList.remove("saved"); }
       else { await starGif({ url: url, previewUrl: url, title: "GIF from post" }); btn.classList.add("saved"); }
@@ -1864,8 +1932,7 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
     c.style.display = c.style.display === "none" ? "block" : "none";
   });
   let replyTarget = null;
-  const chip = article.querySelector(".reply-chip");
-  const cInput = article.querySelector(".comment-row input");
+  const chip = article.querySelector(".reply-chip"); const cInput = article.querySelector(".comment-row input");
   function setReply(t) {
     replyTarget = t;
     if (t) {
@@ -1892,6 +1959,7 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
       (isMine ? '<button class="c-del" title="Delete">✕</button>' : "") +
       "</div></div>";
     item.querySelector("b").textContent = cd.username;
+    applyBotColor(item.querySelector("b"), cd.username);
     item.querySelector("b").addEventListener("click", function() { openProfile(cd.uid); });
     item.querySelector(".avatar").addEventListener("click", function() { openProfile(cd.uid); });
     setRichText(item.querySelector(".c-text"), cd.text);
@@ -1971,9 +2039,7 @@ async function votePoll(postId, optionIdx) {
     const data = snap.data() || {};
     if (!data.poll || !Array.isArray(data.poll.options)) return;
     if (data.poll.endsAt && ((data.poll.endsAt.toMillis ? data.poll.endsAt.toMillis() : data.poll.endsAt) < Date.now())) { toast("Poll ended.", true); return; }
-    const options = data.poll.options.map(function(o) {
-      return { text: o.text, votes: (Array.isArray(o.votes) ? o.votes.slice() : []).filter(function(u) { return u !== myUid; }) };
-    });
+    const options = data.poll.options.map(function(o) { return { text: o.text, votes: (Array.isArray(o.votes) ? o.votes.slice() : []).filter(function(u) { return u !== myUid; }) }; });
     if (!options[optionIdx]) return;
     options[optionIdx].votes.push(myUid);
     const box = document.querySelector('.poll-box[data-poll-post="' + postId + '"]');
@@ -2105,6 +2171,7 @@ async function renderProfile() {
     document.querySelector("#profAvatar img").src = u.emoji || faceForUid(profileUid);
     const pn = document.getElementById("profName");
     pn.textContent = u.username || "user";
+    applyBotColor(pn, u.username);
     pn.insertAdjacentHTML("beforeend", verifiedBadge(u.username));
     const num = userNumMap.get(profileUid);
     document.getElementById("profHandle").textContent = "@" + (u.username || "user");
@@ -2218,6 +2285,7 @@ async function renderProfList() {
       const row = document.createElement("div"); row.className = "list-row";
       row.innerHTML = '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || faceForUid(uid)) + '" alt="" /></div><span class="l-name"></span><span class="l-handle">@' + escapeHtml(u.username || "user") + "</span>";
       row.querySelector(".l-name").textContent = u.username || "user";
+      applyBotColor(row.querySelector(".l-name"), u.username);
       row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.username));
       row.addEventListener("click", function() { openProfile(uid); });
       if (uid !== me) {
@@ -2242,6 +2310,7 @@ function buildSearchUserRow(u, onFollowChange) {
   const row = document.createElement("div"); row.className = "list-row";
   row.innerHTML = '<div class="avatar" data-uid="' + u.id + '"><img src="' + (u.data.emoji || faceForUid(u.id)) + '" alt="" /></div><div style="flex:1;min-width:0"><div class="l-name"></div><div class="l-handle">@' + escapeHtml(u.data.username || "user") + (num ? " · #" + num : "") + '</div></div>';
   row.querySelector(".l-name").textContent = u.data.username || "user";
+  applyBotColor(row.querySelector(".l-name"), u.data.username);
   row.querySelector(".l-name").insertAdjacentHTML("beforeend", verifiedBadge(u.data.username));
   row.addEventListener("click", function() { openProfile(u.id); });
   const me = auth && auth.currentUser ? auth.currentUser.uid : null;
@@ -2276,11 +2345,7 @@ async function renderSearch(raw) {
     db.collection("users").get().then(function(snap) {
       let users = snap.docs.map(function(d) { return { id: d.id, data: d.data() }; }).filter(function(u) { return !isBlocked(u.id) && !u.data.banned; });
       if (q) users = users.filter(function(u) { return (u.data.username || "").toLowerCase().includes(q); });
-      users.sort(function(a, b) {
-        const na = userNumMap.get(a.id) || 999999;
-        const nb = userNumMap.get(b.id) || 999999;
-        return na - nb;
-      });
+      users.sort(function(a, b) { const na = userNumMap.get(a.id) || 999999; const nb = userNumMap.get(b.id) || 999999; return na - nb; });
       box.innerHTML = "";
       if (users.length === 0) { box.innerHTML = '<div class="empty">No accounts match.</div>'; return; }
       users.forEach(function(u) { box.appendChild(buildSearchUserRow(u, function() { renderSearch(raw); })); });
@@ -2394,7 +2459,9 @@ function buildConvItem(convId, data, otherUid) {
   const isMine = data.lastMessageFrom === auth.currentUser.uid;
   const prefix = isMine ? "you: " : "";
   el.innerHTML = '<div class="avatar" data-uid="' + (isGroup ? "" : otherUid) + '"><img src="' + emoji + '" alt="" /></div><div class="conv-item-info"><div class="conv-item-name"></div><div class="conv-item-last"></div></div><div class="conv-item-meta"><div class="conv-item-time">' + (data.activeCall ? '📞' : (data.lastAt ? shortTime(data.lastAt) : "")) + '</div></div>';
-  el.querySelector(".conv-item-name").textContent = name;
+  const _cnameEl = el.querySelector(".conv-item-name");
+  _cnameEl.textContent = name;
+  applyBotColor(_cnameEl, name);
   el.querySelector(".conv-item-last").textContent = data.activeCall ? (data.activeCall.type === "video" ? "📹 Video call in progress" : "📞 Voice call in progress") : (prefix + (data.lastMessage || ""));
   el.addEventListener("click", function() { if (isGroup) openGroupConversation(convId); else openConversation(otherUid); });
   if (!isGroup) decorateAvatars(el);
@@ -2412,11 +2479,7 @@ function renderConversationsListToEl(list) {
       items.push({ id: id, data: data, otherUid: otherUid });
     }
   });
-  items.sort(function(a, b) {
-    const ta = a.data.lastAt ? a.data.lastAt.toMillis() : 0;
-    const tb = b.data.lastAt ? b.data.lastAt.toMillis() : 0;
-    return tb - ta;
-  });
+  items.sort(function(a, b) { const ta = a.data.lastAt ? a.data.lastAt.toMillis() : 0; const tb = b.data.lastAt ? b.data.lastAt.toMillis() : 0; return tb - ta; });
   if (items.length === 0) { list.innerHTML = '<div class="conv-empty">no conversations yet.<br>tap + to start one.</div>'; return; }
   list.innerHTML = "";
   items.forEach(function(item) { list.appendChild(buildConvItem(item.id, item.data, item.otherUid)); });
@@ -2446,16 +2509,9 @@ function watchTyping(convId) {
     if (typers.length === 0) { sub.classList.remove("show"); return; }
     let text;
     if (currentConvIsGroup) {
-      if (typers.length === 1) {
-        const u = userCache.get(typers[0]) || {};
-        text = (u.username || "someone") + " is typing…";
-      } else if (typers.length === 2) {
-        const u1 = userCache.get(typers[0]) || {};
-        const u2 = userCache.get(typers[1]) || {};
-        text = (u1.username || "someone") + " and " + (u2.username || "someone") + " are typing…";
-      } else {
-        text = "multiple users are typing…";
-      }
+      if (typers.length === 1) { const u = userCache.get(typers[0]) || {}; text = (u.username || "someone") + " is typing…"; }
+      else if (typers.length === 2) { const u1 = userCache.get(typers[0]) || {}; const u2 = userCache.get(typers[1]) || {}; text = (u1.username || "someone") + " and " + (u2.username || "someone") + " are typing…"; }
+      else { text = "multiple users are typing…"; }
     } else {
       const u = userCache.get(typers[0]) || {};
       text = (u.username || "someone") + " is typing…";
@@ -2478,7 +2534,9 @@ async function openConversation(otherUid) {
   _lastRenderedMsgCount = 0; _lastConvRendered = null;
   if (activeView !== "chat") chatReturnView = activeView;
   const other = userCache.get(otherUid) || {};
-  document.getElementById("chatHeaderName").textContent = other.username || "user";
+  const chatNameEl = document.getElementById("chatHeaderName");
+  chatNameEl.textContent = other.username || "user";
+  applyBotColor(chatNameEl, other.username);
   document.querySelector("#chatHeaderAvatar img").src = other.emoji || faceForUid(otherUid);
   document.querySelector("#chatHeaderAvatar").dataset.uid = otherUid;
   document.getElementById("chatHeaderSub").classList.remove("show");
@@ -2497,7 +2555,9 @@ async function openConversation(otherUid) {
   }, function() { msgsEl.innerHTML = '<div class="chat-empty">could not load</div>'; });
   watchTyping(convId);
   renderConversationsList(); renderConversationsListMobile();
-  setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
+  if (window.innerWidth > 768) {
+    setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
+  }
 }
 async function openGroupConversation(convId) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
@@ -2507,7 +2567,8 @@ async function openGroupConversation(convId) {
   currentConvId = convId; currentConvOtherUid = null; currentConvIsGroup = true; msgSearchQuery = "";
   _lastRenderedMsgCount = 0; _lastConvRendered = null;
   if (activeView !== "chat") chatReturnView = activeView;
-  document.getElementById("chatHeaderName").textContent = data.name || "group";
+  const chatNameEl = document.getElementById("chatHeaderName");
+  chatNameEl.textContent = data.name || "group";
   document.querySelector("#chatHeaderAvatar img").src = data.emoji || TWE + "1f465.png";
   delete document.querySelector("#chatHeaderAvatar").dataset.uid;
   const badge = document.querySelector("#chatHeaderAvatar .status-badge"); if (badge) badge.remove();
@@ -2528,7 +2589,9 @@ async function openGroupConversation(convId) {
   }, function() { msgsEl.innerHTML = '<div class="chat-empty">could not load</div>'; });
   watchTyping(convId);
   renderConversationsList(); renderConversationsListMobile();
-  setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
+  if (window.innerWidth > 768) {
+    setTimeout(function() { try { document.getElementById("chatInput").focus(); } catch (e) {} }, 100);
+  }
 }
 function renderChatMessages(snap, otherUid) {
   const msgsEl = document.getElementById("chatMessages");
@@ -2577,11 +2640,8 @@ function buildChatMessageRow(m, ctx) {
     chip.className = "chat-call-system";
     const emoji = m.data.callType === "video" ? "📹" : "📞";
     const callerName = m.data.from === me ? "You" : ((userCache.get(m.data.from) || {}).username || m.data.fromUsername || "Someone");
-    if (m.data.callEvent === "started") {
-      chip.textContent = emoji + " " + callerName + " started a " + (m.data.callType === "video" ? "video" : "voice") + " call";
-    } else if (m.data.callEvent === "ended") {
-      chip.innerHTML = emoji + " Call ended" + (m.data.duration ? ' <span class="dur">· ' + formatDuration(m.data.duration) + '</span>' : "");
-    }
+    if (m.data.callEvent === "started") chip.textContent = emoji + " " + callerName + " started a " + (m.data.callType === "video" ? "video" : "voice") + " call";
+    else if (m.data.callEvent === "ended") chip.innerHTML = emoji + " Call ended" + (m.data.duration ? ' <span class="dur">· ' + formatDuration(m.data.duration) + '</span>' : "");
     row.appendChild(chip);
     return row;
   }
@@ -2593,6 +2653,7 @@ function buildChatMessageRow(m, ctx) {
     const senderU = userCache.get(m.data.from) || {};
     const senderEl = document.createElement("div"); senderEl.className = "chat-bubble-sender";
     senderEl.textContent = senderU.username || m.data.fromUsername || "user";
+    applyBotColor(senderEl, senderU.username || m.data.fromUsername);
     bubble.appendChild(senderEl);
   }
   if (m.data.mediaType === "audio") {
@@ -2648,20 +2709,14 @@ function buildChatMessageRow(m, ctx) {
       chips.appendChild(chip);
     });
     wrap.appendChild(bubble); wrap.appendChild(chips);
-  } else {
-    wrap.appendChild(bubble);
-  }
+  } else { wrap.appendChild(bubble); }
   const timeRow = document.createElement("div"); timeRow.className = "chat-time-outside";
   const timeText = m.data.createdAt ? formatMsgTime(m.data.createdAt) : "";
   if (mine) {
     const msgMs = m.data.createdAt ? m.data.createdAt.toMillis() : 0;
     const seen = msgMs > 0 && msgMs <= theirLastReadMs;
     const tick = document.createElement("span"); tick.className = "chat-seen" + (seen ? " read" : ""); tick.textContent = "✓✓";
-    if (isGroup) {
-      tick.style.cursor = "pointer";
-      tick.title = "Who's seen this?";
-      tick.addEventListener("click", function(e) { e.stopPropagation(); openSeenByModal(m.data.createdAt ? m.data.createdAt.toMillis() : 0); });
-    }
+    if (isGroup) { tick.style.cursor = "pointer"; tick.title = "Who's seen this?"; tick.addEventListener("click", function(e) { e.stopPropagation(); openSeenByModal(m.data.createdAt ? m.data.createdAt.toMillis() : 0); }); }
     if (settingsState.readReceipts) { timeRow.appendChild(document.createTextNode(timeText + " ")); timeRow.appendChild(tick); }
     else { timeRow.textContent = timeText; }
   } else { timeRow.textContent = timeText; }
@@ -2945,10 +3000,7 @@ function openEditPost(postId, data) {
 }
 function attachDoubleTapLike(el, likeBtn) {
   if (!el || !likeBtn) return;
-  let lastTap = 0;
-  let touchStartY = 0;
-  let touchStartTime = 0;
-  let touchMoved = false;
+  let lastTap = 0, touchStartY = 0, touchStartTime = 0, touchMoved = false;
   function doLike() {
     if (!likeBtn.classList.contains("active")) likeBtn.click();
     haptic(20);
@@ -2960,10 +3012,7 @@ function attachDoubleTapLike(el, likeBtn) {
       setTimeout(function() { try { wrap.remove(); } catch (e) {} }, 750);
     }
   }
-  function isIgnored(target) {
-    if (!target || !target.closest) return false;
-    return !!target.closest("button, a, input, textarea, video, .link-preview-card, .poll-option, .comment-row, .comment-item, .action");
-  }
+  function isIgnored(target) { if (!target || !target.closest) return false; return !!target.closest("button, a, input, textarea, video, .link-preview-card, .poll-option, .comment-row, .comment-item, .action"); }
   el.addEventListener("dblclick", function(e) { if (isIgnored(e.target)) return; doLike(); });
   el.addEventListener("touchstart", function(e) { touchMoved = false; touchStartY = e.touches[0].clientY; touchStartTime = Date.now(); }, { passive: true });
   el.addEventListener("touchmove", function(e) { if (Math.abs(e.touches[0].clientY - touchStartY) > 12) touchMoved = true; }, { passive: true });
@@ -2990,9 +3039,7 @@ const ICE_SERVERS = {
 function callIdGen() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8); }
 function pairKey(a, b) { return [a, b].sort().join("_"); }
 function getLocalMedia(type) {
-  const constraints = type === "video"
-    ? { audio: true, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } }
-    : { audio: true, video: false };
+  const constraints = type === "video" ? { audio: true, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } } : { audio: true, video: false };
   return navigator.mediaDevices.getUserMedia(constraints);
 }
 async function startCall(type) {
@@ -3000,20 +3047,14 @@ async function startCall(type) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   if (!currentConvId) { toast("No conversation open.", true); return; }
   if (currentCall) { toast("Already in a call.", true); return; }
-
   if (!window.isSecureContext) { toast("Calls need HTTPS.", true); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("This browser can't make calls.", true); return; }
-
   const me = auth.currentUser.uid;
   const conv = conversationsCache.get(currentConvId) || {};
   const isGroup = !!conv.isGroup;
   if (isGroup && (conv.members || []).length > MAX_GROUP_MEMBERS) { toast("Group is too big for calls.", true); return; }
-
   const existingCall = conv.activeCall;
-  if (existingCall && existingCall.createdBy && existingCall.createdBy !== me) {
-    return joinCall(existingCall.callId, existingCall.type);
-  }
-
+  if (existingCall && existingCall.createdBy && existingCall.createdBy !== me) return joinCall(existingCall.callId, existingCall.type);
   let localStream;
   try { localStream = await getLocalMedia(type); }
   catch (e) {
@@ -3025,41 +3066,22 @@ async function startCall(type) {
     toast(msg, true);
     return;
   }
-
   try { unlockAudioForCalls(); } catch (e) {}
   showLoader("starting " + type + " call…");
-
   const callId = callIdGen();
   const videoOff = type === "voice";
   const convIdSnapshot = currentConvId;
-  currentCall = {
-    callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type,
-    localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff,
-    screenTrack: null, screenStream: null,
-    startTime: Date.now(), durationTimer: null, answerTimeout: null
-  };
-
+  currentCall = { callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type, localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff, screenTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
   try {
-    await db.collection("calls").doc(callId).set({
-      conversationId: convIdSnapshot, isGroup: isGroup, type: type,
-      createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    await db.collection("calls").doc(callId).collection("participants").doc(me).set({
-      uid: me, username: myUsername, emoji: myEmoji,
-      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      muted: false, videoOff: videoOff, screenSharing: false
-    });
-    await db.collection("conversations").doc(convIdSnapshot).update({
-      activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() }
-    });
+    await db.collection("calls").doc(callId).set({ conversationId: convIdSnapshot, isGroup: isGroup, type: type, createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: videoOff, screenSharing: false });
+    await db.collection("conversations").doc(convIdSnapshot).update({ activeCall: { callId: callId, type: type, createdBy: me, startedAt: firebase.firestore.FieldValue.serverTimestamp() } });
   } catch (e) {
-    hideLoader();
-    toast("Could not start call.", true);
+    hideLoader(); toast("Could not start call.", true);
     try { localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e2) {}
     currentCall = null;
     return;
   }
-
   hideLoader();
   playCallStartSound();
   await writeCallSystemMessage(convIdSnapshot, "started", type, 0);
@@ -3068,7 +3090,6 @@ async function startCall(type) {
   setupCallListeners();
   startDurationTimer();
   setupLocalSpeakingDetection();
-
   currentCall.answerTimeout = setTimeout(async function() {
     if (!currentCall || currentCall.callId !== callId) return;
     try {
@@ -3082,7 +3103,6 @@ async function joinCall(callId, type) {
   if (!navigator.onLine) { toast("You're offline.", true); return; }
   if (!window.isSecureContext) { toast("Calls need HTTPS.", true); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("This browser can't make calls.", true); return; }
-
   const me = auth.currentUser.uid;
   let localStream;
   try { localStream = await getLocalMedia(type); }
@@ -3094,32 +3114,13 @@ async function joinCall(callId, type) {
     toast(msg, true);
     return;
   }
-
   try { unlockAudioForCalls(); } catch (e) {}
   showLoader("joining call…");
-
   const callSnap = await db.collection("calls").doc(callId).get();
-  if (!callSnap.exists) {
-    hideLoader();
-    toast("Call ended.", true);
-    localStream.getTracks().forEach(function(t) { t.stop(); });
-    return;
-  }
+  if (!callSnap.exists) { hideLoader(); toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
   const callData = callSnap.data();
-  currentCall = {
-    callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup,
-    type: callData.type, localStream: localStream, peers: new Map(),
-    muted: false, videoOff: callData.type === "voice",
-    screenTrack: null, screenStream: null,
-    startTime: Date.now(), durationTimer: null, answerTimeout: null
-  };
-  try {
-    await db.collection("calls").doc(callId).collection("participants").doc(me).set({
-      uid: me, username: myUsername, emoji: myEmoji,
-      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      muted: false, videoOff: currentCall.videoOff, screenSharing: false
-    });
-  } catch (e) {}
+  currentCall = { callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup, type: callData.type, localStream: localStream, peers: new Map(), muted: false, videoOff: callData.type === "voice", screenTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
+  try { await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: currentCall.videoOff, screenSharing: false }); } catch (e) {}
   hideLoader();
   playJoinSound();
   showCallOverlay();
@@ -3133,23 +3134,13 @@ function showCallOverlay() {
   overlay.classList.add("open");
   if (!currentCall) return;
   const conv = conversationsCache.get(currentCall.convId) || {};
-  const titleEl = document.getElementById("callHeaderTitle");
-  const subEl = document.getElementById("callHeaderSub");
-  const av = document.querySelector("#callHeaderAvatar img");
+  const titleEl = document.getElementById("callHeaderTitle"); const subEl = document.getElementById("callHeaderSub"); const av = document.querySelector("#callHeaderAvatar img");
   if (currentCall.isGroup) { titleEl.textContent = conv.name || "group call"; subEl.textContent = "Group " + (currentCall.type === "video" ? "video" : "voice") + " call"; av.src = conv.emoji || TWE + "1f465.png"; }
-  else {
-    const otherUid = (conv.members || []).find(function(u) { return u !== auth.currentUser.uid; });
-    const u = userCache.get(otherUid) || {};
-    titleEl.textContent = u.username || "call";
-    subEl.textContent = (currentCall.type === "video" ? "Video" : "Voice") + " call";
-    av.src = u.emoji || faceForUid(otherUid);
-  }
-  const vbtn = document.getElementById("callVideoBtn");
-  vbtn.style.display = "";
+  else { const otherUid = (conv.members || []).find(function(u) { return u !== auth.currentUser.uid; }); const u = userCache.get(otherUid) || {}; titleEl.textContent = u.username || "call"; subEl.textContent = (currentCall.type === "video" ? "Video" : "Voice") + " call"; av.src = u.emoji || faceForUid(otherUid); }
+  const vbtn = document.getElementById("callVideoBtn"); vbtn.style.display = "";
   const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
   vbtn.classList.toggle("muted", !hasVideo || !!currentCall.videoOff);
-  const sbtn = document.getElementById("callScreenBtn");
-  if (sbtn) { sbtn.classList.remove("muted"); sbtn.title = "Share screen"; }
+  const sbtn = document.getElementById("callScreenBtn"); if (sbtn) { sbtn.classList.remove("muted"); sbtn.title = "Share screen"; }
 }
 function startDurationTimer() {
   const el = document.getElementById("callDuration");
@@ -3164,166 +3155,78 @@ function attachLocalTile() {
   container.classList.toggle("voice-mode", currentCall.type === "voice" && !currentCall.screenTrack);
   let tile = document.getElementById("call-tile-local");
   if (!tile) {
-    tile = document.createElement("div");
-    tile.id = "call-tile-local";
-    tile.className = "call-tile local-mirror";
-    container.appendChild(tile);
-    const v = document.createElement("video");
-    v.autoplay = true; v.muted = true; v.playsInline = true;
-    v.setAttribute("playsinline", "");
-    v.setAttribute("webkit-playsinline", "");
-    v.dataset.callTile = "1";
-    tile.appendChild(v);
-    const av = document.createElement("div");
-    av.className = "call-avatar";
-    av.style.display = "none";
-    tile.appendChild(av);
-    const lbl = document.createElement("div");
-    lbl.className = "call-tile-label";
-    tile.appendChild(lbl);
+    tile = document.createElement("div"); tile.id = "call-tile-local"; tile.className = "call-tile local-mirror"; container.appendChild(tile);
+    const v = document.createElement("video"); v.autoplay = true; v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.dataset.callTile = "1"; tile.appendChild(v);
+    const av = document.createElement("div"); av.className = "call-avatar"; av.style.display = "none"; tile.appendChild(av);
+    const lbl = document.createElement("div"); lbl.className = "call-tile-label"; tile.appendChild(lbl);
   }
-  const v = tile.querySelector("video");
-  const av = tile.querySelector(".call-avatar");
-  const lbl = tile.querySelector(".call-tile-label");
-
+  const v = tile.querySelector("video"); const av = tile.querySelector(".call-avatar"); const lbl = tile.querySelector(".call-tile-label");
   let streamToShow;
   if (currentCall.screenTrack) {
-    if (!currentCall._localScreenStream || currentCall._localScreenStream.getVideoTracks()[0] !== currentCall.screenTrack) {
-      currentCall._localScreenStream = new MediaStream([currentCall.screenTrack]);
-    }
+    if (!currentCall._localScreenStream || currentCall._localScreenStream.getVideoTracks()[0] !== currentCall.screenTrack) currentCall._localScreenStream = new MediaStream([currentCall.screenTrack]);
     streamToShow = currentCall._localScreenStream;
-  } else {
-    streamToShow = currentCall.localStream;
-  }
-  if (v.srcObject !== streamToShow) { v.srcObject = streamToShow; }
-
+  } else { streamToShow = currentCall.localStream; }
+  if (v.srcObject !== streamToShow) v.srcObject = streamToShow;
   tile.classList.toggle("screen-share", !!currentCall.screenTrack);
   tile.classList.toggle("local-mirror", !currentCall.screenTrack);
-
   const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
   const showVideo = currentCall.screenTrack || (currentCall.type === "video" && !currentCall.videoOff && hasVideo);
   if (showVideo) {
-    v.style.position = ""; v.style.width = "100%"; v.style.height = "100%";
-    v.style.opacity = "1"; v.style.pointerEvents = ""; v.style.left = "";
-    tile.classList.remove("voice-only");
-    av.style.display = "none";
+    v.style.position = ""; v.style.width = "100%"; v.style.height = "100%"; v.style.opacity = "1"; v.style.pointerEvents = ""; v.style.left = "";
+    tile.classList.remove("voice-only"); av.style.display = "none";
   } else {
-    v.style.position = "absolute"; v.style.width = "1px"; v.style.height = "1px";
-    v.style.opacity = "0.001"; v.style.pointerEvents = "none"; v.style.left = "-9999px";
-    tile.classList.add("voice-only");
-    av.style.display = "";
-    av.innerHTML = '<img src="' + myEmoji + '" alt="" />';
+    v.style.position = "absolute"; v.style.width = "1px"; v.style.height = "1px"; v.style.opacity = "0.001"; v.style.pointerEvents = "none"; v.style.left = "-9999px";
+    tile.classList.add("voice-only"); av.style.display = ""; av.innerHTML = '<img src="' + myEmoji + '" alt="" />';
   }
-
   let labelHtml = '<span class="name-text">You</span>';
   if (currentCall.muted) labelHtml += '<span class="call-muted-icon">🔇</span>';
   if (currentCall.screenTrack) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
   lbl.innerHTML = labelHtml;
-
   let fsBtn = tile.querySelector(".fs-btn");
   if (currentCall.screenTrack) {
     if (!fsBtn) {
-      fsBtn = document.createElement("button");
-      fsBtn.className = "fs-btn";
-      fsBtn.innerHTML = "⛶";
-      fsBtn.title = "Fullscreen";
-      fsBtn.addEventListener("click", function(e) {
-        e.stopPropagation();
-        const target = tile.querySelector("video") || tile;
-        try {
-          if (target.requestFullscreen) target.requestFullscreen();
-          else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-          else if (target.msRequestFullscreen) target.msRequestFullscreen();
-        } catch (err) {}
-      });
+      fsBtn = document.createElement("button"); fsBtn.className = "fs-btn"; fsBtn.innerHTML = "⛶"; fsBtn.title = "Fullscreen";
+      fsBtn.addEventListener("click", function(e) { e.stopPropagation(); const target = tile.querySelector("video") || tile; try { if (target.requestFullscreen) target.requestFullscreen(); else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen(); else if (target.msRequestFullscreen) target.msRequestFullscreen(); } catch (err) {} });
       tile.appendChild(fsBtn);
     }
-  } else if (fsBtn) {
-    fsBtn.remove();
-  }
-
+  } else if (fsBtn) fsBtn.remove();
   try { v.play().catch(function(){}); } catch (e) {}
 }
 function attachRemoteTile(uid, stream) {
   const container = document.getElementById("callVideos");
   let tile = document.getElementById("call-tile-" + uid);
   if (!tile) {
-    tile = document.createElement("div");
-    tile.id = "call-tile-" + uid;
-    tile.className = "call-tile";
-    container.appendChild(tile);
-    const v = document.createElement("video");
-    v.autoplay = true;
-    v.playsInline = true;
-    v.setAttribute("playsinline", "");
-    v.setAttribute("webkit-playsinline", "");
-    v.dataset.callTile = "1";
-    tile.appendChild(v);
-    const av = document.createElement("div");
-    av.className = "call-avatar";
-    av.style.display = "none";
-    tile.appendChild(av);
-    const lbl = document.createElement("div");
-    lbl.className = "call-tile-label";
-    tile.appendChild(lbl);
+    tile = document.createElement("div"); tile.id = "call-tile-" + uid; tile.className = "call-tile"; container.appendChild(tile);
+    const v = document.createElement("video"); v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.dataset.callTile = "1"; tile.appendChild(v);
+    const av = document.createElement("div"); av.className = "call-avatar"; av.style.display = "none"; tile.appendChild(av);
+    const lbl = document.createElement("div"); lbl.className = "call-tile-label"; tile.appendChild(lbl);
   }
-  const v = tile.querySelector("video");
-  const av = tile.querySelector(".call-avatar");
-  const lbl = tile.querySelector(".call-tile-label");
-  const peer = currentCall.peers.get(uid) || {};
-  const user = userCache.get(uid) || {};
-
-  if (stream && v.srcObject !== stream) {
-    v.srcObject = stream;
-    try { v.play().catch(function(){}); } catch (e) {}
-  }
-
+  const v = tile.querySelector("video"); const av = tile.querySelector(".call-avatar"); const lbl = tile.querySelector(".call-tile-label");
+  const peer = currentCall.peers.get(uid) || {}; const user = userCache.get(uid) || {};
+  if (stream && v.srcObject !== stream) { v.srcObject = stream; try { v.play().catch(function(){}); } catch (e) {} }
   const hasVideo = stream && stream.getVideoTracks().length > 0;
   const showVideo = hasVideo && (peer.screenSharing || (currentCall.type === "video" && !peer.videoOff));
-
   tile.classList.toggle("screen-share", !!peer.screenSharing);
-
   if (showVideo) {
-    v.style.position = ""; v.style.width = "100%"; v.style.height = "100%";
-    v.style.opacity = "1"; v.style.pointerEvents = ""; v.style.left = "";
-    tile.classList.remove("voice-only");
-    av.style.display = "none";
+    v.style.position = ""; v.style.width = "100%"; v.style.height = "100%"; v.style.opacity = "1"; v.style.pointerEvents = ""; v.style.left = "";
+    tile.classList.remove("voice-only"); av.style.display = "none";
   } else {
-    v.style.position = "absolute"; v.style.width = "1px"; v.style.height = "1px";
-    v.style.opacity = "0.001"; v.style.pointerEvents = "none"; v.style.left = "-9999px";
-    tile.classList.add("voice-only");
-    av.style.display = "";
-    av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />';
+    v.style.position = "absolute"; v.style.width = "1px"; v.style.height = "1px"; v.style.opacity = "0.001"; v.style.pointerEvents = "none"; v.style.left = "-9999px";
+    tile.classList.add("voice-only"); av.style.display = ""; av.innerHTML = '<img src="' + (user.emoji || peer.emoji || faceForUid(uid)) + '" alt="" />';
   }
   let labelHtml = '<span class="name-text">' + escapeHtml(user.username || peer.username || "user") + '</span>';
   if (peer.muted) labelHtml += '<span class="call-muted-icon">🔇</span>';
   if (peer.screenSharing) labelHtml += ' <span style="color:#4fc3f7">🖥️ sharing</span>';
   lbl.innerHTML = labelHtml;
-
   let fsBtn = tile.querySelector(".fs-btn");
   if (peer.screenSharing) {
     if (!fsBtn) {
-      fsBtn = document.createElement("button");
-      fsBtn.className = "fs-btn";
-      fsBtn.innerHTML = "⛶";
-      fsBtn.title = "Fullscreen";
-      fsBtn.addEventListener("click", function(e) {
-        e.stopPropagation();
-        const target = tile.querySelector("video") || tile;
-        try {
-          if (target.requestFullscreen) target.requestFullscreen();
-          else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-          else if (target.msRequestFullscreen) target.msRequestFullscreen();
-        } catch (err) {}
-      });
+      fsBtn = document.createElement("button"); fsBtn.className = "fs-btn"; fsBtn.innerHTML = "⛶"; fsBtn.title = "Fullscreen";
+      fsBtn.addEventListener("click", function(e) { e.stopPropagation(); const target = tile.querySelector("video") || tile; try { if (target.requestFullscreen) target.requestFullscreen(); else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen(); else if (target.msRequestFullscreen) target.msRequestFullscreen(); } catch (err) {} });
       tile.appendChild(fsBtn);
     }
-  } else if (fsBtn) {
-    fsBtn.remove();
-  }
-
+  } else if (fsBtn) fsBtn.remove();
   v.muted = false; v.volume = 1; v.defaultMuted = false; v.removeAttribute("muted");
-
   const tryPlay = function() {
     const p = v.play();
     if (p && p.catch) {
@@ -3331,14 +3234,9 @@ function attachRemoteTile(uid, stream) {
         if (err && err.name === "AbortError") return;
         if (!tile.querySelector(".enable-audio-btn")) {
           const btn = document.createElement("button");
-          btn.className = "enable-audio-btn";
-          btn.textContent = "🔊 tap for audio";
+          btn.className = "enable-audio-btn"; btn.textContent = "🔊 tap for audio";
           btn.style.cssText = "position:absolute;top:8px;right:56px;background:rgba(0,0,0,0.8);color:#fff;border:1px solid #4fc3f7;border-radius:9999px;padding:6px 12px;font-size:12px;cursor:pointer;z-index:10;font-family:inherit;";
-          btn.addEventListener("click", function(e) {
-            e.stopPropagation();
-            v.muted = false; v.volume = 1;
-            v.play().then(function() { btn.remove(); }).catch(function(){});
-          });
+          btn.addEventListener("click", function(e) { e.stopPropagation(); v.muted = false; v.volume = 1; v.play().then(function() { btn.remove(); }).catch(function(){}); });
           tile.appendChild(btn);
         }
       });
@@ -3348,10 +3246,7 @@ function attachRemoteTile(uid, stream) {
   v.addEventListener("loadedmetadata", tryPlay);
   v.addEventListener("canplay", tryPlay);
   v.addEventListener("canplaythrough", tryPlay);
-  v.addEventListener("playing", function() {
-    const btn = tile.querySelector(".enable-audio-btn");
-    if (btn) btn.remove();
-  });
+  v.addEventListener("playing", function() { const btn = tile.querySelector(".enable-audio-btn"); if (btn) btn.remove(); });
 }
 function createPeerConnection(peerUid) {
   const pc = new RTCPeerConnection(ICE_SERVERS);
@@ -3366,20 +3261,12 @@ function createPeerConnection(peerUid) {
   };
   pc.ontrack = function(e) {
     if (!currentCall) return;
-    const peer = currentCall.peers.get(peerUid);
-    if (!peer) return;
+    const peer = currentCall.peers.get(peerUid); if (!peer) return;
     if (!peer.stream) peer.stream = new MediaStream();
-    if (peer.stream.getTracks().indexOf(e.track) === -1) {
-      try { peer.stream.addTrack(e.track); } catch (err) {}
-    }
+    if (peer.stream.getTracks().indexOf(e.track) === -1) { try { peer.stream.addTrack(e.track); } catch (err) {} }
     attachRemoteTile(peerUid, peer.stream);
     if (e.track.kind === "audio") setupRemoteSpeakingDetection(peerUid, peer.stream);
-    // If we just received video and our local call type is still "voice",
-    // upgrade our own view (the call doc listener should do this too, but belt-and-braces).
-    if (e.track.kind === "video" && currentCall.type !== "video") {
-      currentCall.type = "video";
-      document.getElementById("callVideoBtn").style.display = "";
-    }
+    if (e.track.kind === "video" && currentCall.type !== "video") { currentCall.type = "video"; document.getElementById("callVideoBtn").style.display = ""; }
     setTimeout(function() { if (currentCall) attachRemoteTilesRefresh(); }, 200);
   };
   pc.onconnectionstatechange = function() { if (!currentCall) return; if (pc.connectionState === "failed" || pc.connectionState === "closed") removePeer(peerUid, false); };
@@ -3388,62 +3275,38 @@ function createPeerConnection(peerUid) {
 function setupCallListeners() {
   const callId = currentCall.callId;
   const me = auth.currentUser.uid;
-
-  // Watch call doc for type changes (voice → video upgrade)
   const callDocUnsub = db.collection("calls").doc(callId).onSnapshot(function(snap) {
     if (!snap.exists || !currentCall) return;
     const data = snap.data();
-    if (data.type && data.type !== currentCall.type) {
-      currentCall.type = data.type;
-      document.getElementById("callVideoBtn").style.display = "";
-      showCallOverlay();
-      attachLocalTile();
-      attachRemoteTilesRefresh();
-    }
+    if (data.type && data.type !== currentCall.type) { currentCall.type = data.type; document.getElementById("callVideoBtn").style.display = ""; showCallOverlay(); attachLocalTile(); attachRemoteTilesRefresh(); }
   });
   callUnsubs.push(callDocUnsub);
-
   const partsRef = db.collection("calls").doc(callId).collection("participants");
   const partsUnsub = partsRef.onSnapshot(async function(snap) {
     if (!currentCall) return;
-    const seen = new Set();
-    const pendingNew = [];
+    const seen = new Set(); const pendingNew = [];
     snap.forEach(function(d) {
-      const uid = d.id; seen.add(uid);
-      const data = d.data();
+      const uid = d.id; seen.add(uid); const data = d.data();
       if (uid === me) return;
       if (!currentCall.peers.has(uid)) pendingNew.push({ uid: uid, data: data });
-      else {
-        const peer = currentCall.peers.get(uid);
-        peer.muted = !!data.muted;
-        peer.videoOff = !!data.videoOff;
-        peer.screenSharing = !!data.screenSharing;
-        peer.username = data.username;
-        peer.emoji = data.emoji;
-      }
+      else { const peer = currentCall.peers.get(uid); peer.muted = !!data.muted; peer.videoOff = !!data.videoOff; peer.screenSharing = !!data.screenSharing; peer.username = data.username; peer.emoji = data.emoji; }
     });
-    const leaving = [];
-    currentCall.peers.forEach(function(_, uid) { if (!seen.has(uid)) leaving.push(uid); });
+    const leaving = []; currentCall.peers.forEach(function(_, uid) { if (!seen.has(uid)) leaving.push(uid); });
     leaving.forEach(function(uid) { removePeer(uid, false); });
     for (const item of pendingNew) {
       playJoinSound();
       if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
       else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, screenSharing: !!item.data.screenSharing, username: item.data.username, emoji: item.data.emoji, _lastOfferSdp: null, _lastAnswerSdp: null }); }
     }
-    if (currentCall && currentCall.answerTimeout && snap.size > 1) {
-      clearTimeout(currentCall.answerTimeout);
-      currentCall.answerTimeout = null;
-    }
+    if (currentCall && currentCall.answerTimeout && snap.size > 1) { clearTimeout(currentCall.answerTimeout); currentCall.answerTimeout = null; }
     if (currentCall) attachRemoteTilesRefresh();
   });
   callUnsubs.push(partsUnsub);
-
   const signalsRef = db.collection("calls").doc(callId).collection("signals");
   const signalsUnsub = signalsRef.onSnapshot(function(snap) {
     snap.docChanges().forEach(async function(change) {
       if (change.type === "removed") return;
-      const key = change.doc.id;
-      const parts = key.split("_");
+      const key = change.doc.id; const parts = key.split("_");
       if (parts.indexOf(me) === -1) return;
       const otherUid = parts.find(function(p) { return p !== me; });
       if (!otherUid) return;
@@ -3455,44 +3318,25 @@ function setupCallListeners() {
 }
 function attachRemoteTilesRefresh() {
   if (!currentCall) return;
-  document.querySelectorAll("#callVideos .call-tile").forEach(function(t) {
-    const id = t.id.replace("call-tile-", "");
-    if (id === "local") return;
-    if (!currentCall.peers.has(id)) t.remove();
-  });
+  document.querySelectorAll("#callVideos .call-tile").forEach(function(t) { const id = t.id.replace("call-tile-", ""); if (id === "local") return; if (!currentCall.peers.has(id)) t.remove(); });
   currentCall.peers.forEach(function(peer, uid) { attachRemoteTile(uid, peer.stream); });
 }
 async function initiateOfferTo(peerUid, peerData) {
   const me = auth.currentUser.uid;
   const pc = createPeerConnection(peerUid);
   const offer = await pc.createOffer();
-  currentCall.peers.set(peerUid, {
-    pc: pc, stream: null,
-    muted: !!peerData.muted, videoOff: !!peerData.videoOff,
-    screenSharing: !!peerData.screenSharing,
-    username: peerData.username, emoji: peerData.emoji,
-    _lastOfferSdp: offer.sdp,
-    _lastAnswerSdp: null
-  });
+  currentCall.peers.set(peerUid, { pc: pc, stream: null, muted: !!peerData.muted, videoOff: !!peerData.videoOff, screenSharing: !!peerData.screenSharing, username: peerData.username, emoji: peerData.emoji, _lastOfferSdp: offer.sdp, _lastAnswerSdp: null });
   const key = pairKey(me, peerUid);
-  await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({
-    fromUid: me, toUid: peerUid,
-    offer: { type: offer.type, sdp: offer.sdp }
-  }, { merge: true });
+  await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ fromUid: me, toUid: peerUid, offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
   await pc.setLocalDescription(offer);
 }
 async function processSignal(peerUid, data) {
   const me = auth.currentUser.uid;
   let peer = currentCall.peers.get(peerUid);
-  if (!peer) {
-    peer = { pc: null, stream: null, muted: false, videoOff: false, screenSharing: false,
-             _lastOfferSdp: null, _lastAnswerSdp: null };
-    currentCall.peers.set(peerUid, peer);
-  }
+  if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false, screenSharing: false, _lastOfferSdp: null, _lastAnswerSdp: null }; currentCall.peers.set(peerUid, peer); }
   if (!peer.pc) peer.pc = createPeerConnection(peerUid);
   const pc = peer.pc;
   const iAmCaller = me < peerUid;
-
   if (data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp && pc.signalingState === "stable") {
     peer._lastOfferSdp = data.offer.sdp;
     try {
@@ -3501,28 +3345,22 @@ async function processSignal(peerUid, data) {
       await pc.setLocalDescription(answer);
       peer._lastAnswerSdp = answer.sdp;
       const key = pairKey(me, peerUid);
-      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
-        .set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
+      await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
     } catch (e) { peer._lastOfferSdp = null; }
   }
-
   if (data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp && pc.signalingState === "have-local-offer") {
     peer._lastAnswerSdp = data.answer.sdp;
     try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
     catch (e) { peer._lastAnswerSdp = null; }
   }
-
   if (pc.remoteDescription) {
     const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
     const candidates = data[fromField] || [];
-    for (const c of candidates) {
-      try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {}
-    }
+    for (const c of candidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {} }
   }
 }
 function removePeer(uid, silent) {
-  const peer = currentCall && currentCall.peers.get(uid);
-  if (!peer) return;
+  const peer = currentCall && currentCall.peers.get(uid); if (!peer) return;
   try { if (peer.pc) peer.pc.close(); } catch (e) {}
   try { if (peer.audioCtx && peer.audioCtx.state !== "closed") peer.audioCtx.close().catch(function(){}); } catch (e) {}
   currentCall.peers.delete(uid);
@@ -3531,17 +3369,14 @@ function removePeer(uid, silent) {
 }
 function setupLocalSpeakingDetection() {
   if (!currentCall || !currentCall.localStream) return;
-  const audioTracks = currentCall.localStream.getAudioTracks();
-  if (!audioTracks.length) return;
+  const audioTracks = currentCall.localStream.getAudioTracks(); if (!audioTracks.length) return;
   try {
     const ctx = new AudioContext();
     const src = ctx.createMediaStreamSource(currentCall.localStream);
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 512;
-    src.connect(analyser);
+    analyser.fftSize = 512; src.connect(analyser);
     const arr = new Uint8Array(analyser.frequencyBinCount);
-    currentCall.localAudioCtx = ctx;
-    currentCall.localAnalyser = analyser;
+    currentCall.localAudioCtx = ctx; currentCall.localAnalyser = analyser;
     const check = function() {
       if (!currentCall) { try { if (ctx.state !== "closed") ctx.close().catch(function(){}); } catch (e) {} return; }
       analyser.getByteFrequencyData(arr);
@@ -3556,8 +3391,7 @@ function setupLocalSpeakingDetection() {
 }
 function setupRemoteSpeakingDetection(uid, stream) {
   if (!currentCall || !stream || !stream.getAudioTracks().length) return;
-  const peer = currentCall.peers.get(uid);
-  if (!peer) return;
+  const peer = currentCall.peers.get(uid); if (!peer) return;
   const check = function() {
     if (!currentCall || !currentCall.peers.has(uid)) return;
     let level = 0;
@@ -3567,9 +3401,7 @@ function setupRemoteSpeakingDetection(uid, stream) {
         for (const r of receivers) {
           if (r.track && r.track.kind === "audio" && typeof r.getSynchronizationSources === "function") {
             const sources = r.getSynchronizationSources() || [];
-            for (const s of sources) {
-              if (typeof s.audioLevel === "number") level = Math.max(level, s.audioLevel);
-            }
+            for (const s of sources) { if (typeof s.audioLevel === "number") level = Math.max(level, s.audioLevel); }
           }
         }
       }
@@ -3584,53 +3416,31 @@ function setupRemoteSpeakingDetection(uid, stream) {
 }
 async function endCall() {
   stopRingtone();
-  const incomingEl = document.getElementById("incomingCall");
-  if (incomingEl) incomingEl.classList.remove("open");
+  const incomingEl = document.getElementById("incomingCall"); if (incomingEl) incomingEl.classList.remove("open");
   pendingIncomingCall = null;
-
   if (!currentCall) return;
-
-  const callId = currentCall.callId;
-  const convId = currentCall.convId;
-  const callType = currentCall.type;
+  const callId = currentCall.callId; const convId = currentCall.convId; const callType = currentCall.type;
   const durationSecs = Math.floor((Date.now() - currentCall.startTime) / 1000);
   const me = auth.currentUser && auth.currentUser.uid;
-
   if (currentCall.answerTimeout) clearTimeout(currentCall.answerTimeout);
-
   if (currentCall.screenTrack) { try { currentCall.screenTrack.stop(); } catch (e) {} }
   if (currentCall.screenStream) { try { currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {} }
-
   callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
   currentCall.peers.forEach(function(_, uid) { removePeer(uid, true); });
   try { if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
   try { if (currentCall.localAudioCtx && currentCall.localAudioCtx.state !== "closed") currentCall.localAudioCtx.close().catch(function(){}); } catch (e) {}
   if (currentCall.durationTimer) clearInterval(currentCall.durationTimer);
-
   document.getElementById("callOverlay").classList.remove("open");
   document.getElementById("callVideos").innerHTML = "";
   currentCall = null;
   playCallEndSound();
-
   if (convId) {
     try {
       const convSnap = await db.collection("conversations").doc(convId).get();
-      if (convSnap.exists) {
-        const ac = convSnap.data().activeCall;
-        if (ac && ac.callId === callId) {
-          await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() });
-        }
-      }
+      if (convSnap.exists) { const ac = convSnap.data().activeCall; if (ac && ac.callId === callId) await db.collection("conversations").doc(convId).update({ activeCall: firebase.firestore.FieldValue.delete() }); }
     } catch (e) {}
   }
-
-  if (convId) {
-    try {
-      const alreadyWritten = await hasRecentCallEndMessage(convId);
-      if (!alreadyWritten) await writeCallSystemMessage(convId, "ended", callType, durationSecs);
-    } catch (e) {}
-  }
-
+  if (convId) { try { const alreadyWritten = await hasRecentCallEndMessage(convId); if (!alreadyWritten) await writeCallSystemMessage(convId, "ended", callType, durationSecs); } catch (e) {} }
   if (callId && me) {
     try { await db.collection("calls").doc(callId).collection("participants").doc(me).delete(); } catch (e) {}
     try {
@@ -3638,8 +3448,7 @@ async function endCall() {
       if (remaining.size === 0) {
         try {
           const sigs = await db.collection("calls").doc(callId).collection("signals").get();
-          const batch = db.batch();
-          sigs.forEach(function(s) { batch.delete(s.ref); });
+          const batch = db.batch(); sigs.forEach(function(s) { batch.delete(s.ref); });
           batch.delete(db.collection("calls").doc(callId));
           await batch.commit();
         } catch (e) {}
@@ -3651,23 +3460,17 @@ function checkForIncomingCall(convSnapDocs) {
   if (!auth || !auth.currentUser) return;
   const me = auth.currentUser.uid;
   if (currentCall) return;
-
   let found = null;
   convSnapDocs.forEach(function(d) {
-    const data = d.data();
-    const ac = data.activeCall;
+    const data = d.data(); const ac = data.activeCall;
     if (!ac) return;
     const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
     const ageMs = started ? (Date.now() - started) : 0;
-    if (started && ageMs > CALL_RING_TIMEOUT_MS && ac.createdBy !== me) {
-      db.collection("conversations").doc(d.id).update({ activeCall: firebase.firestore.FieldValue.delete() }).catch(function() {});
-      return;
-    }
+    if (started && ageMs > CALL_RING_TIMEOUT_MS && ac.createdBy !== me) { db.collection("conversations").doc(d.id).update({ activeCall: firebase.firestore.FieldValue.delete() }).catch(function() {}); return; }
     if (ac.createdBy === me) return;
     if (started && ageMs > CALL_RING_TIMEOUT_MS) return;
     found = { convId: d.id, conv: data, call: ac };
   });
-
   if (found && !pendingIncomingCall) {
     if (isSilenced()) return;
     pendingIncomingCall = found;
@@ -3680,32 +3483,22 @@ function checkForIncomingCall(convSnapDocs) {
 }
 function showIncomingCallModal(found) {
   const { conv, call } = found;
-  const av = document.querySelector("#incomingCallAvatar img");
-  const nameEl = document.getElementById("incomingCallName");
-  const typeEl = document.getElementById("incomingCallType");
+  const av = document.querySelector("#incomingCallAvatar img"); const nameEl = document.getElementById("incomingCallName"); const typeEl = document.getElementById("incomingCallType");
   if (conv.isGroup) { av.src = conv.emoji || TWE + "1f465.png"; nameEl.textContent = conv.name || "group"; typeEl.textContent = "Incoming group " + (call.type === "video" ? "video" : "voice") + " call"; }
-  else {
-    const fromUid = call.createdBy;
-    const u = userCache.get(fromUid) || {};
-    av.src = u.emoji || faceForUid(fromUid);
-    nameEl.textContent = u.username || "user";
-    typeEl.textContent = "Incoming " + (call.type === "video" ? "video" : "voice") + " call";
-  }
+  else { const fromUid = call.createdBy; const u = userCache.get(fromUid) || {}; av.src = u.emoji || faceForUid(fromUid); nameEl.textContent = u.username || "user"; typeEl.textContent = "Incoming " + (call.type === "video" ? "video" : "voice") + " call"; }
   document.getElementById("incomingCall").classList.add("open");
   startRingtone();
 }
 
-/* ==== CAMERA ON VOICE CALL + SCREEN SHARE ==== */
+/* ==== CAMERA + SCREEN SHARE ==== */
 async function toggleCamera() {
   if (!currentCall) return;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Camera not supported.", true); return; }
   const hasVideo = currentCall.localStream.getVideoTracks().length > 0;
-
   if (!hasVideo) {
     let camStream;
-    try {
-      camStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } });
-    } catch (e) {
+    try { camStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } }); }
+    catch (e) {
       const name = (e && e.name) || "";
       let msg = "Could not access camera";
       if (name === "NotAllowedError") msg = "Camera permission denied.";
@@ -3717,7 +3510,6 @@ async function toggleCamera() {
     const camTrack = camStream.getVideoTracks()[0];
     currentCall.localStream.addTrack(camTrack);
     currentCall.videoOff = false;
-
     for (const [uid, peer] of currentCall.peers) {
       if (!peer.pc) continue;
       try {
@@ -3726,19 +3518,15 @@ async function toggleCamera() {
         await peer.pc.setLocalDescription(offer);
         peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
-          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       } catch (e) {}
     }
-
     try { await db.collection("calls").doc(currentCall.callId).update({ type: "video" }); } catch (e) {}
     currentCall.type = "video";
-
     playCameraToggleSound(true);
     attachLocalTile();
     document.getElementById("callVideoBtn").classList.remove("muted");
-    db.collection("calls").doc(currentCall.callId).collection("participants")
-      .doc(auth.currentUser.uid).update({ videoOff: false }).catch(function() {});
+    db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ videoOff: false }).catch(function() {});
     status("Camera on");
   } else {
     currentCall.videoOff = !currentCall.videoOff;
@@ -3746,52 +3534,37 @@ async function toggleCamera() {
     playCameraToggleSound(!currentCall.videoOff);
     document.getElementById("callVideoBtn").classList.toggle("muted", currentCall.videoOff);
     attachLocalTile();
-    db.collection("calls").doc(currentCall.callId).collection("participants")
-      .doc(auth.currentUser.uid).update({ videoOff: currentCall.videoOff }).catch(function() {});
+    db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ videoOff: currentCall.videoOff }).catch(function() {});
   }
 }
 async function startScreenShare() {
   if (!currentCall) return;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) { toast("Screen share not supported on this device.", true); return; }
   if (currentCall.screenTrack) return;
-
   let screenStream;
-  try {
-    screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
-      audio: true
-    });
-  } catch (e) {
-    if (e && e.name !== "NotAllowedError") toast("Screen share failed.", true);
-    return;
-  }
-
+  try { screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }, audio: true }); }
+  catch (e) { if (e && e.name !== "NotAllowedError") toast("Screen share failed.", true); return; }
   const screenTrack = screenStream.getVideoTracks()[0];
   currentCall.screenTrack = screenTrack;
   currentCall.screenStream = screenStream;
-
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
       const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
-      if (sender) {
-        await sender.replaceTrack(screenTrack);
-      } else {
+      if (sender) await sender.replaceTrack(screenTrack);
+      else {
         peer.pc.addTrack(screenTrack, screenStream);
         const offer = await peer.pc.createOffer();
         await peer.pc.setLocalDescription(offer);
         peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
-          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
     } catch (e) {}
   }
-
   const btn = document.getElementById("callScreenBtn");
   if (btn) { btn.classList.add("muted"); btn.title = "Stop sharing"; }
-  db.collection("calls").doc(currentCall.callId).collection("participants")
-    .doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
+  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
   screenTrack.onended = function() { stopScreenShare(); };
   attachLocalTile();
   status("Screen sharing");
@@ -3804,44 +3577,35 @@ async function stopScreenShare() {
   currentCall.screenTrack = null;
   currentCall.screenStream = null;
   currentCall._localScreenStream = null;
-
   const camTrack = currentCall.localStream.getVideoTracks().find(function(t) { return t.readyState === "live"; });
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
       const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
       if (!sender) continue;
-      if (camTrack) {
-        await sender.replaceTrack(camTrack);
-      } else {
+      if (camTrack) await sender.replaceTrack(camTrack);
+      else {
         peer.pc.removeTrack(sender);
         const offer = await peer.pc.createOffer();
         await peer.pc.setLocalDescription(offer);
         peer._lastOfferSdp = offer.sdp;
         const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key)
-          .set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
     } catch (e) {}
   }
-
   const btn = document.getElementById("callScreenBtn");
   if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; }
-  db.collection("calls").doc(currentCall.callId).collection("participants")
-    .doc(auth.currentUser.uid).update({ screenSharing: false }).catch(function() {});
+  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: false }).catch(function() {});
   attachLocalTile();
 }
-
-/* Self-healing sweep */
 async function sweepStaleCalls() {
   if (!auth || !auth.currentUser) return;
   try {
     const snap = await db.collection("conversations").where("members", "array-contains", auth.currentUser.uid).get();
-    const batch = db.batch();
-    let hits = 0;
+    const batch = db.batch(); let hits = 0;
     snap.forEach(function(d) {
-      const ac = d.data().activeCall;
-      if (!ac) return;
+      const ac = d.data().activeCall; if (!ac) return;
       const started = ac.startedAt && ac.startedAt.toMillis ? ac.startedAt.toMillis() : 0;
       if (started && Date.now() - started > CALL_RING_TIMEOUT_MS) { batch.update(d.ref, { activeCall: firebase.firestore.FieldValue.delete() }); hits++; }
     });
@@ -3853,16 +3617,13 @@ async function sweepStaleCalls() {
    NO INTERNET
    ===================================================================== */
 function updateOnlineStatus() {
-  const ov = document.getElementById("noInternetOverlay");
-  if (!ov) return;
-  if (navigator.onLine) ov.classList.remove("open");
-  else ov.classList.add("open");
+  const ov = document.getElementById("noInternetOverlay"); if (!ov) return;
+  if (navigator.onLine) ov.classList.remove("open"); else ov.classList.add("open");
 }
 window.addEventListener("online", updateOnlineStatus);
 window.addEventListener("offline", updateOnlineStatus);
 setInterval(function() {
-  const ov = document.getElementById("noInternetOverlay");
-  if (!ov) return;
+  const ov = document.getElementById("noInternetOverlay"); if (!ov) return;
   const shouldShow = !navigator.onLine;
   if (shouldShow && !ov.classList.contains("open")) ov.classList.add("open");
   if (!shouldShow && ov.classList.contains("open")) ov.classList.remove("open");
@@ -4002,13 +3763,11 @@ function startConversationsListener() {
       const cd = conversationsCache.get(currentConvId);
       const subEl = document.getElementById("chatHeaderSub");
       if (subEl) {
-        if (cd && cd.activeCall) {
-          subEl.textContent = cd.activeCall.type === "video" ? "📹 Video call in progress" : "📞 Voice call in progress";
-          subEl.classList.add("show", "call-active");
-        } else {
+        if (cd && cd.activeCall) { subEl.textContent = cd.activeCall.type === "video" ? "📹 Video call in progress" : "📞 Voice call in progress"; subEl.classList.add("show", "call-active"); }
+        else {
           subEl.classList.remove("call-active");
           if (currentConvIsGroup && cd) { const n = (cd.members || []).length; subEl.textContent = n + " member" + (n === 1 ? "" : "s"); subEl.classList.add("show"); }
-          else if (!currentConvIsGroup) { subEl.classList.remove("show"); }
+          else if (!currentConvIsGroup) subEl.classList.remove("show");
         }
       }
     }
@@ -4152,8 +3911,7 @@ async function setGroupAvatar(src) {
 function adminResolveTarget(input) {
   const q = (input || "").trim().toLowerCase(); if (!q) return null;
   if (q.startsWith("#")) { const num = parseInt(q.slice(1), 10); if (isNaN(num) || num < 1) return null; let uid = null; userNumMap.forEach(function(n, u) { if (n === num) uid = u; }); if (!uid) return null; return { uid: uid, data: userCache.get(uid) || {} }; }
-  let foundUid = null;
-  userCache.forEach(function(data, uid) { if ((data.username || "").toLowerCase() === q) foundUid = uid; });
+  let foundUid = null; userCache.forEach(function(data, uid) { if ((data.username || "").toLowerCase() === q) foundUid = uid; });
   if (!foundUid) return null;
   return { uid: foundUid, data: userCache.get(foundUid) || {} };
 }
@@ -4196,15 +3954,13 @@ async function adminApplyAction(act, targetUid) {
 }
 function renderAdminBanned() {
   const box = document.getElementById("adminBannedList"); if (!box) return;
-  const banned = [];
-  userCache.forEach(function(data, uid) { if (data.banned) banned.push({ uid: uid, data: data }); });
+  const banned = []; userCache.forEach(function(data, uid) { if (data.banned) banned.push({ uid: uid, data: data }); });
   if (banned.length === 0) { box.innerHTML = '<div class="empty">nobody is banned</div>'; return; }
   box.innerHTML = "";
   banned.forEach(function(item) {
     const row = document.createElement("div"); row.innerHTML = adminUserRowHtml(item.uid, item.data);
     const el = row.firstChild;
-    const unbanBtn = document.createElement("button");
-    unbanBtn.className = "admin-action-btn success"; unbanBtn.textContent = "unban"; unbanBtn.style.marginLeft = "auto";
+    const unbanBtn = document.createElement("button"); unbanBtn.className = "admin-action-btn success"; unbanBtn.textContent = "unban"; unbanBtn.style.marginLeft = "auto";
     unbanBtn.addEventListener("click", async function() { await adminApplyAction("unban", item.uid); renderAdminBanned(); });
     el.appendChild(unbanBtn);
     box.appendChild(el);
@@ -4221,17 +3977,13 @@ function getTrackAudio(track) {
   const a = new Audio(src);
   a.loop = true; a.preload = "auto";
   a.addEventListener("play", function() { musicTracks.forEach(function(t) { if (t.id !== track.id && t.audioEl && !t.audioEl.paused) { try { t.audioEl.pause(); } catch (e) {} } }); activeTrackId = track.id; });
-  a.addEventListener("timeupdate", function() {
-    if (!a.duration || !isFinite(a.duration) || a.duration <= 0) return;
-    if (a.currentTime >= a.duration - 0.12) { try { a.currentTime = 0; } catch (e) {} if (!a.paused) a.play().catch(function() {}); }
-  });
+  a.addEventListener("timeupdate", function() { if (!a.duration || !isFinite(a.duration) || a.duration <= 0) return; if (a.currentTime >= a.duration - 0.12) { try { a.currentTime = 0; } catch (e) {} if (!a.paused) a.play().catch(function() {}); } });
   a.addEventListener("ended", function() { try { a.currentTime = 0; a.play().catch(function() {}); } catch (e) {} });
   track.audioEl = a;
   return a;
 }
 function toggleTrack(trackId) {
-  const track = musicTracks.find(function(t) { return t.id === trackId; });
-  if (!track) return;
+  const track = musicTracks.find(function(t) { return t.id === trackId; }); if (!track) return;
   musicPausedByVideo = null;
   const a = getTrackAudio(track);
   a.loop = true;
@@ -4249,10 +4001,7 @@ function renderMusicTracks() {
   });
   const customCount = musicTracks.filter(function(t) { return t.kind === "custom"; }).length;
   const addBtn = document.getElementById("addMusicBtn");
-  if (addBtn) {
-    if (customCount >= MAX_MUSIC_TRACKS) { addBtn.disabled = true; addBtn.textContent = "max reached"; }
-    else { addBtn.disabled = false; addBtn.textContent = "+ add your own"; }
-  }
+  if (addBtn) { if (customCount >= MAX_MUSIC_TRACKS) { addBtn.disabled = true; addBtn.textContent = "max reached"; } else { addBtn.disabled = false; addBtn.textContent = "+ add your own"; } }
   const hint = document.getElementById("musicHint"); if (hint) hint.textContent = customCount + " / " + MAX_MUSIC_TRACKS;
 }
 async function addMusicFile(file) {
@@ -4535,7 +4284,7 @@ document.getElementById("gifPickerModal").addEventListener("click", function(e) 
 document.getElementById("gifSearchInput").addEventListener("input", function() {
   const q = this.value.trim();
   clearTimeout(gifSearchDebounce);
-  if (!q) { loadTrendingGifs(); return; }
+  if (!q) { loadGifCategory(currentGifCat); return; }
   gifSearchDebounce = setTimeout(function() { searchGifs(q); }, 300);
 });
 document.querySelectorAll(".gif-tab").forEach(function(t) { t.addEventListener("click", function() { setGifTab(t.dataset.gifTab); }); });
@@ -4767,7 +4516,7 @@ scrollTopBtn.addEventListener("click", function() { const candidates = ["feedVie
     if (el.closest(".music-bubble")) return false;
     if (el.closest(".chat-bubble")) return false;
     if (el.closest(".music-popup")) return false;
-    return !!(el.closest("button") || el.closest(".action") || el.closest(".nav-item") || el.closest(".tab") || el.closest(".stab") || el.closest(".post-media-btn") || el.closest(".btn") || el.closest(".setting-opt") || el.closest(".list-row") || el.closest(".conv-item") || el.closest(".notif-item") || el.closest(".page-btn") || el.closest(".back-btn") || el.closest(".chat-attach-btn") || el.closest(".gif-tab") || el.closest(".user-pick-row") || el.closest(".status-opt"));
+    return !!(el.closest("button") || el.closest(".action") || el.closest(".nav-item") || el.closest(".tab") || el.closest(".stab") || el.closest(".post-media-btn") || el.closest(".btn") || el.closest(".setting-opt") || el.closest(".list-row") || el.closest(".conv-item") || el.closest(".notif-item") || el.closest(".page-btn") || el.closest(".back-btn") || el.closest(".chat-attach-btn") || el.closest(".gif-tab") || el.closest(".gif-cat") || el.closest(".user-pick-row") || el.closest(".status-opt"));
   };
   document.addEventListener("pointerdown", function(e) { if (!settingsState.haptics) return; if (isInteractive(e.target)) haptic(8); }, { passive: true });
 })();
@@ -4784,8 +4533,7 @@ scrollTopBtn.addEventListener("click", function() { const candidates = ["feedVie
   function clampBubble() { const isMobile = window.innerWidth <= 768; const bottomReserve = isMobile ? 90 : 12; const maxX = window.innerWidth - BUBBLE_SIZE - MARGIN, maxY = window.innerHeight - BUBBLE_SIZE - bottomReserve; pos.x = Math.max(MARGIN, Math.min(maxX, pos.x)); pos.y = Math.max(MARGIN, Math.min(maxY, pos.y)); }
   function applyBubblePos() { clampBubble(); bubble.style.left = pos.x + "px"; bubble.style.top = pos.y + "px"; bubble.style.right = "auto"; bubble.style.bottom = "auto"; }
   function openPopupAtBubble() {
-    popup.classList.add("open");
-    popup.style.visibility = "hidden";
+    popup.classList.add("open"); popup.style.visibility = "hidden";
     const pw = popup.offsetWidth || 340, ph = popup.offsetHeight || 300;
     let px = pos.x - pw - MARGIN; if (px < MARGIN) px = pos.x + BUBBLE_SIZE + MARGIN;
     if (px + pw > window.innerWidth - MARGIN) px = window.innerWidth - pw - MARGIN;
@@ -4815,15 +4563,8 @@ document.getElementById("callMuteBtn").addEventListener("click", function() {
   attachLocalTile();
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ muted: currentCall.muted }).catch(function() {});
 });
-document.getElementById("callVideoBtn").addEventListener("click", async function() {
-  if (!currentCall) return;
-  await toggleCamera();
-});
-document.getElementById("callScreenBtn").addEventListener("click", async function() {
-  if (!currentCall) return;
-  if (currentCall.screenTrack) await stopScreenShare();
-  else await startScreenShare();
-});
+document.getElementById("callVideoBtn").addEventListener("click", async function() { if (!currentCall) return; await toggleCamera(); });
+document.getElementById("callScreenBtn").addEventListener("click", async function() { if (!currentCall) return; if (currentCall.screenTrack) await stopScreenShare(); else await startScreenShare(); });
 document.getElementById("incomingAccept").addEventListener("click", function() {
   if (!pendingIncomingCall) return;
   const found = pendingIncomingCall;
@@ -4911,6 +4652,203 @@ refreshSettingsUi();
 renderThemePresets();
 loadCustomSounds().then(function() { renderSoundList(); });
 updateSidebar();
+
+/* =====================================================================
+   GIF CATEGORY — wheel + drag scrolling
+   ===================================================================== */
+(function() {
+  const el = document.getElementById("gifCats");
+  if (!el) return;
+  el.addEventListener("wheel", function(e) {
+    if (e.deltaY !== 0) { el.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, { passive: false });
+  let isDown = false, startX = 0, startScroll = 0, moved = false;
+  el.addEventListener("mousedown", function(e) {
+    isDown = true; moved = false;
+    startX = e.pageX - el.offsetLeft;
+    startScroll = el.scrollLeft;
+    el.style.cursor = "grabbing";
+  });
+  el.addEventListener("mouseleave", function() { isDown = false; el.style.cursor = "grab"; });
+  el.addEventListener("mouseup", function() { isDown = false; el.style.cursor = "grab"; });
+  el.addEventListener("mousemove", function(e) {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = x - startX;
+    if (Math.abs(walk) > 4) moved = true;
+    el.scrollLeft = startScroll - walk;
+  });
+  el.addEventListener("click", function(e) {
+    if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+  }, true);
+})();
+
+/* =====================================================================
+   FUZZ CLICKER (easter egg: click logo 10× in 5s)
+   ===================================================================== */
+const FUZZ_KEY = "fuzzy-fuzz-state-v1";
+const FUZZ_UPGRADES = [
+  { key: "auto",    emoji: "1f916", name: "Auto-Clicker",  desc: "+1 Fuzz per second",     baseCost: 50,  cps: 1 },
+  { key: "click",   emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",         baseCost: 100, cpc: 1 },
+  { key: "factory", emoji: "1f3ed", name: "Fuzz Factory",  desc: "+5 Fuzz per second",      baseCost: 500, cps: 5 }
+];
+let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
+let fuzzTickHandle = null;
+let fuzzOfflineEarned = 0;
+
+function fuzzLoad() {
+  let loaded = null;
+  try {
+    const raw = localStorage.getItem(FUZZ_KEY);
+    if (raw) loaded = JSON.parse(raw);
+  } catch (e) {}
+  if (loaded && typeof loaded === "object") {
+    fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() }, loaded);
+  }
+  const now = Date.now();
+  const last = (typeof fuzzState.lastSaved === "number") ? fuzzState.lastSaved : now;
+  const elapsed = Math.max(0, (now - last) / 1000);
+  if (elapsed > 2) {
+    const cps = fuzzTotalCps();
+    if (cps > 0) {
+      const earned = Math.floor(cps * elapsed);
+      if (earned > 0) { fuzzState.fuzz += earned; fuzzOfflineEarned = earned; }
+    }
+  }
+  fuzzState.lastSaved = now;
+  fuzzSave();
+}
+function fuzzSave() {
+  fuzzState.lastSaved = Date.now();
+  try { localStorage.setItem(FUZZ_KEY, JSON.stringify(fuzzState)); } catch (e) {}
+}
+function fuzzUpgradeCost(upg) {
+  const lvl = fuzzState[upg.key] || 0;
+  return Math.floor(upg.baseCost * Math.pow(1.6, lvl));
+}
+function fuzzTotalCps() {
+  return (fuzzState.auto || 0) * 1 + (fuzzState.factory || 0) * 5;
+}
+function fuzzPerClick() {
+  return 1 + (fuzzState.click || 0);
+}
+function fuzzRender() {
+  const countEl = document.getElementById("fuzzCount");
+  const cpsEl = document.getElementById("fuzzCps");
+  const upgEl = document.getElementById("fuzzUpgrades");
+  if (!countEl || !upgEl) return;
+  countEl.textContent = Math.floor(fuzzState.fuzz);
+  if (cpsEl) cpsEl.textContent = fuzzTotalCps() + " Fuzz / sec · " + fuzzPerClick() + " per tap";
+  upgEl.innerHTML = "";
+  FUZZ_UPGRADES.forEach(function(upg) {
+    const lvl = fuzzState[upg.key] || 0;
+    const cost = fuzzUpgradeCost(upg);
+    const can = fuzzState.fuzz >= cost;
+    const b = document.createElement("button");
+    b.className = "fuzz-upg";
+    b.disabled = !can;
+    b.innerHTML =
+      '<img class="fuzz-upg-emoji" src="' + TWE + upg.emoji + '.png" alt="" />' +
+      '<div class="fuzz-upg-info">' +
+        '<div class="fuzz-upg-name">' + escapeHtml(upg.name) + (lvl > 0 ? ' <span class="lvl">x' + lvl + '</span>' : '') + '</div>' +
+        '<div class="fuzz-upg-desc">' + escapeHtml(upg.desc) + '</div>' +
+      '</div>' +
+      '<div class="fuzz-upg-cost">' + cost + ' Fuzz</div>';
+    b.addEventListener("click", function() { fuzzBuy(upg.key); });
+    upgEl.appendChild(b);
+  });
+}
+function fuzzBuy(key) {
+  const upg = FUZZ_UPGRADES.find(function(u) { return u.key === key; });
+  if (!upg) return;
+  const cost = fuzzUpgradeCost(upg);
+  if (fuzzState.fuzz < cost) return;
+  fuzzState.fuzz -= cost;
+  fuzzState[key] = (fuzzState[key] || 0) + 1;
+  fuzzSave();
+  fuzzRender();
+  haptic(12);
+  fuzzEnsureTick();
+}
+function fuzzClick(e) {
+  const gain = fuzzPerClick();
+  fuzzState.fuzz += gain;
+  fuzzSave();
+  fuzzRender();
+  haptic(6);
+  fuzzEnsureTick();
+  try {
+    const x = (e && (e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX))) || window.innerWidth / 2;
+    const y = (e && (e.clientY || (e.touches && e.touches[0] && e.touches[0].clientY))) || window.innerHeight / 2;
+    const el = document.createElement("div");
+    el.className = "fuzz-float";
+    el.textContent = "+" + gain;
+    el.style.left = (x - 12) + "px";
+    el.style.top = (y - 8) + "px";
+    document.body.appendChild(el);
+    setTimeout(function() { try { el.remove(); } catch (err) {} }, 800);
+  } catch (err) {}
+}
+function fuzzEnsureTick() {
+  const cps = fuzzTotalCps();
+  if (cps <= 0) {
+    if (fuzzTickHandle) { clearInterval(fuzzTickHandle); fuzzTickHandle = null; }
+    return;
+  }
+  if (fuzzTickHandle) return;
+  fuzzTickHandle = setInterval(function() {
+    const nowCps = fuzzTotalCps();
+    if (nowCps <= 0) { clearInterval(fuzzTickHandle); fuzzTickHandle = null; return; }
+    fuzzState.fuzz += nowCps;
+    fuzzSave();
+    const ov = document.getElementById("fuzzGameOverlay");
+    if (ov && ov.classList.contains("open")) fuzzRender();
+  }, 1000);
+}
+function fuzzOpen() {
+  const ov = document.getElementById("fuzzGameOverlay");
+  if (!ov) return;
+  ov.classList.add("open");
+  fuzzRender();
+  fuzzEnsureTick();
+  if (fuzzOfflineEarned > 0) {
+    toast("Welcome back! +" + fuzzOfflineEarned + " Fuzz earned while away.");
+    fuzzOfflineEarned = 0;
+  }
+  playToneSequence([{ freq: 660, dur: 0.08, vol: 0.14, type: "sine" }, { freq: 990, dur: 0.12, vol: 0.14, type: "sine" }], 0.09);
+  haptic(20);
+}
+function fuzzClose() {
+  const ov = document.getElementById("fuzzGameOverlay");
+  if (ov) ov.classList.remove("open");
+  fuzzEnsureTick();
+}
+fuzzLoad();
+fuzzEnsureTick();
+window.addEventListener("pagehide", function() { try { fuzzSave(); } catch (e) {} });
+window.addEventListener("beforeunload", function() { try { fuzzSave(); } catch (e) {} });
+(function() {
+  const btn = document.getElementById("fuzzClickBtn");
+  if (btn) btn.addEventListener("click", function(e) { fuzzClick(e); });
+  const closeBtn = document.getElementById("fuzzGameClose");
+  if (closeBtn) closeBtn.addEventListener("click", fuzzClose);
+  /* click-outside-to-close removed — only ✕ closes the game now */
+})();
+(function() {
+  const logo = document.querySelector(".logo");
+  if (!logo) return;
+  let clicks = [];
+  logo.addEventListener("click", function() {
+    const now = Date.now();
+    clicks.push(now);
+    clicks = clicks.filter(function(t) { return now - t < 5000; });
+    if (clicks.length >= 10) {
+      clicks = [];
+      fuzzOpen();
+    }
+  });
+})();
 </script>
 </body>
 </html>
