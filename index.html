@@ -1462,6 +1462,35 @@ function unlockAudioForCalls() {
   } catch (e) {}
 }
 
+let _audioUnlocked = false;
+async function unlockAllAudioContexts() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") await ctx.resume();
+    if (currentCall && currentCall.localAudioCtx && currentCall.localAudioCtx.state === "suspended") {
+      try { await currentCall.localAudioCtx.resume(); } catch(e){}
+    }
+    setTimeout(function() { try { ctx.close(); } catch(e){} }, 300);
+  } catch (e) {}
+  _audioUnlocked = true;
+}
+
+// Global one-time audio unlock on any user gesture
+["touchstart","touchend","click","pointerdown","keydown"].forEach(function(evt) {
+  document.addEventListener(evt, function once() {
+    unlockAllAudioContexts();
+    document.querySelectorAll("#callVideos .call-tile video").forEach(function(v) {
+      v.muted = false; v.volume = 1;
+      try { v.play().catch(function(){}); } catch(e){}
+    });
+    if (_audioUnlocked) {
+      ["touchstart","touchend","click","pointerdown","keydown"].forEach(function(e2) {
+        document.removeEventListener(e2, once);
+      });
+    }
+  }, { passive: true });
+});
+
 /* ==== CALL SYSTEM MESSAGES ==== */
 async function writeCallSystemMessage(convId, eventName, callType, durationSecs) {
   if (!convId || !auth || !auth.currentUser) return;
@@ -3039,7 +3068,14 @@ const ICE_SERVERS = {
 function callIdGen() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8); }
 function pairKey(a, b) { return [a, b].sort().join("_"); }
 function getLocalMedia(type) {
-  const constraints = type === "video" ? { audio: true, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } } : { audio: true, video: false };
+  const audioConstraints = {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true
+  };
+  const constraints = type === "video"
+    ? { audio: audioConstraints, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } }
+    : { audio: audioConstraints, video: false };
   return navigator.mediaDevices.getUserMedia(constraints);
 }
 async function startCall(type) {
@@ -3066,7 +3102,7 @@ async function startCall(type) {
     toast(msg, true);
     return;
   }
-  try { unlockAudioForCalls(); } catch (e) {}
+  try { unlockAudioForCalls(); await unlockAllAudioContexts(); } catch (e) {}
   showLoader("starting " + type + " call…");
   const callId = callIdGen();
   const videoOff = type === "voice";
@@ -3114,7 +3150,7 @@ async function joinCall(callId, type) {
     toast(msg, true);
     return;
   }
-  try { unlockAudioForCalls(); } catch (e) {}
+  try { unlockAudioForCalls(); await unlockAllAudioContexts(); } catch (e) {}
   showLoader("joining call…");
   const callSnap = await db.collection("calls").doc(callId).get();
   if (!callSnap.exists) { hideLoader(); toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
@@ -3202,13 +3238,15 @@ function attachRemoteTile(uid, stream) {
   let tile = document.getElementById("call-tile-" + uid);
   if (!tile) {
     tile = document.createElement("div"); tile.id = "call-tile-" + uid; tile.className = "call-tile"; container.appendChild(tile);
-    const v = document.createElement("video"); v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.dataset.callTile = "1"; tile.appendChild(v);
+    const v = document.createElement("video"); v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.setAttribute("x5-playsinline", ""); v.dataset.callTile = "1"; tile.appendChild(v);
     const av = document.createElement("div"); av.className = "call-avatar"; av.style.display = "none"; tile.appendChild(av);
     const lbl = document.createElement("div"); lbl.className = "call-tile-label"; tile.appendChild(lbl);
   }
   const v = tile.querySelector("video"); const av = tile.querySelector(".call-avatar"); const lbl = tile.querySelector(".call-tile-label");
   const peer = currentCall.peers.get(uid) || {}; const user = userCache.get(uid) || {};
-  if (stream && v.srcObject !== stream) { v.srcObject = stream; try { v.play().catch(function(){}); } catch (e) {} }
+  if (stream && v.srcObject !== stream) { v.srcObject = stream; }
+  v.muted = false; v.volume = 1; v.defaultMuted = false; v.removeAttribute("muted");
+  v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
   const hasVideo = stream && stream.getVideoTracks().length > 0;
   const showVideo = hasVideo && (peer.screenSharing || (currentCall.type === "video" && !peer.videoOff));
   tile.classList.toggle("screen-share", !!peer.screenSharing);
@@ -3231,17 +3269,30 @@ function attachRemoteTile(uid, stream) {
       tile.appendChild(fsBtn);
     }
   } else if (fsBtn) fsBtn.remove();
-  v.muted = false; v.volume = 1; v.defaultMuted = false; v.removeAttribute("muted");
+
+  // Aggressive play attempt with tap-to-unlock fallback
   const tryPlay = function() {
+    v.muted = false; v.volume = 1;
     const p = v.play();
     if (p && p.catch) {
       p.catch(function(err) {
         if (err && err.name === "AbortError") return;
         if (!tile.querySelector(".enable-audio-btn")) {
           const btn = document.createElement("button");
-          btn.className = "enable-audio-btn"; btn.textContent = "🔊 tap for audio";
-          btn.style.cssText = "position:absolute;top:8px;right:56px;background:rgba(0,0,0,0.8);color:#fff;border:1px solid #4fc3f7;border-radius:9999px;padding:6px 12px;font-size:12px;cursor:pointer;z-index:10;font-family:inherit;";
-          btn.addEventListener("click", function(e) { e.stopPropagation(); v.muted = false; v.volume = 1; v.play().then(function() { btn.remove(); }).catch(function(){}); });
+          btn.className = "enable-audio-btn";
+          btn.textContent = "🔊 TAP TO HEAR";
+          btn.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,0.75);color:#fff;border:none;cursor:pointer;z-index:20;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:1px;";
+          btn.addEventListener("click", async function(e) {
+            e.stopPropagation();
+            await unlockAudioForCalls();
+            await unlockAllAudioContexts();
+            v.muted = false; v.volume = 1;
+            try { await v.play(); btn.remove(); } catch (err2) {}
+            document.querySelectorAll("#callVideos .call-tile video").forEach(function(ov) {
+              ov.muted = false; ov.volume = 1;
+              try { ov.play().catch(function(){}); } catch(e) {}
+            });
+          });
           tile.appendChild(btn);
         }
       });
@@ -3377,6 +3428,7 @@ function setupLocalSpeakingDetection() {
   const audioTracks = currentCall.localStream.getAudioTracks(); if (!audioTracks.length) return;
   try {
     const ctx = new AudioContext();
+    if (ctx.state === "suspended") ctx.resume().catch(function(){});
     const src = ctx.createMediaStreamSource(currentCall.localStream);
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 512; src.connect(analyser);
@@ -4657,7 +4709,7 @@ if (auth) {
       loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts();
     }
     else {
-      fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
+      fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
       fuzzRender(); fuzzEnsureTick();
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); myPinned = []; mySavedIds = new Set(); mySavedGifs = [];
       myFollowing = new Set(); myFollowers = new Set();
@@ -4760,17 +4812,34 @@ updateSidebar();
    FUZZ CLICKER (easter egg: click logo 10× in 5s)
    ===================================================================== */
 const FUZZ_UPGRADES = [
-  { key: "auto",    emoji: "1f916", name: "Auto-Clicker",  desc: "+1 Fuzz per second",     baseCost: 50,  cps: 1 },
-  { key: "click",   emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",         baseCost: 100, cpc: 1 },
-  { key: "factory", emoji: "1f3ed", name: "Fuzz Factory",  desc: "+5 Fuzz per second",      baseCost: 500, cps: 5 }
+  { key: "auto",     emoji: "1f916", name: "Auto-Clicker",  desc: "+1 Fuzz per second",      baseCost: 50,           cps: 1 },
+  { key: "click",    emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",          baseCost: 100,          cpc: 1 },
+  { key: "factory",  emoji: "1f3ed", name: "Fuzz Factory",  desc: "+5 Fuzz per second",       baseCost: 500,          cps: 5 },
+  { key: "robot",    emoji: "1f9be", name: "Robot Army",    desc: "+25 Fuzz per second",      baseCost: 2500,         cps: 25 },
+  { key: "ai",       emoji: "1f9e0", name: "Fuzz A.I.",     desc: "+150 Fuzz per second",     baseCost: 15000,        cps: 150 },
+  { key: "portal",   emoji: "1f300", name: "Fuzz Portal",   desc: "+1,000 Fuzz per second",   baseCost: 100000,       cps: 1000 },
+  { key: "quantum",  emoji: "269b",  name: "Quantum Fuzz",  desc: "+10,000 Fuzz per second",  baseCost: 1000000,      cps: 10000 },
+  { key: "god",      emoji: "1f451", name: "God of Fuzz",   desc: "+100,000 Fuzz per second", baseCost: 50000000,     cps: 100000 }
 ];
-let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
+let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
 let fuzzTickHandle = null;
 let fuzzOfflineEarned = 0;
 
 function fuzzGetKey() {
   const uid = (auth && auth.currentUser) ? auth.currentUser.uid : "guest";
   return "fuzzy-fuzz-state-" + uid;
+}
+
+function formatFuzz(n) {
+  n = Math.floor(n);
+  if (n < 1000) return String(n);
+  const units = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
+  let i = 0;
+  let v = n;
+  while (v >= 1000 && i < units.length - 1) { v = v / 1000; i++; }
+  let str = v.toFixed(v < 10 ? 2 : (v < 100 ? 1 : 0));
+  str = str.replace(/\.?0+$/, "");
+  return str + units[i];
 }
 
 function fuzzLoad() {
@@ -4781,9 +4850,9 @@ function fuzzLoad() {
     if (raw) loaded = JSON.parse(raw);
   } catch (e) {}
   if (loaded && typeof loaded === "object") {
-    fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() }, loaded);
+    fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() }, loaded);
   } else {
-    fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
+    fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
   }
   const now = Date.now();
   const last = (typeof fuzzState.lastSaved === "number") ? fuzzState.lastSaved : now;
@@ -4809,7 +4878,11 @@ function fuzzUpgradeCost(upg) {
   return Math.floor(upg.baseCost * Math.pow(1.6, lvl));
 }
 function fuzzTotalCps() {
-  return (fuzzState.auto || 0) * 1 + (fuzzState.factory || 0) * 5;
+  let total = 0;
+  FUZZ_UPGRADES.forEach(function(u) {
+    if (u.cps) total += (fuzzState[u.key] || 0) * u.cps;
+  });
+  return total;
 }
 function fuzzPerClick() {
   return 1 + (fuzzState.click || 0);
@@ -4819,8 +4892,8 @@ function fuzzRender() {
   const cpsEl = document.getElementById("fuzzCps");
   const upgEl = document.getElementById("fuzzUpgrades");
   if (!countEl || !upgEl) return;
-  countEl.textContent = Math.floor(fuzzState.fuzz);
-  if (cpsEl) cpsEl.textContent = fuzzTotalCps() + " Fuzz / sec · " + fuzzPerClick() + " per tap";
+  countEl.textContent = formatFuzz(fuzzState.fuzz);
+  if (cpsEl) cpsEl.textContent = formatFuzz(fuzzTotalCps()) + " Fuzz / sec · " + fuzzPerClick() + " per tap";
   upgEl.innerHTML = "";
   FUZZ_UPGRADES.forEach(function(upg) {
     const lvl = fuzzState[upg.key] || 0;
@@ -4835,7 +4908,7 @@ function fuzzRender() {
         '<div class="fuzz-upg-name">' + escapeHtml(upg.name) + (lvl > 0 ? ' <span class="lvl">x' + lvl + '</span>' : '') + '</div>' +
         '<div class="fuzz-upg-desc">' + escapeHtml(upg.desc) + '</div>' +
       '</div>' +
-      '<div class="fuzz-upg-cost">' + cost + ' Fuzz</div>';
+      '<div class="fuzz-upg-cost">' + formatFuzz(cost) + ' Fuzz</div>';
     b.addEventListener("click", function() { fuzzBuy(upg.key); });
     upgEl.appendChild(b);
   });
@@ -4864,7 +4937,7 @@ function fuzzClick(e) {
     const y = (e && (e.clientY || (e.touches && e.touches[0] && e.touches[0].clientY))) || window.innerHeight / 2;
     const el = document.createElement("div");
     el.className = "fuzz-float";
-    el.textContent = "+" + gain;
+    el.textContent = "+" + formatFuzz(gain);
     el.style.left = (x - 12) + "px";
     el.style.top = (y - 8) + "px";
     document.body.appendChild(el);
@@ -4894,7 +4967,7 @@ function fuzzOpen() {
   fuzzRender();
   fuzzEnsureTick();
   if (fuzzOfflineEarned > 0) {
-    toast("Welcome back! +" + fuzzOfflineEarned + " Fuzz earned while away.");
+    toast("Welcome back! +" + formatFuzz(fuzzOfflineEarned) + " Fuzz earned while away.");
     fuzzOfflineEarned = 0;
   }
   playToneSequence([{ freq: 660, dur: 0.08, vol: 0.14, type: "sine" }, { freq: 990, dur: 0.12, vol: 0.14, type: "sine" }], 0.09);
