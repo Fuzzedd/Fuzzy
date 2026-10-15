@@ -3140,7 +3140,12 @@ function showCallOverlay() {
   const vbtn = document.getElementById("callVideoBtn"); vbtn.style.display = "";
   const hasVideo = currentCall.localStream && currentCall.localStream.getVideoTracks().length > 0;
   vbtn.classList.toggle("muted", !hasVideo || !!currentCall.videoOff);
-  const sbtn = document.getElementById("callScreenBtn"); if (sbtn) { sbtn.classList.remove("muted"); sbtn.title = "Share screen"; }
+  const sbtn = document.getElementById("callScreenBtn");
+  if (sbtn) {
+    sbtn.style.display = "";
+    sbtn.classList.remove("muted");
+    sbtn.title = "Share screen";
+  }
 }
 function startDurationTimer() {
   const el = document.getElementById("callDuration");
@@ -3539,14 +3544,30 @@ async function toggleCamera() {
 }
 async function startScreenShare() {
   if (!currentCall) return;
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) { toast("Screen share not supported on this device.", true); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    return startRearCameraFallback();
+  }
   if (currentCall.screenTrack) return;
-  let screenStream;
-  try { screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }, audio: true }); }
-  catch (e) { if (e && e.name !== "NotAllowedError") toast("Screen share failed.", true); return; }
+
+  let screenStream = null;
+  const tryCapture = async (opts) => {
+    try { return await navigator.mediaDevices.getDisplayMedia(opts); }
+    catch (e) { return { __err: e }; }
+  };
+
+  let res = await tryCapture({ video: { cursor: "always" }, audio: true });
+  if (res && res.__err) res = await tryCapture({ video: true, audio: false });
+  if (res && res.__err) res = await tryCapture({ video: { frameRate: 30 }, audio: false });
+
+  if (!res || res.__err) {
+    return startRearCameraFallback();
+  }
+
+  screenStream = res;
   const screenTrack = screenStream.getVideoTracks()[0];
   currentCall.screenTrack = screenTrack;
   currentCall.screenStream = screenStream;
+
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
@@ -3562,13 +3583,59 @@ async function startScreenShare() {
       }
     } catch (e) {}
   }
+
   const btn = document.getElementById("callScreenBtn");
-  if (btn) { btn.classList.add("muted"); btn.title = "Stop sharing"; }
+  if (btn) { btn.classList.add("muted"); btn.title = "Stop sharing"; btn.textContent = "🖥️"; }
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
   screenTrack.onended = function() { stopScreenShare(); };
   attachLocalTile();
   status("Screen sharing");
 }
+
+async function startRearCameraFallback() {
+  if (!currentCall) return;
+  let camStream = null;
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false
+    });
+  } catch (e) {
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    } catch (e2) {
+      toast("Screen share needs a browser that supports it (desktop only). Camera also unavailable.", true);
+      return;
+    }
+  }
+  const camTrack = camStream.getVideoTracks()[0];
+  currentCall.screenTrack = camTrack;
+  currentCall.screenStream = camStream;
+
+  for (const [uid, peer] of currentCall.peers) {
+    if (!peer.pc) continue;
+    try {
+      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
+      if (sender) await sender.replaceTrack(camTrack);
+      else {
+        peer.pc.addTrack(camTrack, camStream);
+        const offer = await peer.pc.createOffer();
+        await peer.pc.setLocalDescription(offer);
+        peer._lastOfferSdp = offer.sdp;
+        const key = pairKey(auth.currentUser.uid, uid);
+        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      }
+    } catch (e) {}
+  }
+
+  const btn = document.getElementById("callScreenBtn");
+  if (btn) { btn.classList.add("muted"); btn.title = "Stop camera share"; btn.textContent = "📸"; }
+  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
+  camTrack.onended = function() { stopScreenShare(); };
+  attachLocalTile();
+  status("Rear camera active — point it at what you want to show");
+}
+
 async function stopScreenShare() {
   if (!currentCall || !currentCall.screenTrack) return;
   const track = currentCall.screenTrack;
@@ -3595,7 +3662,7 @@ async function stopScreenShare() {
     } catch (e) {}
   }
   const btn = document.getElementById("callScreenBtn");
-  if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; }
+  if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; btn.textContent = "🖥️"; }
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: false }).catch(function() {});
   attachLocalTile();
 }
@@ -4585,8 +4652,13 @@ document.getElementById("incomingDecline").addEventListener("click", function() 
 })();
 if (auth) {
   auth.onAuthStateChanged(function(user) {
-    if (user) { loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts(); }
+    if (user) {
+      fuzzLoad(); fuzzEnsureTick();
+      loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts();
+    }
     else {
+      fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
+      fuzzRender(); fuzzEnsureTick();
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); myPinned = []; mySavedIds = new Set(); mySavedGifs = [];
       myFollowing = new Set(); myFollowers = new Set();
       killCommentListeners(); killProfPostsListener();
@@ -4687,7 +4759,6 @@ updateSidebar();
 /* =====================================================================
    FUZZ CLICKER (easter egg: click logo 10× in 5s)
    ===================================================================== */
-const FUZZ_KEY = "fuzzy-fuzz-state-v1";
 const FUZZ_UPGRADES = [
   { key: "auto",    emoji: "1f916", name: "Auto-Clicker",  desc: "+1 Fuzz per second",     baseCost: 50,  cps: 1 },
   { key: "click",   emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",         baseCost: 100, cpc: 1 },
@@ -4697,14 +4768,22 @@ let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() 
 let fuzzTickHandle = null;
 let fuzzOfflineEarned = 0;
 
+function fuzzGetKey() {
+  const uid = (auth && auth.currentUser) ? auth.currentUser.uid : "guest";
+  return "fuzzy-fuzz-state-" + uid;
+}
+
 function fuzzLoad() {
+  const key = fuzzGetKey();
   let loaded = null;
   try {
-    const raw = localStorage.getItem(FUZZ_KEY);
+    const raw = localStorage.getItem(key);
     if (raw) loaded = JSON.parse(raw);
   } catch (e) {}
   if (loaded && typeof loaded === "object") {
     fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() }, loaded);
+  } else {
+    fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, lastSaved: Date.now() };
   }
   const now = Date.now();
   const last = (typeof fuzzState.lastSaved === "number") ? fuzzState.lastSaved : now;
@@ -4719,9 +4798,11 @@ function fuzzLoad() {
   fuzzState.lastSaved = now;
   fuzzSave();
 }
+
 function fuzzSave() {
+  const key = fuzzGetKey();
   fuzzState.lastSaved = Date.now();
-  try { localStorage.setItem(FUZZ_KEY, JSON.stringify(fuzzState)); } catch (e) {}
+  try { localStorage.setItem(key, JSON.stringify(fuzzState)); } catch (e) {}
 }
 function fuzzUpgradeCost(upg) {
   const lvl = fuzzState[upg.key] || 0;
