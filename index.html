@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Fuzzy</title>
 <link rel="icon" type="image/png" href="icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@ body.hide-scrollbars * { scrollbar-width: none; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #000; border-radius: 9999px; }
-body { font-family: var(--font); background: var(--bg); color: #e7e7e7; display: flex; height: 100vh; overflow: hidden; font-size: var(--font-size); }
+body { font-family: var(--font); background: var(--bg); color: #e7e7e7; display: flex; height: 100vh; height: 100dvh; overflow: hidden; font-size: var(--font-size); }
 body.compact .post { padding: 8px 14px; }
 body.compact .post-body { font-size: calc(16px * var(--fs)); line-height: 1.35; }
 body.compact .chat-messages { gap: 6px; padding: 12px 12px 6px; }
@@ -28,20 +28,18 @@ button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edi
 button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active, .gif-cat:active { transform: scale(0.95); }
 
 /* ==== NEW UNIVERSAL BUTTON ANIMATIONS ==== */
-button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn, .gif-cat, .gif-tab, .setting-opt, .admin-action-btn, .fuzz-upg, .skill-card, .btn-rebirth, .music-play-btn, .music-add-btn, .theme-preset, .sound-item button, .new-btn, .voice-play, .reaction-chip, .incoming-call-btn, .call-btn, .call-minimize-btn, .enable-audio-btn, .chat-react-btn, .gif-save-btn, .gif-star, .reaction-picker button, .fuzz-game-click, .fuzz-game-close, .lb-close, .music-popup-close, .media-remove, .pfp-refresh, .poll-add-opt, .chat-search-btn, .chat-close, .chat-gif-btn, .chat-mic-btn, .chat-poll-btn, .send-comment, .comment-gif-btn, .fuzz-tab, .user-pick-row, .theme-preset, .music-popup-close, .no-internet-badge, .admin-action-btn, .incoming-call-btn, .call-btn, .reaction-chip, .voice-play, .chat-react-btn {
+button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn, .gif-cat, .gif-tab, .setting-opt, .admin-action-btn, .fuzz-upg, .skill-card, .btn-rebirth, .music-play-btn, .music-add-btn, .theme-preset, .sound-item button, .new-btn, .voice-play, .reaction-chip, .incoming-call-btn, .call-btn, .call-minimize-btn, .enable-audio-btn, .chat-react-btn, .gif-save-btn, .gif-star, .reaction-picker button, .fuzz-game-click, .fuzz-game-close, .lb-close, .music-popup-close, .media-remove, .pfp-refresh, .poll-add-opt, .chat-search-btn, .chat-close, .chat-gif-btn, .chat-mic-btn, .chat-poll-btn, .send-comment, .comment-gif-btn, .fuzz-tab, .user-pick-row, .theme-preset, .music-popup-close, .no-internet-badge, .admin-action-btn, .incoming-call-btn, .call-btn, .reaction-chip, .voice-play, .chat-react-btn, .music-ctrl-btn, .post-menu-btn {
   transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease !important;
   will-change: transform;
 }
-button:active, .btn:active, .nav-item:active, .tab:active, .stab:active, .action:active, .c-like:active, .c-reply:active, .c-del:active, .c-edit:active, .follow-btn:active, .post-btn:active, .back-btn:active, .list-row:active, .notif-item:active, .stat-link:active, .pfp-opt:active, .emoji-opt:active, .user:active, .status-opt:active, .cancel:active, .p-name:active, .l-name:active, .c-name:active, .conv-item:active, .chat-send:active, .page-btn:active, .chat-attach-btn:active, .gif-cat:active, .gif-tab:active, .setting-opt:active, .admin-action-btn:active, .fuzz-upg:active:not(:disabled), .skill-card:active:not(:disabled), .btn-rebirth:active:not(:disabled), .music-play-btn:active, .music-add-btn:active, .theme-preset:active, .sound-item button:active, .new-btn:active, .voice-play:active, .reaction-chip:active, .incoming-call-btn:active, .call-btn:active, .call-minimize-btn:active, .enable-audio-btn:active, .chat-react-btn:active, .gif-save-btn:active, .gif-star:active, .reaction-picker button:active, .fuzz-game-click:active, .fuzz-game-close:active, .lb-close:active, .music-popup-close:active, .media-remove:active, .pfp-refresh:active, .poll-add-opt:active, .chat-search-btn:active, .chat-close:active, .chat-gif-btn:active, .chat-mic-btn:active, .chat-poll-btn:active, .send-comment:active, .comment-gif-btn:active, .no-internet-badge:active, .fuzz-tab:active, .conv-panel-header .new-btn:active, .user-pick-row:active, .incoming-call-btn:active, .call-btn:active, .reaction-chip:active, .voice-play:active, .chat-react-btn:active {
+button:active, .btn:active, .nav-item:active, .tab:active, .stab:active, .action:active, .c-like:active, .c-reply:active, .c-del:active, .c-edit:active, .follow-btn:active, .post-btn:active, .back-btn:active, .list-row:active, .notif-item:active, .stat-link:active, .pfp-opt:active, .emoji-opt:active, .user:active, .status-opt:active, .cancel:active, .p-name:active, .l-name:active, .c-name:active, .conv-item:active, .chat-send:active, .page-btn:active, .chat-attach-btn:active, .gif-cat:active, .gif-tab:active, .setting-opt:active, .admin-action-btn:active, .fuzz-upg:active:not(:disabled), .skill-card:active:not(:disabled), .btn-rebirth:active:not(:disabled), .music-play-btn:active, .music-add-btn:active, .theme-preset:active, .sound-item button:active, .new-btn:active, .voice-play:active, .reaction-chip:active, .incoming-call-btn:active, .call-btn:active, .call-minimize-btn:active, .enable-audio-btn:active, .chat-react-btn:active, .gif-save-btn:active, .gif-star:active, .reaction-picker button:active, .fuzz-game-click:active, .fuzz-game-close:active, .lb-close:active, .music-popup-close:active, .media-remove:active, .pfp-refresh:active, .poll-add-opt:active, .chat-search-btn:active, .chat-close:active, .chat-gif-btn:active, .chat-mic-btn:active, .chat-poll-btn:active, .send-comment:active, .comment-gif-btn:active, .no-internet-badge:active, .fuzz-tab:active, .conv-panel-header .new-btn:active, .user-pick-row:active, .incoming-call-btn:active, .call-btn:active, .reaction-chip:active, .voice-play:active, .chat-react-btn:active, .music-ctrl-btn:active, .post-menu-btn:active {
   transform: scale(0.9) !important;
 }
-button:hover:not(:disabled), .btn:hover:not(:disabled), .fuzz-upg:hover:not(:disabled), .skill-card:hover:not(:disabled), .btn-rebirth:hover:not(:disabled), .admin-action-btn:hover, .setting-opt:hover, .theme-preset:hover, .music-play-btn:hover, .music-add-btn:hover, .sound-item button:hover, .call-btn:hover, .incoming-call-btn:hover, .reaction-chip:hover, .voice-play:hover, .gif-star:hover, .chat-react-btn:hover, .gif-save-btn:hover, .chat-send:hover, .poll-add-opt:hover, .new-btn:hover, .pfp-refresh:hover, .media-remove:hover, .lb-close:hover, .music-popup-close:hover, .fuzz-game-close:hover, .fuzz-game-click:hover, .no-internet-badge:hover, .fuzz-tab:hover:not(.active), .nav-item:hover, .action:hover, .follow-btn:hover, .post-btn:hover, .back-btn:hover, .list-row:hover, .notif-item:hover, .stat-link:hover, .pfp-opt:hover, .emoji-opt:hover, .user:hover, .status-opt:hover, .conv-item:hover, .page-btn:hover, .chat-attach-btn:hover, .gif-cat:hover, .gif-tab:hover, .chat-search-btn:hover, .chat-close:hover, .chat-gif-btn:hover, .chat-mic-btn:hover, .chat-poll-btn:hover, .send-comment:hover, .comment-gif-btn:hover, .fuzz-tab:hover:not(.active), .user-pick-row:hover {
+button:hover:not(:disabled), .btn:hover:not(:disabled), .fuzz-upg:hover:not(:disabled), .skill-card:hover:not(:disabled), .btn-rebirth:hover:not(:disabled), .admin-action-btn:hover, .setting-opt:hover, .theme-preset:hover, .music-play-btn:hover, .music-add-btn:hover, .sound-item button:hover, .call-btn:hover, .incoming-call-btn:hover, .reaction-chip:hover, .voice-play:hover, .gif-star:hover, .chat-react-btn:hover, .gif-save-btn:hover, .chat-send:hover, .poll-add-opt:hover, .new-btn:hover, .pfp-refresh:hover, .media-remove:hover, .lb-close:hover, .music-popup-close:hover, .fuzz-game-close:hover, .fuzz-game-click:hover, .no-internet-badge:hover, .fuzz-tab:hover:not(.active), .nav-item:hover, .action:hover, .follow-btn:hover, .post-btn:hover, .back-btn:hover, .list-row:hover, .notif-item:hover, .stat-link:hover, .pfp-opt:hover, .emoji-opt:hover, .user:hover, .status-opt:hover, .conv-item:hover, .page-btn:hover, .chat-attach-btn:hover, .gif-cat:hover, .gif-tab:hover, .chat-search-btn:hover, .chat-close:hover, .chat-gif-btn:hover, .chat-mic-btn:hover, .chat-poll-btn:hover, .send-comment:hover, .comment-gif-btn:hover, .fuzz-tab:hover:not(.active), .user-pick-row:hover, .music-ctrl-btn:hover, .post-menu-btn:hover {
   filter: brightness(1.2);
   box-shadow: 0 0 12px rgba(255,255,255,0.08);
 }
-/* preserve existing special hover behaviours */
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); filter: brightness(1.1); }
-/* ==== END NEW ANIMATIONS ==== */
 
 .ui-emoji { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.2em; flex-shrink: 0; pointer-events: none; user-select: none; }
 button .ui-emoji, .btn .ui-emoji, .setting-opt .ui-emoji { margin-right: 4px; }
@@ -355,6 +353,9 @@ body.avatar-square .avatar { border-radius: 4px; }
 .music-name { color: #d8c9ff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .music-add-btn { width: 100%; background: none; border: 1px dashed #3a2f4a; color: #9a8fb5; padding: 10px; border-radius: var(--radius); cursor: pointer; font-size: 13px; margin-top: 6px; font-family: inherit; }
 .music-hint { font-size: 11px; color: #6b6b6b; text-align: center; margin-top: 8px; }
+.music-ctrl-btn { background: #2a2a2a; border: 1px solid #3a3a3a; color: #e7e7e7; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer; }
+.music-ctrl-btn:hover { background: #3a3a3a; }
+.music-ctrl-btn.active { background: #7a4dd6; border-color: #7a4dd6; color: #fff; }
 .settings-section-label { font-size: 12px; font-weight: 700; color: #717171; text-transform: uppercase; letter-spacing: 0.8px; padding: 20px 16px 8px; }
 .settings-list { padding: 0 16px 24px; display: flex; flex-direction: column; gap: 8px; }
 .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--surface); border: 1px solid #2f2f2f; border-radius: var(--radius); gap: 12px; min-height: 60px; flex-wrap: wrap; }
@@ -430,7 +431,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 .gif-star .ui-emoji, .gif-star .tw-emoji { display: block; width: 16px; height: 16px; margin: 0; }
 .gif-attribution { text-align: center; font-size: 11px; color: #717171; margin-top: 8px; }
 .gif-empty-star { grid-column: 1 / -1; padding: 30px 20px; text-align: center; color: #717171; font-size: 14px; line-height: 1.5; }
-#gifPickerModal, #groupMembersModal, #groupAvatarModal, #linkWarnModal, #quickActionMenu, #editPostModal, #chatPollModal { z-index: 400; }
+#gifPickerModal, #groupMembersModal, #groupAvatarModal, #linkWarnModal, #quickActionMenu, #editPostModal, #chatPollModal, #likesModal { z-index: 400; }
 .comment-media { margin-top: 8px; }
 .comment-media img { max-width: 240px; max-height: 240px; border-radius: var(--radius); cursor: zoom-in; }
 .comment-gif-btn { background: none; border: none; color: #9a9a9a; cursor: pointer; padding: 0; height: 40px; width: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -531,14 +532,15 @@ body.avatar-square .avatar { border-radius: 4px; }
 /* ==== FUZZ CLICKER ==== */
 .fuzz-game-overlay { position: fixed; inset: 0; z-index: 9000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); padding: 16px; }
 .fuzz-game-overlay.open { display: flex; }
-.fuzz-game-card { background: var(--surface); border: 1px solid #3a3a3a; border-radius: 16px; padding: 18px 16px 16px; width: 340px; max-width: 100%; max-height: 92vh; overflow-y: auto; position: relative; text-align: center; display: flex; flex-direction: column; }
+.fuzz-game-card { background: var(--surface); border: 1px solid #3a3a3a; border-radius: 16px; padding: 18px 16px 16px; width: 340px; max-width: 100%; max-height: 90dvh; overflow-y: auto; position: relative; text-align: center; display: flex; flex-direction: column; }
 .fuzz-game-close { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: #2a2a2a; border: 1px solid #3a3a3a; color: #e7e7e7; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; padding: 0; z-index: 2; }
 .fuzz-game-close:hover { background: #7a1414; }
 .fuzz-game-title { font-size: 15px; font-weight: 700; color: #d8c9ff; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .fuzz-game-fuzz { font-size: 15px; color: #f9c74f; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
-.fuzz-game-click { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform 0.06s ease; user-select: none; display: inline-block; margin-bottom: 4px; }
+.fuzz-game-click { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform 0.06s ease; user-select: none; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px auto; outline: none !important; }
+.fuzz-game-click:focus { outline: none !important; box-shadow: none !important; }
 .fuzz-game-click:active { transform: scale(0.92); }
-.fuzz-game-click img { width: 96px; height: 96px; object-fit: contain; display: block; filter: drop-shadow(0 0 12px rgba(79,195,247,0.55)); pointer-events: none; }
+.fuzz-game-click img { width: 96px; height: 96px; object-fit: contain; display: block; filter: drop-shadow(0 0 12px rgba(79,195,247,0.55)); pointer-events: none; margin: 0 auto; }
 .fuzz-game-cps { font-size: 11px; color: #717171; margin: 4px 0 12px; }
 .fuzz-tabs { display: flex; gap: 4px; margin-bottom: 12px; background: #0d0d0d; border-radius: 9999px; padding: 4px; }
 .fuzz-tab { flex: 1; background: none; border: none; color: #717171; padding: 6px 0; border-radius: 9999px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
@@ -558,6 +560,15 @@ body.avatar-square .avatar { border-radius: 4px; }
 .fuzz-float { position: fixed; pointer-events: none; font-size: 18px; font-weight: 700; color: #f9c74f; text-shadow: 0 2px 8px rgba(0,0,0,0.9); animation: fuzzFloatUp 0.75s ease-out forwards; z-index: 9100; }
 @keyframes fuzzFloatUp { 0% { opacity: 0; transform: translateY(0) scale(0.7); } 20% { opacity: 1; transform: translateY(-8px) scale(1.1); } 100% { opacity: 0; transform: translateY(-60px) scale(1); } }
 .bot-name { color: #22c55e !important; }
+
+/* Fuzz VFX Particles */
+.fuzz-particle { position: fixed; width: 24px; height: 24px; pointer-events: none; z-index: 9100; animation: particlePop 0.8s ease-out forwards; }
+@keyframes particlePop { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); } }
+
+/* Golden Cookie */
+.golden-cookie { position: fixed; z-index: 9100; width: 64px; height: 64px; cursor: pointer; animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), wiggle 1s infinite; filter: drop-shadow(0 0 15px gold); display: flex; align-items: center; justify-content: center; font-size: 48px; user-select: none; }
+@keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
 
 /* Rebirth & Skills */
 .rebirth-box { display: flex; flex-direction: column; gap: 12px; padding: 10px; background: #0d0d0d; border: 1px solid #7a1414; border-radius: 10px; }
@@ -625,6 +636,13 @@ body.avatar-square .avatar { border-radius: 4px; }
   .chat-react-btn { opacity: 1; width: 28px; height: 28px; font-size: 16px; }
   .chat-msg-row.mine .chat-react-btn { left: -32px; }
   .chat-msg-row.theirs .chat-react-btn { right: -32px; }
+}
+
+/* ==== MASCOT MOBILE FIX ==== */
+@media (max-width: 768px) {
+  #fuzzy-mascot-widget { top: 65px !important; left: 12px !important; bottom: auto !important; gap: 8px !important; z-index: 40; }
+  #fuzzy-mascot-widget .glowwrap, #fuzzy-mascot-widget img { width: 50px; height: 50px; }
+  #fuzzy-mascot-widget #fuzzy-bubble { font-size: 13px; padding: 8px 12px; max-width: 180px; margin-bottom: 0; margin-top: 8px; }
 }
 </style>
 </head>
@@ -856,13 +874,36 @@ body.avatar-square .avatar { border-radius: 4px; }
 <div class="modal-overlay" id="linkWarnModal"><div class="modal confirm-modal"><h3><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/26a0.png" alt="" /> Opening link</h3><p class="confirm-msg" id="linkWarnUrl"></p><p class="confirm-msg" style="margin-top:12px;color:#717171">Only continue if you trust the source.</p><div class="modal-btns" style="justify-content:center"><button class="btn btn-ghost" id="linkWarnCancel">Cancel</button><button class="btn btn-primary" id="linkWarnOpen">Open</button></div></div></div>
 
 <button class="music-bubble" id="musicBubble"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" /></button>
-<div class="music-popup" id="musicPopup"><button class="music-popup-close" id="musicPopupClose">✕</button><div class="music-popup-body"><div class="music-title"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" style="width:20px;height:20px" /> music</div><div id="musicTracksList"></div><button class="music-add-btn" id="addMusicBtn">+ add your own</button><input type="file" id="musicFileInput" accept="audio/*" style="display:none" /><div class="music-hint" id="musicHint"></div></div></div>
+<div class="music-popup" id="musicPopup">
+  <button class="music-popup-close" id="musicPopupClose">✕</button>
+  <div class="music-popup-body">
+    <div class="music-title"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" style="width:20px;height:20px" /> music</div>
+    
+    <!-- NEW CONTROLS -->
+    <div class="music-player-controls" style="display:flex; gap:6px; margin-bottom:12px; align-items:center; flex-wrap:wrap;">
+      <button class="music-ctrl-btn" id="musicPlayAllBtn" title="Play Playlist">▶ All</button>
+      <button class="music-ctrl-btn" id="musicStopAllBtn" title="Stop/Resume">⏹</button>
+      <button class="music-ctrl-btn active" id="musicLoopBtn" title="Toggle Loop">🔁 On</button>
+      <div style="flex:1; display:flex; align-items:center; gap:4px;">
+        <span style="font-size:12px; color:#9a8fb5;">🔊</span>
+        <input type="range" id="musicVolume" min="0" max="1" step="0.05" value="1" style="flex:1; accent-color: #d8c9ff; width: 60px;">
+      </div>
+    </div>
+
+    <div id="musicTracksList"></div>
+    <button class="music-add-btn" id="addMusicBtn">+ add your own</button>
+    <input type="file" id="musicFileInput" accept="audio/*" style="display:none" />
+    <div class="music-hint" id="musicHint"></div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="postModal"><div class="modal"><h3>Create a post</h3><textarea id="postText" placeholder="What's happening?"></textarea><div class="post-media-row"><button class="post-media-btn" id="uploadMediaBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload</button><button class="post-media-btn" id="gifPickerBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> GIF</button><button class="post-media-btn" id="pollToggleBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4ca.png" alt="" /> Poll</button><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none" /></div><div class="poll-composer" id="pollComposer"><h4 style="font-size:13px;color:#717171;margin-bottom:8px">Poll options</h4><div id="pollOptionsList"></div><button class="poll-add-opt" id="pollAddOpt" type="button">+ add option</button></div><div class="media-preview" id="mediaPreview"></div><div class="modal-btns"><button class="btn btn-ghost" id="cancelPost">Cancel</button><button class="btn btn-primary" id="submitPost">Post</button></div></div></div>
 
 <div class="modal-overlay" id="chatPollModal"><div class="modal"><h3>Create a Poll</h3><input class="auth-input" id="chatPollQuestion" placeholder="Ask a question..." /><div id="chatPollOptionsList"><div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 1" class="chat-poll-opt" /></div><div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 2" class="chat-poll-opt" /></div></div><button class="poll-add-opt" id="chatPollAddOpt" type="button">+ add option</button><div class="modal-btns"><button class="btn btn-ghost" id="chatPollCancel">Cancel</button><button class="btn btn-primary" id="chatPollSend">Send</button></div></div></div>
 
 <div class="modal-overlay" id="editPostModal"><div class="modal"><h3>Edit post</h3><div style="font-size:12px;color:#717171;margin-bottom:10px">You can only edit a post once.</div><textarea id="editPostText" placeholder="What's happening?"></textarea><div class="post-media-row"><button class="post-media-btn" id="editUploadMediaBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> change media</button><button class="post-media-btn" id="editGifPickerBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> change GIF</button><input type="file" id="editMediaInput" accept="image/*,video/*" style="display:none" /></div><div class="media-preview" id="editMediaPreview"></div><div class="modal-btns"><button class="btn btn-ghost" id="cancelEditPost">Cancel</button><button class="btn btn-primary" id="saveEditPost">Save</button></div></div></div>
+
+<div class="modal-overlay" id="likesModal"><div class="modal"><h3>Liked by</h3><div id="likesList" style="max-height:400px;overflow-y:auto;margin:0 -20px;padding:0;"></div><div class="modal-btns"><button class="btn btn-ghost" id="likesClose">Close</button></div></div></div>
 
 <div class="modal-overlay" id="authModal"><div class="modal"><h3 id="authTitle">Log in</h3><input class="auth-input" id="authUsername" placeholder="username" /><input class="auth-input" id="authPassword" type="password" placeholder="password" /><p class="auth-error" id="authError"></p><div class="modal-btns"><button class="btn btn-ghost" id="authSwitch">No account? Sign up</button><button class="btn btn-primary" id="authSubmit">Log in</button></div></div></div>
 <div class="modal-overlay" id="fuzzedModal"><div class="modal confirm-modal"><h3>You have been FUZZED!</h3><button class="btn btn-primary" id="fuzzedLogout">log out</button></div></div>
@@ -925,7 +966,7 @@ body.avatar-square .avatar { border-radius: 4px; }
       <span><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4b0.png" alt="" style="width:18px;height:18px" /> <span id="fuzzCount">0</span> Fuzz</span>
       <span style="font-size:12px; color:#ff6b6b;" id="fuzzMultLabel">x1 Multiplier</span>
     </div>
-    <button class="fuzz-game-click" id="fuzzClickBtn"><img src="icon.png" alt="" /></button>
+    <button class="fuzz-game-click" id="fuzzClickBtn"><img src="Fuzzy.png" alt="" /></button>
     <div class="fuzz-game-cps" id="fuzzCps">0 Fuzz / sec</div>
     
     <div class="fuzz-tabs">
@@ -991,7 +1032,7 @@ const MAX_GROUP_MEMBERS = 10;
 const IMG_COMPRESS_MIN = 1 * 1024 * 1024;
 const IMG_COMPRESS_TRIGGER = 2 * 1024 * 1024;
 const IMG_COMPRESS_TARGET_MAX = 4 * 1024 * 1024;
-const AVATAR_MAX = 999;
+const AVATAR_MAX = 50;
 const AVATAR_CACHE_KEY = "fuzzy-avatar-list-v2";
 const SOUNDS_IDB_KEY = "customSounds";
 const MUSIC_IDB_KEY = "customTracksV2";
@@ -1027,7 +1068,7 @@ const GIF_CATEGORIES = [
   { key: "cool", label: "😎 Cool", query: "cool sunglasses" },
   { key: "mindblown", label: "🤯 Mind blown", query: "mind blown" },
   { key: "sus", label: "👀 Sus", query: "suspicious side eye" },
-  { key: "variety", label: "🎲 Variety", query: "variety" },
+  { key: "verity", label: "😃 Verity", query: "verity meme" },
   { key: "memes", label: "😂 Memes", query: "memes" },
   { key: "random", label: "🎰 Random", query: "random" }
 ];
@@ -1045,11 +1086,11 @@ const THEME_PRESETS = {
   midnight: { bgColor: "#161616", surfaceColor: "#1d1d1d", accentColor: "#e7e7e7", accentColor2: "#4fc3f7", accentGradient: false },
   ocean:    { bgColor: "#0a1929", surfaceColor: "#132c46", accentColor: "#4fc3f7", accentColor2: "#25603a", accentGradient: false },
   forest:   { bgColor: "#0f1e0f", surfaceColor: "#172817", accentColor: "#7ddf7d", accentColor2: "#f9c74f", accentGradient: false },
-  rose:     { bgColor: "#1a0a14", surfaceColor: "#2a1423", accentColor: "#ff8fab", accentColor2: "#c77dff", accentGradient: true, accentGradientAngle: 135 },
-  sunset:   { bgColor: "#1a0f0a", surfaceColor: "#2a1a10", accentColor: "#ff9a3c", accentColor2: "#ff4d6d", accentGradient: true, accentGradientAngle: 135 },
   mono:     { bgColor: "#000000", surfaceColor: "#0d0d0d", accentColor: "#ffffff", accentColor2: "#888888", accentGradient: false },
-  spooky:   { bgColor: "#1a1226", surfaceColor: "#241a33", accentColor: "#d8c9ff", accentColor2: "#7a4dd6", accentGradient: true, accentGradientAngle: 135 },
-  cyber:    { bgColor: "#0d0221", surfaceColor: "#160533", accentColor: "#ff00ff", accentColor2: "#00ffff", accentGradient: true, accentGradientAngle: 90 }
+  highlighter: { bgColor: "#121212", surfaceColor: "#1c1c1c", accentColor: "#fde047", accentColor2: "#fde047", accentGradient: false },
+  crimson:     { bgColor: "#121212", surfaceColor: "#1c1c1c", accentColor: "#ef4444", accentColor2: "#ef4444", accentGradient: false },
+  violet:      { bgColor: "#121212", surfaceColor: "#1c1c1c", accentColor: "#8b5cf6", accentColor2: "#8b5cf6", accentGradient: false },
+  emerald:     { bgColor: "#121212", surfaceColor: "#1c1c1c", accentColor: "#10b981", accentColor2: "#10b981", accentGradient: false }
 };
 const FONTS = {
   system:     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -1083,6 +1124,8 @@ let customSounds = [];
 let musicTracks = [];
 let activeTrackId = null;
 let musicPausedByVideo = null;
+let musicGlobalVolume = 1;
+let musicLoopEnabled = true;
 let conversationsUnsub = null;
 let currentConvId = null;
 let currentConvOtherUid = null;
@@ -1149,6 +1192,7 @@ const allPostsCache = new Map();
 const conversationsCache = new Map();
 const verifiedUsernames = new Set(VERIFIED_STATIC.map(function(x) { return x.toLowerCase(); }));
 const devUsernames = new Set(DEV_STATIC.map(function(x) { return x.toLowerCase(); }));
+let hiddenPosts = new Set(JSON.parse(localStorage.getItem("fuzzy-hidden-posts") || "[]"));
 
 let currentCall = null;
 let pendingIncomingCall = null;
@@ -1156,12 +1200,15 @@ let callUnsubs = [];
 let callRingtoneAudio = null;
 let callRingtoneTimer = null;
 
+let goldenCookieTimeout = null;
+let cpsBuffMultiplier = 1;
+let cpsBuffTimeout = null;
+
 /* =====================================================================
    FUNCTIONS
    ===================================================================== */
 function twe(code, size) { const s = size ? ' style="width:' + size + 'px;height:' + size + 'px"' : ""; return '<img class="ui-emoji" src="' + TWE + code + '.png" alt=""' + s + '/>'; }
 
-/* ==== FIX #2: toast only shows when showNotes is true ==== */
 function toast(msg, isError) {
   if (!settingsState.showNotes) return;
   const t = document.createElement("div");
@@ -1643,7 +1690,7 @@ async function hasRecentCallEndMessage(convId) {
 }
 
 /* ==== GIF PICKER ==== */
-async function fetchGiphy(path, params) { const q = new URLSearchParams(Object.assign({ api_key: GIPHY_API_KEY, limit: 24, rating: "g" }, params || {})); const res = await fetch(GIPHY_ENDPOINT + "/" + path + "?" + q.toString()); if (!res.ok) throw new Error("giphy " + res.status); return res.json(); }
+async function fetchGiphy(path, params) { const q = new URLSearchParams(Object.assign({ api_key: GIPHY_API_KEY, limit: 50, rating: "g" }, params || {})); const res = await fetch(GIPHY_ENDPOINT + "/" + path + "?" + q.toString()); if (!res.ok) throw new Error("giphy " + res.status); return res.json(); }
 function openGifPicker(onSelect) {
   currentGifSelectCallback = onSelect;
   const modal = document.getElementById("gifPickerModal");
@@ -2022,24 +2069,38 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   }
   const isMuted = mutedWordsMatch(data.text);
   const mutedOverlay = isMuted ? '<div class="muted-post-overlay">' + twe("1f507", 16) + ' muted content — tap to reveal</div>' : "";
+  const viewCount = data.views || Math.floor(Math.random() * 50) + 10; // Mock view count if missing
+  
   article.innerHTML =
     (isPinned ? '<div class="pinned-badge">' + twe("1f4cc", 12) + " Pinned</div>" : "") +
-    '<div class="post-head"><div class="avatar" data-uid="' + (postUid || "") + '"><img src="' + emoji + '" alt="" /></div><span class="p-name" data-uid="' + (postUid || "") + '"></span>' + verifiedBadge(name) + ' <span class="time">| ' + timeAgo(data.createdAt) + "</span>" + (data.edited ? '<span class="edited-tag">(edited)</span>' : "") + "</div>" +
+    '<div class="post-head"><div class="avatar" data-uid="' + (postUid || "") + '"><img src="' + emoji + '" alt="" /></div><span class="p-name" data-uid="' + (postUid || "") + '"></span>' + verifiedBadge(name) + ' <span class="time">| ' + timeAgo(data.createdAt) + "</span>" + (data.edited ? '<span class="edited-tag">(edited)</span>' : "") + '<button class="post-menu-btn">⋯</button></div>' +
     (isMuted ? mutedOverlay + '<div class="muted-post-content hidden">' : '<div class="muted-post-content">') +
     '<div class="post-body"></div>' + mediaHtml + pollHtml + linkCard + "</div>" +
     '<div class="post-actions">' +
-      '<button class="action like ' + (iLiked ? "active" : "") + '">' + HEART_SVG + ' <span class="count">' + likeCount + "</span></button>" +
+      '<button class="action like ' + (iLiked ? "active" : "") + '">' + HEART_SVG + ' <span class="count like-count" style="cursor:pointer;">' + likeCount + "</span></button>" +
+      '<div class="action view" style="cursor:default;"><span style="font-size:18px;">👁️</span> <span class="count">' + viewCount + "</span></div>" +
       '<button class="action comment-toggle"><img src="' + COMMENT + '" alt="" /> <span class="count">' + (data.commentCount || 0) + "</span></button>" +
       '<button class="action save ' + (iSaved ? "active" : "") + '" title="Save">' + SAVE_SVG + "</button>" +
       (isMyPost ? '<button class="action pin ' + (iPinnedThis ? "active" : "") + '" title="Pin">' + PIN_SVG + "</button>" : "") +
       (isMyPost && !data.edited ? '<button class="action edit-post" title="Edit">' + twe("270f", 20) + "</button>" : "") +
       (isMyPost ? '<button class="action del-post" title="Delete"><img src="' + TRASH + '" alt="" /></button>' : "") +
     "</div>" +
-    '<div class="comments" style="display:none"><div class="comment-list"></div><div class="reply-chip"></div><div class="comment-row"><input type="text" placeholder="Write a comment..." /><button class="comment-gif-btn" title="Send GIF">' + twe(EYE, 20) + '</button><button class="btn btn-primary send-comment">Send</button></div></div>';
+    '<div class="comments" style="display:none"><div class="comment-list"></div><div class="reply-chip"></div><div class="comment-gif-preview" style="display:none; margin-top: 8px;"></div><div class="comment-row"><input type="text" placeholder="Write a comment..." /><button class="comment-gif-btn" title="Send GIF">' + twe(EYE, 20) + '</button><button class="btn btn-primary send-comment">Send</button></div></div>';
   article.querySelector(".p-name").textContent = name;
   applyBotColor(article.querySelector(".p-name"), name);
   setRichText(article.querySelector(".post-body"), data.text || "");
   bindRichClickHandlers(article.querySelector(".post-body"));
+  
+  article.querySelector(".post-menu-btn").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showPostMenu(postId, data, this);
+  });
+
+  article.querySelector(".like-count").addEventListener("click", function(e) {
+    e.stopPropagation();
+    openLikesModal(data.likes);
+  });
+
   if (isMuted) {
     const ov = article.querySelector(".muted-post-overlay"); const content = article.querySelector(".muted-post-content");
     ov.addEventListener("click", function() { ov.style.display = "none"; content.classList.remove("hidden"); });
@@ -2103,6 +2164,7 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
     c.style.display = c.style.display === "none" ? "block" : "none";
   });
   let replyTarget = null;
+  let pendingCommentGif = null;
   const chip = article.querySelector(".reply-chip"); const cInput = article.querySelector(".comment-row input");
   function setReply(t) {
     replyTarget = t;
@@ -2163,13 +2225,23 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   }
   article.querySelector(".send-comment").addEventListener("click", async function() {
     if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
-    const text = cInput.value.trim(); if (!text) return;
+    const text = cInput.value.trim(); 
+    if (!text && !pendingCommentGif) return;
     haptic(15);
     const rt = replyTarget;
     try {
-      await db.collection("posts").doc(postId).collection("comments").add({ uid: auth.currentUser.uid, username: myUsername, emoji: myEmoji, text: text, likes: {}, parentId: rt ? rt.id : null, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      const commentData = { uid: auth.currentUser.uid, username: myUsername, emoji: myEmoji, text: text, likes: {}, parentId: rt ? rt.id : null, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+      if (pendingCommentGif) {
+        commentData.mediaUrl = pendingCommentGif;
+        commentData.mediaType = "gif";
+      }
+      await db.collection("posts").doc(postId).collection("comments").add(commentData);
       await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
       cInput.value = ""; setReply(null);
+      pendingCommentGif = null;
+      const preview = article.querySelector(".comment-gif-preview");
+      if (preview) { preview.style.display = "none"; preview.innerHTML = ""; }
+      
       if (rt) { if (rt.uid !== auth.currentUser.uid) notify(rt.uid, "reply", { postId: postId }); }
       else { if (postUid && postUid !== auth.currentUser.uid) notify(postUid, "comment", { postId: postId }); }
     } catch (err) { toast("Comment failed: " + err.code, true); }
@@ -2177,13 +2249,18 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   article.querySelector(".comment-gif-btn").addEventListener("click", function(e) {
     e.stopPropagation();
     if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
-    openGifPicker(async function(gifUrl) {
-      const rt = replyTarget;
-      try {
-        await db.collection("posts").doc(postId).collection("comments").add({ uid: auth.currentUser.uid, username: myUsername, emoji: myEmoji, text: "", likes: {}, parentId: rt ? rt.id : null, mediaUrl: gifUrl, mediaType: "gif", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-        await db.collection("posts").doc(postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
-        status("GIF reply sent!");
-      } catch (err) { toast("Comment failed.", true); }
+    openGifPicker(function(gifUrl) {
+      pendingCommentGif = gifUrl;
+      const preview = article.querySelector(".comment-gif-preview");
+      if (preview) {
+        preview.style.display = "block";
+        preview.innerHTML = `<div style="display: flex; align-items: flex-start; gap: 8px; background: #0d0d0d; padding: 8px; border-radius: 8px; border: 1px solid #2f2f2f; max-width: max-content;"><img src="${gifUrl}" style="max-height: 100px; border-radius: 6px;" /><button class="remove-gif-btn" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 16px; padding: 0 4px;">✕</button></div>`;
+        preview.querySelector(".remove-gif-btn").addEventListener("click", function() {
+            pendingCommentGif = null;
+            preview.style.display = "none";
+            preview.innerHTML = "";
+        });
+      }
     });
   });
   if (auth && auth.currentUser) {
@@ -2201,6 +2278,63 @@ function buildPost(postId, data, userDoc, isNew, isPinned) {
   }
   return article;
 }
+
+function showPostMenu(postId, data, btnEl) {
+  const menu = document.getElementById("quickActionMenu");
+  menu.innerHTML = "";
+  menu.style.left = (btnEl.getBoundingClientRect().left) + "px";
+  menu.style.top = (btnEl.getBoundingClientRect().bottom + 4) + "px";
+  
+  const hideBtn = document.createElement("button");
+  hideBtn.className = "danger";
+  hideBtn.innerHTML = "🚫 Don't show me this";
+  hideBtn.addEventListener("click", function() {
+    hiddenPosts.add(postId);
+    localStorage.setItem("fuzzy-hidden-posts", JSON.stringify(Array.from(hiddenPosts)));
+    renderPosts();
+    menu.classList.remove("open");
+    status("Post hidden.");
+  });
+  menu.appendChild(hideBtn);
+
+  const likeBtn = document.createElement("button");
+  likeBtn.innerHTML = "❤️ View likes";
+  likeBtn.addEventListener("click", function() {
+    menu.classList.remove("open");
+    openLikesModal(data.likes);
+  });
+  menu.appendChild(likeBtn);
+
+  menu.classList.add("open");
+}
+
+async function openLikesModal(likesMap) {
+  const box = document.getElementById("likesList");
+  box.innerHTML = '<div class="chat-loading" style="padding:20px"><img src="loop.png" alt="" style="width:48px;height:48px" /><div class="chat-loading-text">loading…</div></div>';
+  document.getElementById("likesModal").classList.add("open");
+  
+  const uids = likesMap ? Object.keys(likesMap) : [];
+  if (uids.length === 0) {
+    box.innerHTML = '<div class="empty">No likes yet.</div>';
+    return;
+  }
+
+  try {
+    const snaps = await Promise.all(uids.map(uid => db.collection("users").doc(uid).get()));
+    box.innerHTML = "";
+    snaps.forEach(function(s) {
+      if (!s.exists) return;
+      const u = s.data(); const uid = s.id; cacheUser(uid, u);
+      const row = document.createElement("div"); row.className = "list-row";
+      row.innerHTML = '<div class="avatar" data-uid="' + uid + '"><img src="' + (u.emoji || faceForUid(uid)) + '" alt="" /></div><div style="flex:1;min-width:0"><div class="l-name"></div><div class="l-handle">@' + escapeHtml(u.username || "user") + "</div></div>";
+      row.querySelector(".l-name").textContent = u.username || "user";
+      row.addEventListener("click", function() { document.getElementById("likesModal").classList.remove("open"); openProfile(uid); });
+      box.appendChild(row);
+    });
+    decorateAvatars(box);
+  } catch (e) { box.innerHTML = '<div class="empty">Could not load likes.</div>'; }
+}
+
 async function votePoll(postId, optionIdx) {
   if (!auth || !auth.currentUser) { toast("Log in first.", true); return; }
   const myUid = auth.currentUser.uid;
@@ -2269,7 +2403,10 @@ function renderPosts() {
   postsListEl.innerHTML = "";
   if (!db) { postsListEl.innerHTML = '<div class="empty">Firebase not loaded.</div>'; feedPaginationEl.innerHTML = ""; return; }
   const cutoff = Date.now() - POST_TTL;
-  let posts = lastPosts.filter(function(p) { const ts = p.data().createdAt; return ts && ts.toMillis() >= cutoff; }).filter(function(p) { const uid = postOwnerUid(p.data()); return !uid || (!isBlocked(uid) && !isBanned(uid)); });
+  let posts = lastPosts.filter(function(p) { const ts = p.data().createdAt; return ts && ts.toMillis() >= cutoff; }).filter(function(p) { 
+      if (hiddenPosts.has(p.id)) return false;
+      const uid = postOwnerUid(p.data()); return !uid || (!isBlocked(uid) && !isBanned(uid)); 
+  });
   if (settingsState.mediaOnly) posts = posts.filter(function(p) { const d = p.data(); return d.mediaUrl || d.poll; });
   if (activeTab === "following") posts = posts.filter(function(p) { return myFollowing.has(p.data().uid); });
   if (posts.length === 0) {
@@ -2845,7 +2982,6 @@ function buildChatMessageRow(m, ctx) {
     bubble.style.padding = "6px";
     bubble.innerHTML = '<div style="font-weight:600;font-size:13px;margin-bottom:8px;padding:0 4px">📊 ' + escapeHtml(m.data.poll.question) + '</div><div class="chat-poll-box" data-msg-id="' + m.id + '"></div>';
     const box = bubble.querySelector(".chat-poll-box");
-    // === FIX: read votes from conversation doc ===
     const conv = conversationsCache.get(currentConvId) || {};
     const pollVotes = conv.pollVotes || {};
     const msgVotes = pollVotes[m.id] || {};
@@ -3236,7 +3372,7 @@ function attachDoubleTapLike(el, likeBtn) {
       setTimeout(function() { try { wrap.remove(); } catch (e) {} }, 750);
     }
   }
-  function isIgnored(target) { if (!target || !target.closest) return false; return !!target.closest("button, a, input, textarea, video, .link-preview-card, .poll-option, .comment-row, .comment-item, .action"); }
+  function isIgnored(target) { if (!target || !target.closest) return false; return !!target.closest("button, a, input, textarea, video, .link-preview-card, .poll-option, .comment-row, .comment-item, .action, .post-menu-btn"); }
   el.addEventListener("dblclick", function(e) { if (isIgnored(e.target)) return; doLike(); });
   el.addEventListener("touchstart", function(e) { touchMoved = false; touchStartY = e.touches[0].clientY; touchStartTime = Date.now(); }, { passive: true });
   el.addEventListener("touchmove", function(e) { if (Math.abs(e.touches[0].clientY - touchStartY) > 12) touchMoved = true; }, { passive: true });
@@ -3250,24 +3386,22 @@ function attachDoubleTapLike(el, likeBtn) {
 }
 
 /* =====================================================================
-   CALLS
+   CALLS (FIXED WEBRTC)
    ===================================================================== */
 const ICE_SERVERS = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" },
     { urls: "stun:stun2.l.google.com:19302" },
-    { urls: "stun:stun3.l.google.com:19302" }
+    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
   ]
 };
 function callIdGen() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8); }
 function pairKey(a, b) { return [a, b].sort().join("_"); }
 function getLocalMedia(type) {
-  const audioConstraints = {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: true
-  };
+  const audioConstraints = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
   const constraints = type === "video"
     ? { audio: audioConstraints, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } }
     : { audio: audioConstraints, video: false };
@@ -3302,7 +3436,7 @@ async function startCall(type) {
   const callId = callIdGen();
   const videoOff = type === "voice";
   const convIdSnapshot = currentConvId;
-  currentCall = { callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type, localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff, screenTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
+  currentCall = { callId: callId, convId: convIdSnapshot, isGroup: isGroup, type: type, localStream: localStream, peers: new Map(), muted: false, videoOff: videoOff, screenTrack: null, screenAudioTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
   try {
     await db.collection("calls").doc(callId).set({ conversationId: convIdSnapshot, isGroup: isGroup, type: type, createdBy: me, status: "active", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: videoOff, screenSharing: false });
@@ -3350,7 +3484,7 @@ async function joinCall(callId, type) {
   const callSnap = await db.collection("calls").doc(callId).get();
   if (!callSnap.exists) { hideLoader(); toast("Call ended.", true); localStream.getTracks().forEach(function(t) { t.stop(); }); return; }
   const callData = callSnap.data();
-  currentCall = { callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup, type: callData.type, localStream: localStream, peers: new Map(), muted: false, videoOff: callData.type === "voice", screenTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
+  currentCall = { callId: callId, convId: callData.conversationId, isGroup: !!callData.isGroup, type: callData.type, localStream: localStream, peers: new Map(), muted: false, videoOff: callData.type === "voice", screenTrack: null, screenAudioTrack: null, screenStream: null, startTime: Date.now(), durationTimer: null, answerTimeout: null };
   try { await db.collection("calls").doc(callId).collection("participants").doc(me).set({ uid: me, username: myUsername, emoji: myEmoji, joinedAt: firebase.firestore.FieldValue.serverTimestamp(), muted: false, videoOff: currentCall.videoOff, screenSharing: false }); } catch (e) {}
   hideLoader();
   playJoinSound();
@@ -3399,7 +3533,8 @@ function attachLocalTile() {
   const v = tile.querySelector("video"); const av = tile.querySelector(".call-avatar"); const lbl = tile.querySelector(".call-tile-label");
   let streamToShow;
   if (currentCall.screenTrack) {
-    if (!currentCall._localScreenStream || currentCall._localScreenStream.getVideoTracks()[0] !== currentCall.screenTrack) currentCall._localScreenStream = new MediaStream([currentCall.screenTrack]);
+    if (!currentCall._localScreenStream) currentCall._localScreenStream = new MediaStream();
+    if (currentCall.screenTrack && currentCall._localScreenStream.getVideoTracks().length === 0) currentCall._localScreenStream.addTrack(currentCall.screenTrack);
     streamToShow = currentCall._localScreenStream;
   } else { streamToShow = currentCall.localStream; }
   if (v.srcObject !== streamToShow) v.srcObject = streamToShow;
@@ -3500,7 +3635,12 @@ function attachRemoteTile(uid, stream) {
 }
 function createPeerConnection(peerUid) {
   const pc = new RTCPeerConnection(ICE_SERVERS);
-  if (currentCall.localStream) currentCall.localStream.getTracks().forEach(function(t) { pc.addTrack(t, currentCall.localStream); });
+  
+  // Add original tracks initially
+  if (currentCall.localStream) {
+    currentCall.localStream.getTracks().forEach(function(t) { pc.addTrack(t, currentCall.localStream); });
+  }
+  
   pc.onicecandidate = function(e) {
     if (!e.candidate || !currentCall) return;
     const key = pairKey(auth.currentUser.uid, peerUid);
@@ -3509,6 +3649,7 @@ function createPeerConnection(peerUid) {
     const update = {}; update[field] = firebase.firestore.FieldValue.arrayUnion(e.candidate.toJSON());
     db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set(update, { merge: true }).catch(function() {});
   };
+  
   pc.ontrack = function(e) {
     if (!currentCall) return;
     const peer = currentCall.peers.get(peerUid); if (!peer) return;
@@ -3519,7 +3660,12 @@ function createPeerConnection(peerUid) {
     if (e.track.kind === "video" && currentCall.type !== "video") { currentCall.type = "video"; document.getElementById("callVideoBtn").style.display = ""; }
     setTimeout(function() { if (currentCall) attachRemoteTilesRefresh(); }, 200);
   };
-  pc.onconnectionstatechange = function() { if (!currentCall) return; if (pc.connectionState === "failed" || pc.connectionState === "closed") removePeer(peerUid, false); };
+  
+  pc.onconnectionstatechange = function() { 
+    if (!currentCall) return; 
+    if (pc.connectionState === "failed" || pc.connectionState === "closed") removePeer(peerUid, false); 
+  };
+  
   return pc;
 }
 function setupCallListeners() {
@@ -3546,7 +3692,7 @@ function setupCallListeners() {
     for (const item of pendingNew) {
       playJoinSound();
       if (me < item.uid) { try { await initiateOfferTo(item.uid, item.data); } catch (e) {} }
-      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, screenSharing: !!item.data.screenSharing, username: item.data.username, emoji: item.data.emoji, _lastOfferSdp: null, _lastAnswerSdp: null }); }
+      else { if (!currentCall.peers.has(item.uid)) currentCall.peers.set(item.uid, { pc: null, stream: null, muted: !!item.data.muted, videoOff: !!item.data.videoOff, screenSharing: !!item.data.screenSharing, username: item.data.username, emoji: item.data.emoji, _lastOfferSdp: null, _lastAnswerSdp: null, _pendingCandidates: [] }); }
     }
     if (currentCall && currentCall.answerTimeout && snap.size > 1) { clearTimeout(currentCall.answerTimeout); currentCall.answerTimeout = null; }
     if (currentCall) attachRemoteTilesRefresh();
@@ -3575,7 +3721,7 @@ async function initiateOfferTo(peerUid, peerData) {
   const me = auth.currentUser.uid;
   const pc = createPeerConnection(peerUid);
   const offer = await pc.createOffer();
-  currentCall.peers.set(peerUid, { pc: pc, stream: null, muted: !!peerData.muted, videoOff: !!peerData.videoOff, screenSharing: !!peerData.screenSharing, username: peerData.username, emoji: peerData.emoji, _lastOfferSdp: offer.sdp, _lastAnswerSdp: null });
+  currentCall.peers.set(peerUid, { pc: pc, stream: null, muted: !!peerData.muted, videoOff: !!peerData.videoOff, screenSharing: !!peerData.screenSharing, username: peerData.username, emoji: peerData.emoji, _lastOfferSdp: offer.sdp, _lastAnswerSdp: null, _pendingCandidates: [] });
   const key = pairKey(me, peerUid);
   await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ fromUid: me, toUid: peerUid, offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
   await pc.setLocalDescription(offer);
@@ -3583,10 +3729,11 @@ async function initiateOfferTo(peerUid, peerData) {
 async function processSignal(peerUid, data) {
   const me = auth.currentUser.uid;
   let peer = currentCall.peers.get(peerUid);
-  if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false, screenSharing: false, _lastOfferSdp: null, _lastAnswerSdp: null }; currentCall.peers.set(peerUid, peer); }
+  if (!peer) { peer = { pc: null, stream: null, muted: false, videoOff: false, screenSharing: false, _lastOfferSdp: null, _lastAnswerSdp: null, _pendingCandidates: [] }; currentCall.peers.set(peerUid, peer); }
   if (!peer.pc) peer.pc = createPeerConnection(peerUid);
   const pc = peer.pc;
   const iAmCaller = me < peerUid;
+  
   if (data.offer && data.offer.sdp && data.offer.sdp !== peer._lastOfferSdp && pc.signalingState === "stable") {
     peer._lastOfferSdp = data.offer.sdp;
     try {
@@ -3596,17 +3743,38 @@ async function processSignal(peerUid, data) {
       peer._lastAnswerSdp = answer.sdp;
       const key = pairKey(me, peerUid);
       await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge: true });
+      
+      // Flush pending candidates
+      if (peer._pendingCandidates) {
+          for (const c of peer._pendingCandidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch(e){} }
+          peer._pendingCandidates = [];
+      }
     } catch (e) { peer._lastOfferSdp = null; }
   }
+  
   if (data.answer && data.answer.sdp && data.answer.sdp !== peer._lastAnswerSdp && pc.signalingState === "have-local-offer") {
     peer._lastAnswerSdp = data.answer.sdp;
-    try { await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); }
+    try { 
+        await pc.setRemoteDescription(new RTCSessionDescription(data.answer)); 
+        // Flush pending candidates
+        if (peer._pendingCandidates) {
+            for (const c of peer._pendingCandidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch(e){} }
+            peer._pendingCandidates = [];
+        }
+    }
     catch (e) { peer._lastAnswerSdp = null; }
   }
-  if (pc.remoteDescription) {
-    const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
-    const candidates = data[fromField] || [];
-    for (const c of candidates) { try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {} }
+  
+  const fromField = iAmCaller ? "toCandidates" : "fromCandidates";
+  const candidates = data[fromField] || [];
+  for (const c of candidates) { 
+      if (pc.remoteDescription) {
+          try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {} 
+      } else {
+          if (peer._pendingCandidates && !peer._pendingCandidates.some(pc => JSON.stringify(pc) === JSON.stringify(c))) {
+              peer._pendingCandidates.push(c);
+          }
+      }
   }
 }
 function removePeer(uid, silent) {
@@ -3675,6 +3843,7 @@ async function endCall() {
   const me = auth.currentUser && auth.currentUser.uid;
   if (currentCall.answerTimeout) clearTimeout(currentCall.answerTimeout);
   if (currentCall.screenTrack) { try { currentCall.screenTrack.stop(); } catch (e) {} }
+  if (currentCall.screenAudioTrack) { try { currentCall.screenAudioTrack.stop(); } catch (e) {} }
   if (currentCall.screenStream) { try { currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {} }
   callUnsubs.forEach(function(u) { try { u(); } catch (e) {} }); callUnsubs = [];
   currentCall.peers.forEach(function(_, uid) { removePeer(uid, true); });
@@ -3742,7 +3911,7 @@ function showIncomingCallModal(found) {
   startRingtone();
 }
 
-/* ==== CAMERA + SCREEN SHARE ==== */
+/* ==== CAMERA + SCREEN SHARE (FIXED) ==== */
 async function toggleCamera() {
   if (!currentCall) return;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Camera not supported.", true); return; }
@@ -3792,43 +3961,62 @@ async function toggleCamera() {
 async function startScreenShare() {
   if (!currentCall) return;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-    return startRearCameraFallback();
+    toast("Screen sharing is not supported on this device.", true);
+    return;
   }
   if (currentCall.screenTrack) return;
 
   let screenStream = null;
-  const tryCapture = async (opts) => {
-    try { return await navigator.mediaDevices.getDisplayMedia(opts); }
-    catch (e) { return { __err: e }; }
-  };
-
-  let res = await tryCapture({ video: { cursor: "always" }, audio: true });
-  if (res && res.__err) res = await tryCapture({ video: true, audio: false });
-  if (res && res.__err) res = await tryCapture({ video: { frameRate: 30 }, audio: false });
-
-  if (!res || res.__err) {
-    return startRearCameraFallback();
+  try {
+    // Try with audio first
+    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+  } catch (e) {
+    try {
+      // Fallback to video only
+      screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+    } catch (e2) {
+      toast("Screen share cancelled or failed.", true);
+      return;
+    }
   }
 
-  screenStream = res;
   const screenTrack = screenStream.getVideoTracks()[0];
+  const screenAudioTrack = screenStream.getAudioTracks()[0]; // Get audio if it exists
+  
   currentCall.screenTrack = screenTrack;
+  currentCall.screenAudioTrack = screenAudioTrack;
   currentCall.screenStream = screenStream;
 
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
-      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
-      if (sender) await sender.replaceTrack(screenTrack);
-      else {
+      // Replace or add video track
+      const videoSender = peer.pc.getSenders().find(s => s.track && s.track.kind === "video");
+      if (videoSender) {
+        await videoSender.replaceTrack(screenTrack);
+      } else {
         peer.pc.addTrack(screenTrack, screenStream);
-        const offer = await peer.pc.createOffer();
-        await peer.pc.setLocalDescription(offer);
-        peer._lastOfferSdp = offer.sdp;
-        const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
-    } catch (e) {}
+      
+      // Replace or add audio track (if sharing audio)
+      if (screenAudioTrack) {
+        const audioSender = peer.pc.getSenders().find(s => s.track && s.track.kind === "audio");
+        if (audioSender) {
+          await audioSender.replaceTrack(screenAudioTrack);
+        } else {
+          peer.pc.addTrack(screenAudioTrack, screenStream);
+        }
+      }
+
+      // If we added new tracks, renegotiate
+      if (!videoSender || (!audioSender && screenAudioTrack)) {
+         const offer = await peer.pc.createOffer();
+         await peer.pc.setLocalDescription(offer);
+         peer._lastOfferSdp = offer.sdp;
+         const key = pairKey(auth.currentUser.uid, uid);
+         await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      }
+    } catch (e) { console.error(e); }
   }
 
   const btn = document.getElementById("callScreenBtn");
@@ -3836,78 +4024,46 @@ async function startScreenShare() {
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
   screenTrack.onended = function() { stopScreenShare(); };
   attachLocalTile();
-  status("Screen sharing");
-}
-
-async function startRearCameraFallback() {
-  if (!currentCall) return;
-  let camStream = null;
-  try {
-    camStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
-      audio: false
-    });
-  } catch (e) {
-    try {
-      camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    } catch (e2) {
-      toast("Screen share needs a browser that supports it (desktop only). Camera also unavailable.", true);
-      return;
-    }
-  }
-  const camTrack = camStream.getVideoTracks()[0];
-  currentCall.screenTrack = camTrack;
-  currentCall.screenStream = camStream;
-
-  for (const [uid, peer] of currentCall.peers) {
-    if (!peer.pc) continue;
-    try {
-      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
-      if (sender) await sender.replaceTrack(camTrack);
-      else {
-        peer.pc.addTrack(camTrack, camStream);
-        const offer = await peer.pc.createOffer();
-        await peer.pc.setLocalDescription(offer);
-        peer._lastOfferSdp = offer.sdp;
-        const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
-      }
-    } catch (e) {}
-  }
-
-  const btn = document.getElementById("callScreenBtn");
-  if (btn) { btn.classList.add("muted"); btn.title = "Stop camera share"; btn.textContent = "📸"; }
-  db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: true }).catch(function() {});
-  camTrack.onended = function() { stopScreenShare(); };
-  attachLocalTile();
-  status("Rear camera active — point it at what you want to show");
+  status("Screen sharing started");
 }
 
 async function stopScreenShare() {
   if (!currentCall || !currentCall.screenTrack) return;
-  const track = currentCall.screenTrack;
-  try { track.stop(); } catch (e) {}
-  try { if (currentCall.screenStream) currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
+  
+  try { currentCall.screenTrack.stop(); } catch (e) {}
+  if (currentCall.screenAudioTrack) try { currentCall.screenAudioTrack.stop(); } catch (e) {}
+  if (currentCall.screenStream) { try { currentCall.screenStream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {} }
+  
   currentCall.screenTrack = null;
+  currentCall.screenAudioTrack = null;
   currentCall.screenStream = null;
   currentCall._localScreenStream = null;
-  const camTrack = currentCall.localStream.getVideoTracks().find(function(t) { return t.readyState === "live"; });
+  
+  // Find original tracks
+  const origCamTrack = currentCall.localStream.getVideoTracks()[0];
+  const origMicTrack = currentCall.localStream.getAudioTracks()[0];
+
   for (const [uid, peer] of currentCall.peers) {
     if (!peer.pc) continue;
     try {
-      const sender = peer.pc.getSenders().find(function(s) { return s.track && s.track.kind === "video"; });
-      if (!sender) continue;
-      if (camTrack) await sender.replaceTrack(camTrack);
-      else {
-        peer.pc.removeTrack(sender);
-        const offer = await peer.pc.createOffer();
-        await peer.pc.setLocalDescription(offer);
-        peer._lastOfferSdp = offer.sdp;
-        const key = pairKey(auth.currentUser.uid, uid);
-        await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
+      const videoSender = peer.pc.getSenders().find(s => s.track && s.track.kind === "video");
+      const audioSender = peer.pc.getSenders().find(s => s.track && s.track.kind === "audio");
+
+      if (videoSender) await videoSender.replaceTrack(origCamTrack || null);
+      if (audioSender && origMicTrack) await audioSender.replaceTrack(origMicTrack);
+      
+      // If there's no original video, remove the track (or just replace with null, which is safer in webRTC)
+      if (!videoSender && origCamTrack) {
+          peer.pc.addTrack(origCamTrack, currentCall.localStream);
+          const offer = await peer.pc.createOffer();
+          await peer.pc.setLocalDescription(offer);
+          peer._lastOfferSdp = offer.sdp;
+          const key = pairKey(auth.currentUser.uid, uid);
+          await db.collection("calls").doc(currentCall.callId).collection("signals").doc(key).set({ offer: { type: offer.type, sdp: offer.sdp } }, { merge: true });
       }
     } catch (e) {}
   }
+  
   const btn = document.getElementById("callScreenBtn");
   if (btn) { btn.classList.remove("muted"); btn.title = "Share screen"; btn.textContent = "🖥️"; }
   db.collection("calls").doc(currentCall.callId).collection("participants").doc(auth.currentUser.uid).update({ screenSharing: false }).catch(function() {});
@@ -4286,13 +4442,25 @@ function musicIdbOpen() { return new Promise(function(res, rej) { const req = in
 async function musicIdbSet(key, val) { const d = await musicIdbOpen(); return new Promise(function(res, rej) { const tx = d.transaction("files", "readwrite"); tx.objectStore("files").put(val, key); tx.oncomplete = function() { res(); }; tx.onerror = function() { rej(tx.error); }; }); }
 async function musicIdbGet(key) { const d = await musicIdbOpen(); return new Promise(function(res, rej) { const tx = d.transaction("files", "readonly"); const r = tx.objectStore("files").get(key); r.onsuccess = function() { res(r.result); }; r.onerror = function() { rej(r.error); }; }); }
 function getTrackAudio(track) {
-  if (track.audioEl) { track.audioEl.loop = true; return track.audioEl; }
+  if (track.audioEl) { 
+    track.audioEl.loop = musicLoopEnabled; 
+    track.audioEl.volume = musicGlobalVolume;
+    return track.audioEl; 
+  }
   const src = track.kind === "builtin" ? track.src : track.blobUrl;
   const a = new Audio(src);
-  a.loop = true; a.preload = "auto";
+  a.loop = musicLoopEnabled;
+  a.volume = musicGlobalVolume;
+  a.preload = "auto";
   a.addEventListener("play", function() { musicTracks.forEach(function(t) { if (t.id !== track.id && t.audioEl && !t.audioEl.paused) { try { t.audioEl.pause(); } catch (e) {} } }); activeTrackId = track.id; });
-  a.addEventListener("timeupdate", function() { if (!a.duration || !isFinite(a.duration) || a.duration <= 0) return; if (a.currentTime >= a.duration - 0.12) { try { a.currentTime = 0; } catch (e) {} if (!a.paused) a.play().catch(function() {}); } });
-  a.addEventListener("ended", function() { try { a.currentTime = 0; a.play().catch(function() {}); } catch (e) {} });
+  a.addEventListener("ended", function() { 
+    if (musicLoopEnabled) { try { a.currentTime = 0; a.play().catch(function() {}); } catch(e){} return; }
+    const idx = musicTracks.findIndex(t => t.id === track.id);
+    if (idx !== -1) {
+      const next = musicTracks[(idx + 1) % musicTracks.length];
+      if (next && next.id !== track.id) toggleTrack(next.id);
+    }
+  });
   track.audioEl = a;
   return a;
 }
@@ -4300,8 +4468,9 @@ function toggleTrack(trackId) {
   const track = musicTracks.find(function(t) { return t.id === trackId; }); if (!track) return;
   musicPausedByVideo = null;
   const a = getTrackAudio(track);
-  a.loop = true;
+  a.loop = musicLoopEnabled;
   if (a.paused) a.play().catch(function() {}); else a.pause();
+  document.getElementById("musicStopAllBtn").textContent = a.paused ? "▶" : "⏹";
 }
 function renderMusicTracks() {
   const list = document.getElementById("musicTracksList"); if (!list) return;
@@ -4348,7 +4517,6 @@ myEmoji = DEFAULT_FACE;
    ===================================================================== */
 const lightboxEl = document.getElementById("lightbox");
 window.onerror = function(msg) { try { toast("ERROR: " + msg, true); } catch (e) {} };
-/* ==== FIX #3: removed broken service worker registration (404 error) ==== */
 runIntro();
 updateOnlineStatus();
 document.addEventListener("play", function(e) {
@@ -4856,6 +5024,40 @@ document.getElementById("bannerUploadInput").addEventListener("change", async fu
   finally { hideLoader(); }
 });
 
+// Music Player Controls
+document.getElementById("musicVolume").addEventListener("input", function() {
+  musicGlobalVolume = parseFloat(this.value);
+  musicTracks.forEach(t => {
+    if (t.audioEl) t.audioEl.volume = musicGlobalVolume;
+  });
+});
+
+document.getElementById("musicLoopBtn").addEventListener("click", function() {
+  musicLoopEnabled = !musicLoopEnabled;
+  this.textContent = musicLoopEnabled ? "🔁 On" : "🔁 Off";
+  this.classList.toggle("active", musicLoopEnabled);
+  musicTracks.forEach(t => {
+    if (t.audioEl) t.audioEl.loop = musicLoopEnabled;
+  });
+});
+
+document.getElementById("musicPlayAllBtn").addEventListener("click", function() {
+  if (!musicTracks.length) return;
+  toggleTrack(musicTracks[0].id);
+});
+
+document.getElementById("musicStopAllBtn").addEventListener("click", function() {
+  const playing = musicTracks.find(t => t.audioEl && !t.audioEl.paused);
+  if (playing) {
+    musicTracks.forEach(t => { if (t.audioEl) t.audioEl.pause(); });
+    this.textContent = "▶";
+  } else {
+    const last = musicTracks.find(t => t.audioEl && t.audioEl.currentTime > 0) || musicTracks[0];
+    if (last) { getTrackAudio(last).play().catch(()=>{}); }
+    this.textContent = "⏹";
+  }
+});
+
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 function updateScrollTopBtn() {
   if (!settingsState.showScrollTop) { scrollTopBtn.classList.remove("show"); return; }
@@ -4975,6 +5177,8 @@ document.getElementById("incomingDecline").addEventListener("click", function() 
   musicTracks.push({ id: "spooky-main", name: "main theme", kind: "builtin", src: "main.mp3", loop: true, audioEl: null });
   try { const arr = await musicIdbGet(MUSIC_IDB_KEY); if (Array.isArray(arr)) arr.forEach(function(rec) { const blobUrl = URL.createObjectURL(rec.blob); musicTracks.push({ id: rec.id, name: rec.name, kind: "custom", blob: rec.blob, blobUrl: blobUrl, loop: true, audioEl: null }); }); } catch (e) {}
   renderMusicTracks();
+  document.getElementById("musicVolume").value = musicGlobalVolume;
+  document.getElementById("musicLoopBtn").classList.add("active");
 })();
 if (auth) {
   auth.onAuthStateChanged(function(user) {
@@ -5182,7 +5386,7 @@ function fuzzTotalCps() {
   });
   total *= fuzzMultiplier();
   if (fuzzState.skills && fuzzState.skills.overclock) total *= 2;
-  return total;
+  return total * cpsBuffMultiplier;
 }
 function fuzzPerClick() {
   let total = 1;
@@ -5201,7 +5405,7 @@ function fuzzRender() {
   if (!countEl || !upgEl) return;
   countEl.textContent = formatFuzz(fuzzState.fuzz);
   if (cpsEl) cpsEl.textContent = formatFuzz(fuzzTotalCps()) + " Fuzz / sec · " + formatFuzz(fuzzPerClick()) + " per tap";
-  if (multEl) multEl.textContent = "x" + fuzzMultiplier() + " Multiplier";
+  if (multEl) multEl.textContent = "x" + fuzzMultiplier() + " Multiplier" + (cpsBuffMultiplier > 1 ? " (🔥 x7 Golden!)" : "");
   
   // Render Upgrades
   upgEl.innerHTML = "";
@@ -5305,6 +5509,8 @@ function fuzzClick(e) {
   try {
     const x = (e && (e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX))) || window.innerWidth / 2;
     const y = (e && (e.clientY || (e.touches && e.touches[0] && e.touches[0].clientY))) || window.innerHeight / 2;
+    
+    // Floating text
     const el = document.createElement("div");
     el.className = "fuzz-float";
     el.textContent = "+" + formatFuzz(gain);
@@ -5312,24 +5518,92 @@ function fuzzClick(e) {
     el.style.top = (y - 8) + "px";
     document.body.appendChild(el);
     setTimeout(function() { try { el.remove(); } catch (err) {} }, 800);
+
+    // Particles
+    for (let i = 0; i < 6; i++) {
+        const p = document.createElement("img");
+        p.className = "fuzz-particle";
+        p.src = TWE + (Math.random() > 0.5 ? "2728" : "1f4a5") + ".png";
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+        p.style.setProperty('--tx', (Math.random() * 120 - 60) + "px");
+        p.style.setProperty('--ty', (Math.random() * -120 - 20) + "px");
+        document.body.appendChild(p);
+        setTimeout(() => { try { p.remove(); } catch(err){} }, 800);
+    }
   } catch (err) {}
 }
 function fuzzEnsureTick() {
   const cps = fuzzTotalCps();
-  if (cps <= 0) {
+  if (cps <= 0 && cpsBuffMultiplier === 1) {
     if (fuzzTickHandle) { clearInterval(fuzzTickHandle); fuzzTickHandle = null; }
     return;
   }
   if (fuzzTickHandle) return;
   fuzzTickHandle = setInterval(function() {
     const nowCps = fuzzTotalCps();
-    if (nowCps <= 0) { clearInterval(fuzzTickHandle); fuzzTickHandle = null; return; }
+    if (nowCps <= 0 && cpsBuffMultiplier === 1) { clearInterval(fuzzTickHandle); fuzzTickHandle = null; return; }
     fuzzState.fuzz += nowCps;
     fuzzSave();
     const ov = document.getElementById("fuzzGameOverlay");
     if (ov && ov.classList.contains("open")) fuzzRender();
   }, 1000);
 }
+
+/* ==== GOLDEN COOKIE LOGIC ==== */
+function spawnGoldenCookie() {
+  if (document.getElementById("fuzzGameOverlay").classList.contains("open")) return; // Only spawn if game is open
+  
+  const cookie = document.createElement("div");
+  cookie.className = "golden-cookie";
+  cookie.innerHTML = "🍪";
+  cookie.style.left = (Math.random() * (window.innerWidth - 80) + 20) + "px";
+  cookie.style.top = (Math.random() * (window.innerHeight - 150) + 50) + "px";
+  
+  cookie.addEventListener("click", function(e) {
+    e.stopPropagation();
+    haptic(30);
+    playToneSequence([{ freq: 880, dur: 0.1, vol: 0.2, type: "square" }, { freq: 1320, dur: 0.15, vol: 0.2, type: "square" }, { freq: 1760, dur: 0.2, vol: 0.2, type: "square" }], 0.1);
+    
+    // Activate Buff
+    cpsBuffMultiplier = 7;
+    status("🍪 GOLDEN COOKIE! x7 CPS for 15s!");
+    fuzzRender();
+    fuzzEnsureTick();
+    
+    if (cpsBuffTimeout) clearTimeout(cpsBuffTimeout);
+    cpsBuffTimeout = setTimeout(() => {
+      cpsBuffMultiplier = 1;
+      status("Golden cookie buff ended.");
+      fuzzRender();
+    }, 15000);
+    
+    cookie.remove();
+    // Schedule next spawn
+    scheduleNextCookie();
+  });
+
+  document.body.appendChild(cookie);
+
+  // Auto-remove after 10s if not clicked
+  setTimeout(() => {
+    if (cookie.parentNode) {
+      cookie.remove();
+      scheduleNextCookie();
+    }
+  }, 10000);
+}
+
+function scheduleNextCookie() {
+  if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
+  const nextTime = Math.random() * 60000 + 30000; // 30s to 90s
+  goldenCookieTimeout = setTimeout(spawnGoldenCookie, nextTime);
+}
+
+// Start the cookie loop
+scheduleNextCookie();
+
+/* ==== FUZZ CLICKER UI ==== */
 function fuzzOpen() {
   const ov = document.getElementById("fuzzGameOverlay");
   if (!ov) return;
@@ -5387,72 +5661,80 @@ window.addEventListener("beforeunload", function() { try { fuzzSave(); } catch (
   });
 })();
 </script>
-<!-- ================= FUZZY MASCOT WIDGET ================= -->
-<div id="fuzzy-mascot-widget">
-  <div class="glowwrap">
-    <img id="fuzzyMascotImg" src="Mascot.png" alt="Fuzzy Mascot">
+<!-- MASCOT HTML -->
+<div id="mascot">
+  <div class="glowwrap" id="mascotWrap">
+    <img id="mascotImg" src="Fuzzy.png" alt="Fuzzy mascot" onerror="this.parentNode.style.display='none'">
   </div>
-  <div id="fuzzy-bubble"></div>
-  <audio id="fuzzyBoopAudio" src="boop.mp3" preload="auto"></audio>
+  <div id="bubble"></div>
 </div>
 
+<!-- MASCOT STYLES -->
 <style>
-  #fuzzy-mascot-widget {
-    position: fixed !important;
-    left: 20px !important;
-    bottom: 20px !important;
-    z-index: 2147483647 !important;
-    display: flex !important;
-    align-items: flex-end !important;
-    gap: 12px !important;
-    pointer-events: auto !important;
-    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  :root {
+    --ease: cubic-bezier(.22,1,.36,1);
+    --pop: cubic-bezier(.34,1.56,.64,1);
   }
 
-  #fuzzy-mascot-widget .glowwrap {
+  /* Glow wrapper under mascot */
+  .glowwrap {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 70px;
-    height: 70px;
-    animation: fuzzy-pop .9s cubic-bezier(.34,1.56,.64,1) 0.2s backwards, fuzzy-bob 3.2s ease-in-out 1.2s infinite;
   }
-
-  #fuzzy-mascot-widget .glowwrap::before {
+  .glowwrap::before {
     content: "";
     position: absolute;
     inset: -4%;
     border-radius: 50%;
     z-index: 0;
-    background: radial-gradient(circle, rgba(255,255,255,.45) 0%, rgba(255,255,255,.2) 40%, rgba(255,255,255,0) 65%);
-    filter: blur(3px);
-    animation: fuzzy-glowpulse 3s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(255,255,255,.22) 0%, rgba(255,255,255,.1) 40%, rgba(255,255,255,0) 65%);
+    filter: blur(4px);
+    animation: glowpulse 3s ease-in-out infinite;
+  }
+  .glowwrap img {
+    position: relative;
+    z-index: 1;
+    display: block;
+  }
+  @keyframes glowpulse {
+    0%, 100% { opacity: .3; scale: .95; }
+    50% { opacity: .5; scale: 1.02; }
   }
 
-  #fuzzy-mascot-widget img {
+  /* Mascot position & animations */
+  #mascot {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  #mascotWrap {
+    width: 70px;
+    height: 70px;
+    --d: 1.05s;
+    animation: pop .9s var(--pop) var(--d) backwards, bob 3.2s ease-in-out 2s infinite;
+  }
+  #mascotWrap img {
     width: 70px;
     height: 70px;
     object-fit: contain;
     cursor: pointer;
     user-select: none;
-    position: relative;
-    z-index: 1;
-    display: block;
-    transition: transform .4s cubic-bezier(.22,1,.36,1);
+    transition: transform .4s var(--ease);
   }
+  #mascotWrap img:hover { transform: scale(1.15) rotate(6deg); }
+  #mascotWrap img:active { transform: scale(.92); }
 
-  #fuzzy-mascot-widget img:hover {
-    transform: scale(1.15) rotate(6deg);
-  }
-
-  #fuzzy-mascot-widget img:active {
-    transform: scale(.92);
-  }
-
-  #fuzzy-mascot-widget #fuzzy-bubble {
+  /* Speech bubble */
+  #bubble {
     background: #fff;
     color: #0a1128;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     font-weight: 700;
     font-size: 15px;
     padding: 10px 14px;
@@ -5460,137 +5742,98 @@ window.addEventListener("beforeunload", function() { try { fuzzSave(); } catch (
     box-shadow: 0 4px 16px rgba(138,224,255,.4);
     margin-bottom: 10px;
     opacity: 0;
-    transform: translateY(8px) scale(0.6);
-    transition: opacity 0.3s ease, transform 0.5s cubic-bezier(.34, 1.56, .64, 1), padding 0.3s ease;
+    transform: translateY(8px) scale(.9);
+    transition: .4s var(--ease);
     pointer-events: none;
     max-width: 220px;
-    min-width: 36px;
-    text-align: center;
-    will-change: transform, opacity;
   }
-
-  /* Bubble active state */
-  #fuzzy-mascot-widget #fuzzy-bubble.show {
+  #bubble.show {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
+    animation: bubble-pop .4s var(--pop);
   }
 
-  /* Buttery smooth message transition pop over top of previous message */
-  #fuzzy-mascot-widget #fuzzy-bubble.pop-over {
-    animation: fuzzy-smooth-pop 0.5s cubic-bezier(.34, 1.56, .64, 1);
+  @keyframes pop { from { scale: .05; opacity: 0; } to { scale: 1; opacity: 1; } }
+  @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+  @keyframes bubble-pop {
+    0% { transform: translateY(12px) scale(.7); opacity: 0; }
+    70% { transform: translateY(-2px) scale(1.05); }
+    100% { transform: none; opacity: 1; }
   }
-
-  /* Typing dots styling */
-  #fuzzy-mascot-widget .fuzzy-typing {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 2px 4px;
-  }
-
-  #fuzzy-mascot-widget .fuzzy-typing span {
-    width: 6px;
-    height: 6px;
-    background: #0a1128;
-    border-radius: 50%;
-    animation: fuzzy-dots 0.5s infinite ease-in-out;
-  }
-
-  #fuzzy-mascot-widget .fuzzy-typing span:nth-child(2) { animation-delay: 0.12s; }
-  #fuzzy-mascot-widget .fuzzy-typing span:nth-child(3) { animation-delay: 0.24s; }
-
-  @keyframes fuzzy-dots {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40% { transform: scale(1.2); opacity: 1; }
-  }
-
-  @keyframes fuzzy-smooth-pop {
-    0% { transform: translateY(6px) scale(0.92); }
-    50% { transform: translateY(-3px) scale(1.05); }
-    100% { transform: translateY(0) scale(1); }
-  }
-
-  @keyframes fuzzy-pop { from { scale: .05; opacity: 0; } to { scale: 1; opacity: 1; } }
-  @keyframes fuzzy-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
-  @keyframes fuzzy-glowpulse { 0%, 100% { opacity: .5; scale: .95; } 50% { opacity: .75; scale: 1.02; } }
 
   @media (max-width: 768px) {
-    #fuzzy-mascot-widget { left: 12px !important; bottom: 12px !important; gap: 8px !important; }
-    #fuzzy-mascot-widget .glowwrap, #fuzzy-mascot-widget img { width: 52px; height: 52px; }
-    #fuzzy-mascot-widget #fuzzy-bubble { font-size: 13px; padding: 8px 12px; max-width: 160px; margin-bottom: 6px; }
+    #mascot { left: 12px; bottom: 12px; gap: 8px; }
+    #mascotWrap, #mascotWrap img { width: 52px; height: 52px; }
+    #bubble { font-size: 13px; padding: 8px 12px; max-width: 160px; margin-bottom: 6px; }
   }
 </style>
 
+<!-- MASCOT SCRIPT -->
 <script>
-  (function () {
-    const says = [
-      'hi hi!', 'woohooo :OO', 'stay fuzzy', 'boop!',
-      'ayo what\'s up', 'i\'m just a lil fuzzy guy',
-      'no thoughts, just fuzz', 'you look great today',
-      'this site is clean', 'i live here now',
-      'stay hydrated, fuzzy friend', 'vibes: immaculate',
-      'woah, easy there', 'you\'re my favourite visitor',
-      'today is a good day to be fuzzy'
-    ];
+  (function() {
+    const $ = id => document.getElementById(id);
 
-    const mascotImg = document.getElementById('fuzzyMascotImg');
-    const bubble = document.getElementById('fuzzy-bubble');
-    const boopAudio = document.getElementById('fuzzyBoopAudio');
-    let bubbleTimer, typingTimer, sayIndex = 0;
-
-    function squish() {
-      if (mascotImg) {
-        mascotImg.animate([
-          { transform: 'scale(1,1)' },
-          { transform: 'scale(1.15,.8)', offset: 0.35 },
-          { transform: 'scale(.92,1.12)', offset: 0.65 },
-          { transform: 'scale(1,1)' }
-        ], { duration: 500, easing: 'ease-out' });
-      }
+    /* Sound debouncer to prevent double audio playback */
+    let lastClickTime = 0;
+    function playClickSound() {
+      const now = Date.now();
+      if (now - lastClickTime < 100) return;
+      lastClickTime = now;
+      const snd = new Audio("clicka.mp3");
+      snd.play().catch(() => {});
     }
 
+    /* Mascot message list */
+    const says = [
+      "hi hi!", "woohooo :OO", "you clicked me!", "fuzzy is cool and shii", "stay fuzzy", "boop!",
+      "ayo what's up", "sheesh, you found me", "i'm just a lil fuzzy guy", "click me again, i dare you",
+      "fuzzy gang rise up", "no thoughts, just fuzz", "you look great today", "did you hear the melody?",
+      "this site is lowkey fire", "psst... click the logo 5 times", "i live here now", "certified fuzzy moment",
+      "go on, hit that Open Fuzzy button", "stay hydrated, fuzzy friend", "bro really clicked a mascot",
+      "it's fuzzy o'clock", "vibes: immaculate", "i'm not a bug, i'm a feature", "woah, easy there",
+      "fuzzy level: over 9000", "tell your friends about fuzzy", "you're my favourite visitor", "ok that's enough clicking... jk keep going",
+      "zoom zoom, fuzzy boom", "today is a good day to be fuzzy"
+    ];
+
+    /* Squish animation */
+    function squish() {
+      const img = $("mascotImg");
+      if (!img) return;
+      img.animate([
+        { transform: "scale(1,1)" },
+        { transform: "scale(1.15,.8)", offset: .35 },
+        { transform: "scale(.92,1.12)", offset: .65 },
+        { transform: "scale(1,1)" }
+      ], { duration: 500, easing: "ease-out" });
+    }
+
+    /* Idle squish loop */
     setInterval(squish, 4000);
 
+    /* Mascot click listener */
+    let bubbleTimer, sayIndex = 0;
+    const mascotImg = $("mascotImg");
+    
     if (mascotImg) {
-      mascotImg.addEventListener('click', () => {
+      mascotImg.addEventListener("pointerdown", () => {
+        playClickSound();
         squish();
 
-        // Play sound
-        if (boopAudio) {
-          boopAudio.currentTime = 0;
-          boopAudio.play().catch(() => {});
-        }
+        const b = $("bubble");
+        if (!b) return;
 
-        // Clear existing timeouts for smooth override
+        b.classList.remove("show");
+        void b.offsetWidth; // Trigger reflow to restart animation
+
+        b.textContent = says[sayIndex];
+        sayIndex = (sayIndex + 1) % says.length;
+        b.classList.add("show");
+
         clearTimeout(bubbleTimer);
-        clearTimeout(typingTimer);
-
-        // Instant typing dots indicator (0.5s duration)
-        bubble.classList.remove('pop-over');
-        bubble.innerHTML = '<div class="fuzzy-typing"><span></span><span></span><span></span></div>';
-        bubble.classList.add('show');
-
-        // After 0.5s typing delay, reveal message with buttery pop
-        typingTimer = setTimeout(() => {
-          bubble.textContent = says[sayIndex];
-          sayIndex = (sayIndex + 1) % says.length;
-
-          // Trigger buttery pop over previous message
-          bubble.classList.remove('pop-over');
-          void bubble.offsetWidth; // force smooth animation re-trigger
-          bubble.classList.add('pop-over');
-
-          // Auto-hide after 4 seconds
-          bubbleTimer = setTimeout(() => {
-            bubble.classList.remove('show');
-            bubble.classList.remove('pop-over');
-          }, 4000);
-        }, 500);
+        bubbleTimer = setTimeout(() => b.classList.remove("show"), 2400);
       });
     }
   })();
 </script>
-<!-- ================= END FUZZY MASCOT ================= -->
 </body>
 </html>
