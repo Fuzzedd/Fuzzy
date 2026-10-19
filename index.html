@@ -481,16 +481,20 @@ body.avatar-square .avatar { border-radius: 4px; }
 /* ==== FUZZ CLICKER ==== */
 .fuzz-game-overlay { position: fixed; inset: 0; z-index: 9000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); padding: 16px; }
 .fuzz-game-overlay.open { display: flex; }
-.fuzz-game-card { background: var(--surface); border: 1px solid #3a3a3a; border-radius: 16px; padding: 18px 16px 16px; width: 340px; max-width: 100%; max-height: 92vh; overflow-y: auto; position: relative; text-align: center; }
+.fuzz-game-card { background: var(--surface); border: 1px solid #3a3a3a; border-radius: 16px; padding: 18px 16px 16px; width: 340px; max-width: 100%; max-height: 92vh; overflow-y: auto; position: relative; text-align: center; display: flex; flex-direction: column; }
 .fuzz-game-close { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: #2a2a2a; border: 1px solid #3a3a3a; color: #e7e7e7; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; padding: 0; z-index: 2; }
 .fuzz-game-close:hover { background: #7a1414; }
 .fuzz-game-title { font-size: 15px; font-weight: 700; color: #d8c9ff; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.fuzz-game-fuzz { font-size: 15px; color: #f9c74f; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.fuzz-game-click { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform 0.06s ease; user-select: none; display: inline-block; }
+.fuzz-game-fuzz { font-size: 15px; color: #f9c74f; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
+.fuzz-game-click { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform 0.06s ease; user-select: none; display: inline-block; margin-bottom: 4px; }
 .fuzz-game-click:active { transform: scale(0.92); }
 .fuzz-game-click img { width: 96px; height: 96px; object-fit: contain; display: block; filter: drop-shadow(0 0 12px rgba(79,195,247,0.55)); pointer-events: none; }
 .fuzz-game-cps { font-size: 11px; color: #717171; margin: 4px 0 12px; }
-.fuzz-game-upgrades { display: flex; flex-direction: column; gap: 6px; }
+.fuzz-tabs { display: flex; gap: 4px; margin-bottom: 12px; background: #0d0d0d; border-radius: 9999px; padding: 4px; }
+.fuzz-tab { flex: 1; background: none; border: none; color: #717171; padding: 6px 0; border-radius: 9999px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.fuzz-tab.active { background: #2a2a2a; color: #fff; }
+.fuzz-tab:hover:not(.active) { color: #e7e7e7; }
+.fuzz-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
 .fuzz-upg { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 10px; cursor: pointer; text-align: left; font-family: inherit; color: #e7e7e7; transition: background 0.15s, border-color 0.15s; }
 .fuzz-upg:hover:not(:disabled) { background: #1a1a1a; border-color: #4fc3f7; }
 .fuzz-upg:active:not(:disabled) { transform: scale(0.98); }
@@ -504,6 +508,23 @@ body.avatar-square .avatar { border-radius: 4px; }
 .fuzz-float { position: fixed; pointer-events: none; font-size: 18px; font-weight: 700; color: #f9c74f; text-shadow: 0 2px 8px rgba(0,0,0,0.9); animation: fuzzFloatUp 0.75s ease-out forwards; z-index: 9100; }
 @keyframes fuzzFloatUp { 0% { opacity: 0; transform: translateY(0) scale(0.7); } 20% { opacity: 1; transform: translateY(-8px) scale(1.1); } 100% { opacity: 0; transform: translateY(-60px) scale(1); } }
 .bot-name { color: #22c55e !important; }
+
+/* Rebirth & Skills */
+.rebirth-box { display: flex; flex-direction: column; gap: 12px; padding: 10px; background: #0d0d0d; border: 1px solid #7a1414; border-radius: 10px; }
+.rebirth-title { font-size: 14px; font-weight: 700; color: #ff6b6b; }
+.rebirth-desc { font-size: 12px; color: #9a9a9a; line-height: 1.4; }
+.rebirth-mult { font-size: 13px; color: #f9c74f; font-weight: 700; }
+.btn-rebirth { background: #7a1414; border: 1px solid #ff6b6b; color: #fff; padding: 10px; border-radius: 9999px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 14px; }
+.btn-rebirth:disabled { opacity: 0.4; cursor: not-allowed; background: #2a2a2a; border-color: #444; color: #717171; }
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.skill-card { background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; text-align: center; transition: background 0.15s; }
+.skill-card:hover:not(:disabled) { background: #1a1a1a; border-color: #4fc3f7; }
+.skill-card:disabled { opacity: 0.4; cursor: not-allowed; }
+.skill-emoji { font-size: 24px; }
+.skill-name { font-size: 12px; font-weight: 600; color: #fff; }
+.skill-desc { font-size: 10px; color: #717171; }
+.skill-cost { font-size: 10px; color: #4fc3f7; font-weight: 700; margin-top: 2px; }
+
 @media (max-width: 768px) {
   .sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 66px; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); flex-direction: row; align-items: center; justify-content: space-around; border-right: none; border-top: 1px solid #2f2f2f; background: var(--bg); z-index: 50; overflow: visible; transition: none; }
   .right { display: none; }
@@ -825,10 +846,34 @@ body.avatar-square .avatar { border-radius: 4px; }
   <div class="fuzz-game-card">
     <button class="fuzz-game-close" id="fuzzGameClose">✕</button>
     <div class="fuzz-game-title"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f47b.png" alt="" style="width:18px;height:18px" /> Fuzz Clicker</div>
-    <div class="fuzz-game-fuzz"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4b0.png" alt="" style="width:18px;height:18px" /> <span id="fuzzCount">0</span> Fuzz</div>
+    <div class="fuzz-game-fuzz">
+      <span><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4b0.png" alt="" style="width:18px;height:18px" /> <span id="fuzzCount">0</span> Fuzz</span>
+      <span style="font-size:12px; color:#ff6b6b;" id="fuzzMultLabel">x1 Multiplier</span>
+    </div>
     <button class="fuzz-game-click" id="fuzzClickBtn"><img src="icon.png" alt="" /></button>
     <div class="fuzz-game-cps" id="fuzzCps">0 Fuzz / sec</div>
-    <div class="fuzz-game-upgrades" id="fuzzUpgrades"></div>
+    
+    <div class="fuzz-tabs">
+      <button class="fuzz-tab active" data-ftab="upgrades">Upgrades</button>
+      <button class="fuzz-tab" data-ftab="skills">Skills</button>
+      <button class="fuzz-tab" data-ftab="rebirth">Rebirth</button>
+    </div>
+
+    <div class="fuzz-content" id="fuzzContentUpgrades">
+      <div class="fuzz-game-upgrades" id="fuzzUpgrades"></div>
+    </div>
+    <div class="fuzz-content" id="fuzzContentSkills" style="display:none;">
+      <div class="skills-grid" id="fuzzSkillsGrid"></div>
+    </div>
+    <div class="fuzz-content" id="fuzzContentRebirth" style="display:none;">
+      <div class="rebirth-box">
+        <div class="rebirth-title">🔥 Rebirth</div>
+        <div class="rebirth-desc">Reset your Fuzz and Upgrades to gain a permanent x2 multiplier for everything. Requires 1 Trillion Fuzz.</div>
+        <div class="rebirth-mult">Current Multiplier: x<span id="rebirthMultText">1</span></div>
+        <button class="btn-rebirth" id="fuzzRebirthBtn">Rebirth (Requires 1T Fuzz)</button>
+        <div style="font-size:12px;color:#4fc3f7;margin-top:8px;text-align:center">Rebirths: <span id="rebirthCountText">0</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1475,7 +1520,6 @@ async function unlockAllAudioContexts() {
   _audioUnlocked = true;
 }
 
-// Global one-time audio unlock on any user gesture
 ["touchstart","touchend","click","pointerdown","keydown"].forEach(function(evt) {
   document.addEventListener(evt, function once() {
     unlockAllAudioContexts();
@@ -3270,7 +3314,6 @@ function attachRemoteTile(uid, stream) {
     }
   } else if (fsBtn) fsBtn.remove();
 
-  // Aggressive play attempt with tap-to-unlock fallback
   const tryPlay = function() {
     v.muted = false; v.volume = 1;
     const p = v.play();
@@ -4709,7 +4752,7 @@ if (auth) {
       loadProfile(user); setupNotifListener(user); setupUsersListener(); renderPosts();
     }
     else {
-      fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
+      fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, click2: 0, click3: 0, click4: 0, click5: 0, rebirths: 0, skills: { doubleTap: 0, overclock: 0, goldenTouch: 0, timeWarp: 0 }, lastSaved: Date.now() };
       fuzzRender(); fuzzEnsureTick();
       myUsername = ""; myEmoji = DEFAULT_FACE; myBio = ""; myStatus = null; myBlocked = new Set(); myPinned = []; mySavedIds = new Set(); mySavedGifs = [];
       myFollowing = new Set(); myFollowers = new Set();
@@ -4812,18 +4855,34 @@ updateSidebar();
    FUZZ CLICKER (easter egg: click logo 10× in 5s)
    ===================================================================== */
 const FUZZ_UPGRADES = [
+  // CPS Upgrades
   { key: "auto",     emoji: "1f916", name: "Auto-Clicker",  desc: "+1 Fuzz per second",      baseCost: 50,           cps: 1 },
-  { key: "click",    emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",          baseCost: 100,          cpc: 1 },
   { key: "factory",  emoji: "1f3ed", name: "Fuzz Factory",  desc: "+5 Fuzz per second",       baseCost: 500,          cps: 5 },
   { key: "robot",    emoji: "1f9be", name: "Robot Army",    desc: "+25 Fuzz per second",      baseCost: 2500,         cps: 25 },
   { key: "ai",       emoji: "1f9e0", name: "Fuzz A.I.",     desc: "+150 Fuzz per second",     baseCost: 15000,        cps: 150 },
   { key: "portal",   emoji: "1f300", name: "Fuzz Portal",   desc: "+1,000 Fuzz per second",   baseCost: 100000,       cps: 1000 },
   { key: "quantum",  emoji: "269b",  name: "Quantum Fuzz",  desc: "+10,000 Fuzz per second",  baseCost: 1000000,      cps: 10000 },
-  { key: "god",      emoji: "1f451", name: "God of Fuzz",   desc: "+100,000 Fuzz per second", baseCost: 50000000,     cps: 100000 }
+  { key: "god",      emoji: "1f451", name: "God of Fuzz",   desc: "+100,000 Fuzz per second", baseCost: 50000000,     cps: 100000 },
+
+  // Click Upgrades
+  { key: "click",    emoji: "1f446", name: "Mega Click",    desc: "+1 Fuzz per tap",          baseCost: 100,          cpc: 1 },
+  { key: "click2",   emoji: "1f4aa", name: "Super Click",   desc: "+5 Fuzz per tap",          baseCost: 1000,         cpc: 5 },
+  { key: "click3",   emoji: "1f525", name: "Ultra Click",   desc: "+25 Fuzz per tap",         baseCost: 10000,        cpc: 25 },
+  { key: "click4",   emoji: "26a1",  name: "Hyper Click",   desc: "+100 Fuzz per tap",        baseCost: 100000,       cpc: 100 },
+  { key: "click5",   emoji: "1f30c", name: "God Click",     desc: "+1,000 Fuzz per tap",      baseCost: 10000000,     cpc: 1000 }
 ];
-let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
+
+const FUZZ_SKILLS = [
+  { key: "doubleTap",   emoji: "1f5b1", name: "Double Tap",   desc: "x2 Click Power",       baseCost: 1 },
+  { key: "overclock",   emoji: "2699",  name: "Overclock",    desc: "x2 CPS",               baseCost: 2 },
+  { key: "goldenTouch", emoji: "1f4b0", name: "Golden Touch", desc: "x2 Overall Multiplier", baseCost: 5 },
+  { key: "timeWarp",    emoji: "231b",  name: "Time Warp",    desc: "2x Offline Earnings",  baseCost: 10 }
+];
+
+let fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, click2: 0, click3: 0, click4: 0, click5: 0, rebirths: 0, skills: { doubleTap: 0, overclock: 0, goldenTouch: 0, timeWarp: 0 }, lastSaved: Date.now() };
 let fuzzTickHandle = null;
 let fuzzOfflineEarned = 0;
+let currentFuzzTab = "upgrades";
 
 function fuzzGetKey() {
   const uid = (auth && auth.currentUser) ? auth.currentUser.uid : "guest";
@@ -4842,6 +4901,12 @@ function formatFuzz(n) {
   return str + units[i];
 }
 
+function fuzzMultiplier() {
+  let mult = Math.pow(2, fuzzState.rebirths || 0);
+  if (fuzzState.skills && fuzzState.skills.goldenTouch) mult *= 2;
+  return mult;
+}
+
 function fuzzLoad() {
   const key = fuzzGetKey();
   let loaded = null;
@@ -4850,15 +4915,17 @@ function fuzzLoad() {
     if (raw) loaded = JSON.parse(raw);
   } catch (e) {}
   if (loaded && typeof loaded === "object") {
-    fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() }, loaded);
+    fuzzState = Object.assign({ fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, click2: 0, click3: 0, click4: 0, click5: 0, rebirths: 0, skills: { doubleTap: 0, overclock: 0, goldenTouch: 0, timeWarp: 0 }, lastSaved: Date.now() }, loaded);
+    if (!fuzzState.skills) fuzzState.skills = { doubleTap: 0, overclock: 0, goldenTouch: 0, timeWarp: 0 };
   } else {
-    fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, lastSaved: Date.now() };
+    fuzzState = { fuzz: 0, auto: 0, click: 0, factory: 0, robot: 0, ai: 0, portal: 0, quantum: 0, god: 0, click2: 0, click3: 0, click4: 0, click5: 0, rebirths: 0, skills: { doubleTap: 0, overclock: 0, goldenTouch: 0, timeWarp: 0 }, lastSaved: Date.now() };
   }
   const now = Date.now();
   const last = (typeof fuzzState.lastSaved === "number") ? fuzzState.lastSaved : now;
   const elapsed = Math.max(0, (now - last) / 1000);
   if (elapsed > 2) {
-    const cps = fuzzTotalCps();
+    let cps = fuzzTotalCps();
+    if (fuzzState.skills && fuzzState.skills.timeWarp) cps *= 2;
     if (cps > 0) {
       const earned = Math.floor(cps * elapsed);
       if (earned > 0) { fuzzState.fuzz += earned; fuzzOfflineEarned = earned; }
@@ -4882,18 +4949,30 @@ function fuzzTotalCps() {
   FUZZ_UPGRADES.forEach(function(u) {
     if (u.cps) total += (fuzzState[u.key] || 0) * u.cps;
   });
+  total *= fuzzMultiplier();
+  if (fuzzState.skills && fuzzState.skills.overclock) total *= 2;
   return total;
 }
 function fuzzPerClick() {
-  return 1 + (fuzzState.click || 0);
+  let total = 1;
+  FUZZ_UPGRADES.forEach(function(u) {
+    if (u.cpc) total += (fuzzState[u.key] || 0) * u.cpc;
+  });
+  total *= fuzzMultiplier();
+  if (fuzzState.skills && fuzzState.skills.doubleTap) total *= 2;
+  return total;
 }
 function fuzzRender() {
   const countEl = document.getElementById("fuzzCount");
   const cpsEl = document.getElementById("fuzzCps");
   const upgEl = document.getElementById("fuzzUpgrades");
+  const multEl = document.getElementById("fuzzMultLabel");
   if (!countEl || !upgEl) return;
   countEl.textContent = formatFuzz(fuzzState.fuzz);
-  if (cpsEl) cpsEl.textContent = formatFuzz(fuzzTotalCps()) + " Fuzz / sec · " + fuzzPerClick() + " per tap";
+  if (cpsEl) cpsEl.textContent = formatFuzz(fuzzTotalCps()) + " Fuzz / sec · " + formatFuzz(fuzzPerClick()) + " per tap";
+  if (multEl) multEl.textContent = "x" + fuzzMultiplier() + " Multiplier";
+  
+  // Render Upgrades
   upgEl.innerHTML = "";
   FUZZ_UPGRADES.forEach(function(upg) {
     const lvl = fuzzState[upg.key] || 0;
@@ -4912,6 +4991,38 @@ function fuzzRender() {
     b.addEventListener("click", function() { fuzzBuy(upg.key); });
     upgEl.appendChild(b);
   });
+
+  // Render Skills
+  const skillsGrid = document.getElementById("fuzzSkillsGrid");
+  if (skillsGrid) {
+    skillsGrid.innerHTML = "";
+    FUZZ_SKILLS.forEach(function(skill) {
+      const lvl = fuzzState.skills[skill.key] || 0;
+      const can = fuzzState.rebirths >= skill.baseCost && lvl === 0;
+      const b = document.createElement("button");
+      b.className = "skill-card";
+      b.disabled = !can;
+      b.innerHTML =
+        '<div class="skill-emoji">' + twe(skill.emoji, 24) + '</div>' +
+        '<div class="skill-name">' + escapeHtml(skill.name) + (lvl > 0 ? ' ✓' : '') + '</div>' +
+        '<div class="skill-desc">' + escapeHtml(skill.desc) + '</div>' +
+        '<div class="skill-cost">' + (lvl > 0 ? 'Unlocked' : 'Cost: ' + skill.baseCost + ' Rebirths') + '</div>';
+      b.addEventListener("click", function() { fuzzBuySkill(skill.key); });
+      skillsGrid.appendChild(b);
+    });
+  }
+
+  // Render Rebirth
+  const rebirthBtn = document.getElementById("fuzzRebirthBtn");
+  const rebirthMultText = document.getElementById("rebirthMultText");
+  const rebirthCountText = document.getElementById("rebirthCountText");
+  if (rebirthBtn) {
+    const canRebirth = fuzzState.fuzz >= 1e12;
+    rebirthBtn.disabled = !canRebirth;
+    rebirthBtn.textContent = canRebirth ? "Rebirth Now!" : "Requires 1T Fuzz";
+  }
+  if (rebirthMultText) rebirthMultText.textContent = Math.pow(2, fuzzState.rebirths || 0);
+  if (rebirthCountText) rebirthCountText.textContent = fuzzState.rebirths || 0;
 }
 function fuzzBuy(key) {
   const upg = FUZZ_UPGRADES.find(function(u) { return u.key === key; });
@@ -4924,6 +5035,34 @@ function fuzzBuy(key) {
   fuzzRender();
   haptic(12);
   fuzzEnsureTick();
+}
+function fuzzBuySkill(key) {
+  const skill = FUZZ_SKILLS.find(function(s) { return s.key === key; });
+  if (!skill) return;
+  if (fuzzState.skills[key] > 0) return; // already unlocked
+  if (fuzzState.rebirths < skill.baseCost) return;
+  fuzzState.rebirths -= skill.baseCost;
+  fuzzState.skills[key] = 1;
+  fuzzSave();
+  fuzzRender();
+  haptic(25);
+  status("Skill Unlocked!");
+}
+function fuzzDoRebirth() {
+  if (fuzzState.fuzz < 1e12) return;
+  fuzzState.fuzz = 0;
+  fuzzState.rebirths = (fuzzState.rebirths || 0) + 1;
+  
+  // Reset all upgrades
+  FUZZ_UPGRADES.forEach(function(u) {
+    fuzzState[u.key] = 0;
+  });
+
+  fuzzSave();
+  fuzzRender();
+  haptic(100);
+  status("🔥 REBIRTH! You are now x" + Math.pow(2, fuzzState.rebirths) + " stronger!");
+  playToneSequence([{ freq: 400, dur: 0.1, vol: 0.2, type: "sine" }, { freq: 600, dur: 0.1, vol: 0.2, type: "sine" }, { freq: 800, dur: 0.2, vol: 0.2, type: "sine" }, { freq: 1200, dur: 0.4, vol: 0.2, type: "sine" }], 0.12);
 }
 function fuzzClick(e) {
   const gain = fuzzPerClick();
@@ -4978,6 +5117,20 @@ function fuzzClose() {
   if (ov) ov.classList.remove("open");
   fuzzEnsureTick();
 }
+
+document.querySelectorAll(".fuzz-tab").forEach(function(tab) {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll(".fuzz-tab").forEach(function(t) { t.classList.remove("active"); });
+    tab.classList.add("active");
+    currentFuzzTab = tab.dataset.ftab;
+    document.getElementById("fuzzContentUpgrades").style.display = currentFuzzTab === "upgrades" ? "flex" : "none";
+    document.getElementById("fuzzContentSkills").style.display = currentFuzzTab === "skills" ? "flex" : "none";
+    document.getElementById("fuzzContentRebirth").style.display = currentFuzzTab === "rebirth" ? "flex" : "none";
+  });
+});
+
+document.getElementById("fuzzRebirthBtn").addEventListener("click", fuzzDoRebirth);
+
 fuzzLoad();
 fuzzEnsureTick();
 window.addEventListener("pagehide", function() { try { fuzzSave(); } catch (e) {} });
@@ -4987,7 +5140,6 @@ window.addEventListener("beforeunload", function() { try { fuzzSave(); } catch (
   if (btn) btn.addEventListener("click", function(e) { fuzzClick(e); });
   const closeBtn = document.getElementById("fuzzGameClose");
   if (closeBtn) closeBtn.addEventListener("click", fuzzClose);
-  /* click-outside-to-close removed — only ✕ closes the game now */
 })();
 (function() {
   const logo = document.querySelector(".logo");
