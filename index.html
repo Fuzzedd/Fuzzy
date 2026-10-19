@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Kalam:wght@400;700&family=Londrina+Solid&family=Patrick+Hand&family=Permanent+Marker&display=swap" rel="stylesheet">
 <style>
 @font-face { font-family: "Anime Ace BB"; src: url("animeace2_reg.ttf") format("truetype"); font-display: swap; }
 @font-face { font-family: "LDF Comic Sans"; src: url("LDFComicSans.ttf") format("truetype"); font-display: swap; }
@@ -26,7 +26,23 @@ body.compact .chat-bubble { padding: 6px 10px; font-size: calc(13.5px * var(--fs
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition: none !important; animation: none !important; }
 button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn, .gif-cat { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease; }
 button:active, .action:active, .c-like:active, .c-del:active, .follow-btn:active, .post-btn:active, .back-btn:active, .status-opt:active, .pfp-opt:active, .emoji-opt:active, .gif-cat:active { transform: scale(0.95); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
+
+/* ==== NEW UNIVERSAL BUTTON ANIMATIONS ==== */
+button, .btn, .nav-item, .tab, .stab, .action, .c-like, .c-reply, .c-del, .c-edit, .follow-btn, .post-btn, .back-btn, .list-row, .notif-item, .stat-link, .pfp-opt, .emoji-opt, .user, .status-opt, .cancel, .p-name, .l-name, .c-name, .conv-item, .chat-send, .page-btn, .chat-attach-btn, .gif-cat, .gif-tab, .setting-opt, .admin-action-btn, .fuzz-upg, .skill-card, .btn-rebirth, .music-play-btn, .music-add-btn, .theme-preset, .sound-item button, .new-btn, .voice-play, .reaction-chip, .incoming-call-btn, .call-btn, .call-minimize-btn, .enable-audio-btn, .chat-react-btn, .gif-save-btn, .gif-star, .reaction-picker button, .fuzz-game-click, .fuzz-game-close, .lb-close, .music-popup-close, .media-remove, .pfp-refresh, .poll-add-opt, .chat-search-btn, .chat-close, .chat-gif-btn, .chat-mic-btn, .chat-poll-btn, .send-comment, .comment-gif-btn, .fuzz-tab, .user-pick-row, .theme-preset, .music-popup-close, .no-internet-badge, .admin-action-btn, .incoming-call-btn, .call-btn, .reaction-chip, .voice-play, .chat-react-btn {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease !important;
+  will-change: transform;
+}
+button:active, .btn:active, .nav-item:active, .tab:active, .stab:active, .action:active, .c-like:active, .c-reply:active, .c-del:active, .c-edit:active, .follow-btn:active, .post-btn:active, .back-btn:active, .list-row:active, .notif-item:active, .stat-link:active, .pfp-opt:active, .emoji-opt:active, .user:active, .status-opt:active, .cancel:active, .p-name:active, .l-name:active, .c-name:active, .conv-item:active, .chat-send:active, .page-btn:active, .chat-attach-btn:active, .gif-cat:active, .gif-tab:active, .setting-opt:active, .admin-action-btn:active, .fuzz-upg:active:not(:disabled), .skill-card:active:not(:disabled), .btn-rebirth:active:not(:disabled), .music-play-btn:active, .music-add-btn:active, .theme-preset:active, .sound-item button:active, .new-btn:active, .voice-play:active, .reaction-chip:active, .incoming-call-btn:active, .call-btn:active, .call-minimize-btn:active, .enable-audio-btn:active, .chat-react-btn:active, .gif-save-btn:active, .gif-star:active, .reaction-picker button:active, .fuzz-game-click:active, .fuzz-game-close:active, .lb-close:active, .music-popup-close:active, .media-remove:active, .pfp-refresh:active, .poll-add-opt:active, .chat-search-btn:active, .chat-close:active, .chat-gif-btn:active, .chat-mic-btn:active, .chat-poll-btn:active, .send-comment:active, .comment-gif-btn:active, .no-internet-badge:active, .fuzz-tab:active, .conv-panel-header .new-btn:active, .user-pick-row:active, .incoming-call-btn:active, .call-btn:active, .reaction-chip:active, .voice-play:active, .chat-react-btn:active {
+  transform: scale(0.9) !important;
+}
+button:hover:not(:disabled), .btn:hover:not(:disabled), .fuzz-upg:hover:not(:disabled), .skill-card:hover:not(:disabled), .btn-rebirth:hover:not(:disabled), .admin-action-btn:hover, .setting-opt:hover, .theme-preset:hover, .music-play-btn:hover, .music-add-btn:hover, .sound-item button:hover, .call-btn:hover, .incoming-call-btn:hover, .reaction-chip:hover, .voice-play:hover, .gif-star:hover, .chat-react-btn:hover, .gif-save-btn:hover, .chat-send:hover, .poll-add-opt:hover, .new-btn:hover, .pfp-refresh:hover, .media-remove:hover, .lb-close:hover, .music-popup-close:hover, .fuzz-game-close:hover, .fuzz-game-click:hover, .no-internet-badge:hover, .fuzz-tab:hover:not(.active), .nav-item:hover, .action:hover, .follow-btn:hover, .post-btn:hover, .back-btn:hover, .list-row:hover, .notif-item:hover, .stat-link:hover, .pfp-opt:hover, .emoji-opt:hover, .user:hover, .status-opt:hover, .conv-item:hover, .page-btn:hover, .chat-attach-btn:hover, .gif-cat:hover, .gif-tab:hover, .chat-search-btn:hover, .chat-close:hover, .chat-gif-btn:hover, .chat-mic-btn:hover, .chat-poll-btn:hover, .send-comment:hover, .comment-gif-btn:hover, .fuzz-tab:hover:not(.active), .user-pick-row:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 12px rgba(255,255,255,0.08);
+}
+/* preserve existing special hover behaviours */
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.35); filter: brightness(1.1); }
+/* ==== END NEW ANIMATIONS ==== */
+
 .ui-emoji { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.2em; flex-shrink: 0; pointer-events: none; user-select: none; }
 button .ui-emoji, .btn .ui-emoji, .setting-opt .ui-emoji { margin-right: 4px; }
 .sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--bg); border-right: 1px solid #2f2f2f; padding: 16px 12px; display: flex; flex-direction: column; overflow-y: auto; transition: width 0.32s cubic-bezier(0.34, 1.2, 0.64, 1), padding 0.32s cubic-bezier(0.34, 1.2, 0.64, 1); }
@@ -75,16 +91,25 @@ body.reduce-motion .logo, body.reduce-motion .logo:hover { transform: none; }
 .chat-search-bar { display: none; padding: 8px 12px; background: #0d0d0d; border-bottom: 1px solid #2f2f2f; align-items: center; gap: 8px; flex-shrink: 0; }
 .chat-search-bar.open { display: flex; }
 .chat-search-bar input { flex: 1; background: var(--bg); border: 1px solid #2f2f2f; border-radius: 9999px; padding: 8px 14px; color: #e7e7e7; font-size: 14px; outline: none; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 18px 16px 10px; display: flex; flex-direction: column; gap: 12px; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 18px 16px 10px; display: flex; flex-direction: column; gap: 12px; position: relative; }
 .chat-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #717171; font-size: 14px; text-align: center; padding: 20px; }
-.chat-msg-row { display: flex; max-width: 100%; flex-direction: column; margin-bottom: 2px; }
+
+/* Skeleton Loader */
+.chat-skeleton { display: flex; flex-direction: column; gap: 12px; padding: 10px 0; }
+.skeleton-msg { height: 44px; width: 60%; border-radius: var(--radius); background: #2a2a2a; animation: pulse 1.5s infinite; }
+.skeleton-msg.mine { align-self: flex-end; background: #1e3a5f; }
+.skeleton-msg:nth-child(2) { width: 40%; }
+.skeleton-msg:nth-child(3) { width: 70%; }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+.chat-msg-row { display: flex; max-width: 100%; flex-direction: column; margin-bottom: 2px; position: relative; }
 .chat-msg-row.mine { align-items: flex-end; }
 .chat-msg-row.theirs { align-items: flex-start; }
 .chat-msg-row.system { align-items: center; margin: 6px 0; }
 .chat-msg-row.hidden-by-search { display: none; }
 .chat-call-system { background: var(--surface); border: 1px solid #2f2f2f; color: #9a9a9a; font-size: 12px; padding: 5px 14px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 6px; max-width: 100%; }
 .chat-call-system .dur { color: #4fc3f7; font-weight: 600; }
-.chat-bubble-wrap { display: flex; flex-direction: column; max-width: 78%; }
+.chat-bubble-wrap { display: flex; flex-direction: column; max-width: 78%; position: relative; }
 .chat-msg-row.mine .chat-bubble-wrap { align-items: flex-end; }
 .chat-msg-row.theirs .chat-bubble-wrap { align-items: flex-start; }
 .chat-bubble { padding: 8px 12px; border-radius: var(--radius); font-size: calc(14.5px * var(--fs)); line-height: 1.4; position: relative; word-break: break-word; white-space: pre-wrap; max-width: 100%; cursor: pointer; user-select: none; }
@@ -102,6 +127,22 @@ body.reduce-motion .logo, body.reduce-motion .logo:hover { transform: none; }
 .chat-seen.read { color: #4fc3f7; }
 .chat-msg-enter { animation: msgEnter 0.32s cubic-bezier(0.34, 1.36, 0.64, 1); }
 @keyframes msgEnter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Reaction Trigger Button */
+.chat-react-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: #2a2a2a; border: 1px solid #444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; padding: 0; }
+.chat-msg-row.mine .chat-react-btn { left: -40px; }
+.chat-msg-row.theirs .chat-react-btn { right: -40px; }
+.chat-msg-row:hover .chat-react-btn { opacity: 1; }
+.chat-react-btn:active { transform: translateY(-50%) scale(0.9); }
+
+/* Chat Poll */
+.chat-poll-box { background: #0d0d0d; border: 1px solid #2f2f2f; border-radius: var(--radius); padding: 10px; margin-top: 4px; min-width: 200px; }
+.chat-poll-opt { position: relative; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; background: var(--surface); cursor: pointer; overflow: hidden; }
+.chat-poll-opt.voted { background: #1e3a5f; }
+.chat-poll-opt .bar { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(79, 195, 247, 0.22); border-radius: 8px; z-index: 0; transition: width 0.4s ease; }
+.chat-poll-opt .txt { position: relative; z-index: 1; font-size: 13px; display: flex; justify-content: space-between; }
+.chat-poll-meta { margin-top: 6px; font-size: 11px; color: #717171; display: flex; justify-content: space-between; }
+
 .voice-bubble { display: flex; align-items: center; gap: 10px; padding: 2px 2px 2px 6px; min-width: 200px; }
 .voice-play { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.15); border: none; color: inherit; cursor: pointer; font-size: 13px; flex-shrink: 0; }
 .voice-wave { flex: 1; height: 26px; display: flex; align-items: center; gap: 2px; overflow: hidden; }
@@ -211,7 +252,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 #profileView, #searchView, #notificationsView, #settingsView, #adminView, #conversationsView, #chatView, #savedView, #savedGifsView { display: none; }
 .profile-head { padding: 12px 16px 14px; border-bottom: 1px solid #2f2f2f; background: var(--bg); }
 .back-btn { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: #e7e7e7; font-size: 16px; cursor: pointer; margin-bottom: 12px; padding: 6px 10px; border-radius: 9999px; }
-.profile-banner { height: 150px; border-radius: var(--radius); background: #161616; }
+.profile-banner { height: 150px; border-radius: var(--radius); background: #161616; background-size: cover; background-position: center; }
 .profile-top { display: flex; gap: 20px; align-items: flex-start; margin-top: -120px; position: relative; }
 .profile-top .avatar { width: 96px; height: 96px; border: 4px solid var(--bg); border-radius: var(--avatar-radius); margin-left: 0; }
 .profile-info { flex: 1; padding-top: 122px; min-width: 0; }
@@ -389,7 +430,7 @@ body.avatar-square .avatar { border-radius: 4px; }
 .gif-star .ui-emoji, .gif-star .tw-emoji { display: block; width: 16px; height: 16px; margin: 0; }
 .gif-attribution { text-align: center; font-size: 11px; color: #717171; margin-top: 8px; }
 .gif-empty-star { grid-column: 1 / -1; padding: 30px 20px; text-align: center; color: #717171; font-size: 14px; line-height: 1.5; }
-#gifPickerModal, #groupMembersModal, #groupAvatarModal, #linkWarnModal, #quickActionMenu, #editPostModal { z-index: 400; }
+#gifPickerModal, #groupMembersModal, #groupAvatarModal, #linkWarnModal, #quickActionMenu, #editPostModal, #chatPollModal { z-index: 400; }
 .comment-media { margin-top: 8px; }
 .comment-media img { max-width: 240px; max-height: 240px; border-radius: var(--radius); cursor: zoom-in; }
 .comment-gif-btn { background: none; border: none; color: #9a9a9a; cursor: pointer; padding: 0; height: 40px; width: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -455,6 +496,8 @@ body.avatar-square .avatar { border-radius: 4px; }
 .call-header-title { font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .call-header-sub { font-size: 12px; color: #9a9a9a; margin-top: 2px; }
 .call-duration { font-size: 14px; color: #9a9a9a; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.call-minimize-btn { background: none; border: none; color: #9a9a9a; font-size: 20px; cursor: pointer; padding: 6px; margin-left: 10px; border-radius: 50%; }
+.call-minimize-btn:hover { background: #2a2a2a; color: #fff; }
 .call-videos { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 12px; overflow-y: auto; overflow-x: hidden; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); grid-auto-rows: min-content; align-content: start; }
 .call-videos.voice-mode { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .call-tile { position: relative; background: linear-gradient(180deg, #1d1d1d 0%, #0d0d0d 100%); border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; transition: box-shadow 0.15s ease; }
@@ -478,6 +521,13 @@ body.avatar-square .avatar { border-radius: 4px; }
 .call-btn.end { background: #f91818; }
 .call-btn.end:hover { background: #ff3030; }
 .call-btn.muted { background: #7a1414; color: #ffb3b3; }
+
+/* Call Bubble */
+.call-bubble { position: fixed; z-index: 91; width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(180deg, #1e7a3a 0%, #0d0d0d 100%); border: 1px solid #22c55e; cursor: grab; display: flex; align-items: center; justify-content: center; padding: 0; touch-action: none; user-select: none; box-shadow: 0 4px 15px rgba(34,197,94,0.4); animation: pulseCall 2s infinite; }
+.call-bubble:active { cursor: grabbing; }
+.call-bubble .ui-emoji { width: 28px; height: 28px; pointer-events: none; }
+@keyframes pulseCall { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.7); } 70% { box-shadow: 0 0 0 10px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+
 /* ==== FUZZ CLICKER ==== */
 .fuzz-game-overlay { position: fixed; inset: 0; z-index: 9000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); padding: 16px; }
 .fuzz-game-overlay.open { display: flex; }
@@ -571,6 +621,10 @@ body.avatar-square .avatar { border-radius: 4px; }
   .call-header { padding: 10px 12px; }
   .call-duration { font-size: 12px; }
   .incoming-call-avatar { width: 80px; height: 80px; }
+  
+  .chat-react-btn { opacity: 1; width: 28px; height: 28px; font-size: 16px; }
+  .chat-msg-row.mine .chat-react-btn { left: -32px; }
+  .chat-msg-row.theirs .chat-react-btn { right: -32px; }
 }
 </style>
 </head>
@@ -681,7 +735,20 @@ body.avatar-square .avatar { border-radius: 4px; }
       <div class="setting-row"><div class="setting-info"><div class="setting-label">button colour</div><div class="setting-desc">background of small buttons</div></div><input type="color" class="setting-color" data-setting="buttonColor" data-fallback="#2a2a2a" /></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">accent gradient</div></div><div class="setting-opts"><button class="setting-opt" data-setting="accentGradient" data-val="off">off</button><button class="setting-opt" data-setting="accentGradient" data-val="on">on</button></div></div>
       <div class="setting-row" id="accent2Row" style="display:none"><div class="setting-info"><div class="setting-label">accent colour 2</div></div><input type="color" class="setting-color" data-setting="accentColor2" /></div>
-      <div class="setting-row"><div class="setting-info"><div class="setting-label">font</div></div><select class="setting-select" data-setting="fontFamily"><option value="system">System</option><option value="manga">Manga</option><option value="ldfcomic">LDF Comic Sans</option><option value="bangers">Bangers (comic)</option><option value="kalam">Kalam (comic)</option><option value="hand">Patrick Hand (comic)</option><option value="comic">Comic Sans MS</option><option value="arial">Arial</option><option value="times">Times</option><option value="courier">Courier</option><option value="georgia">Georgia</option><option value="verdana">Verdana</option><option value="trebuchet">Trebuchet</option></select></div>
+      <div class="setting-row"><div class="setting-info"><div class="setting-label">font</div></div><select class="setting-select" data-setting="fontFamily">
+        <option value="system">System (Default)</option>
+        <option value="comicneue">Comic Neue</option>
+        <option value="bangers">Bangers (Comic)</option>
+        <option value="marker">Permanent Marker</option>
+        <option value="londrina">Londrina Solid</option>
+        <option value="kalam">Kalam</option>
+        <option value="hand">Patrick Hand</option>
+        <option value="manga">Anime Ace BB (Local)</option>
+        <option value="ldfcomic">LDF Comic Sans (Local)</option>
+        <option value="arial">Arial</option>
+        <option value="times">Times</option>
+        <option value="courier">Courier</option>
+      </select></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">font size</div></div><div class="setting-opts"><button class="setting-opt" data-setting="fontSize" data-val="14">S</button><button class="setting-opt" data-setting="fontSize" data-val="16">M</button><button class="setting-opt" data-setting="fontSize" data-val="20">L</button></div></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">border radius</div></div><div class="setting-opts"><button class="setting-opt" data-setting="radius" data-val="4">sharp</button><button class="setting-opt" data-setting="radius" data-val="12">default</button><button class="setting-opt" data-setting="radius" data-val="20">round</button></div></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">avatar shape</div></div><div class="setting-opts"><button class="setting-opt" data-setting="avatarShape" data-val="rounded">rounded</button><button class="setting-opt" data-setting="avatarShape" data-val="circle">circle</button><button class="setting-opt" data-setting="avatarShape" data-val="square">square</button></div></div>
@@ -692,6 +759,7 @@ body.avatar-square .avatar { border-radius: 4px; }
     </div>
     <div class="settings-section-label">your banner</div>
     <div class="settings-list">
+      <div class="setting-row"><div class="setting-info"><div class="setting-label">banner image</div><div class="setting-desc">upload a custom banner</div></div><div class="post-media-row" style="margin-top:0"><button class="post-media-btn" id="bannerUploadBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload</button><input type="file" id="bannerUploadInput" accept="image/*" style="display:none" /></div></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">banner colour 1</div></div><input type="color" class="setting-color" data-setting="bannerColor" /></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">gradient banner</div></div><div class="setting-opts"><button class="setting-opt" data-setting="bannerGradient" data-val="off">off</button><button class="setting-opt" data-setting="bannerGradient" data-val="on">on</button></div></div>
       <div class="setting-row" id="banner2Row" style="display:none"><div class="setting-info"><div class="setting-label">banner colour 2</div></div><input type="color" class="setting-color" data-setting="bannerColor2" /></div>
@@ -707,6 +775,7 @@ body.avatar-square .avatar { border-radius: 4px; }
       <div class="setting-row"><div class="setting-info"><div class="setting-label">home feed TTL</div></div><div class="setting-opts"><button class="setting-opt" data-setting="postTTL" data-val="12">12h</button><button class="setting-opt" data-setting="postTTL" data-val="24">24h</button><button class="setting-opt" data-setting="postTTL" data-val="48">48h</button></div></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">default feed tab</div></div><div class="setting-opts"><button class="setting-opt" data-setting="defaultFeedTab" data-val="foryou">for you</button><button class="setting-opt" data-setting="defaultFeedTab" data-val="following">following</button></div></div>
       <div class="setting-row"><div class="setting-info"><div class="setting-label">scroll-to-top button</div></div><div class="setting-opts"><button class="setting-opt" data-setting="showScrollTop" data-val="off">off</button><button class="setting-opt" data-setting="showScrollTop" data-val="on">on</button></div></div>
+      <div class="setting-row"><div class="setting-info"><div class="setting-label">show NOTES</div><div class="setting-desc">show toast notifications</div></div><div class="setting-opts"><button class="setting-opt" data-setting="showNotes" data-val="off">off</button><button class="setting-opt" data-setting="showNotes" data-val="on">on</button></div></div>
     </div>
     <div class="settings-section-label">content filters</div>
     <div class="settings-list">
@@ -760,6 +829,7 @@ body.avatar-square .avatar { border-radius: 4px; }
     <div class="chat-input-row">
       <button class="chat-attach-btn" id="chatGifBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" style="width:22px;height:22px" /></button>
       <button class="chat-attach-btn" id="chatAttachBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4ce.png" alt="" style="width:20px;height:20px" /></button>
+      <button class="chat-attach-btn" id="chatPollBtn" title="Create Poll">📊</button>
       <button class="chat-attach-btn" id="chatMicBtn"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3a4.png" alt="" style="width:20px;height:20px" /></button>
       <input type="file" id="chatMediaInput" accept="image/*,video/*" style="display:none" />
       <div class="recording-indicator" id="recIndicator"><span class="recording-dot"></span><span id="recTimer">0:00</span></div>
@@ -776,6 +846,8 @@ body.avatar-square .avatar { border-radius: 4px; }
   </div>
 </aside>
 
+<button class="call-bubble" id="callBubble" style="display:none;"><span style="font-size:24px;">📞</span></button>
+
 <div class="modal-overlay" id="userPickerModal"><div class="modal"><h3>start conversation</h3><div id="userPickerList" style="max-height:400px;overflow-y:auto;margin:0 -20px -20px;padding:0;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="userPickerClose">Close</button></div></div></div>
 <div class="modal-overlay" id="groupModal"><div class="modal"><h3>new group chat <span style="font-size:12px;color:#717171;font-weight:400">(max 10 members)</span></h3><input class="auth-input" id="groupNameInput" placeholder="group name" maxlength="40" /><div class="pfp-section-label">members</div><div id="groupMemberList" style="max-height:340px;overflow-y:auto;margin:0 -20px;border-top:1px solid #2f2f2f;"><div class="empty">loading...</div></div><div class="modal-btns"><button class="btn btn-ghost" id="groupCancel">Cancel</button><button class="btn btn-primary" id="groupCreate">Create</button></div></div></div>
 <div class="modal-overlay" id="gifPickerModal"><div class="modal" style="width:540px"><h3>Pick a GIF</h3><div class="gif-tabs"><button class="gif-tab active" data-gif-tab="trending"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f525.png" alt="" /> Trending</button><button class="gif-tab" data-gif-tab="saved"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> Saved</button></div><div class="gif-cats" id="gifCats"></div><input class="auth-input" id="gifSearchInput" placeholder="Search GIPHY..." autocomplete="off" /><div id="gifResultsGrid" class="gif-grid"><div class="empty">Loading...</div></div><div class="gif-attribution">Powered by GIPHY</div><div class="modal-btns"><button class="btn btn-ghost" id="gifPickerClose">Close</button></div></div></div>
@@ -787,6 +859,8 @@ body.avatar-square .avatar { border-radius: 4px; }
 <div class="music-popup" id="musicPopup"><button class="music-popup-close" id="musicPopupClose">✕</button><div class="music-popup-body"><div class="music-title"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f3b5.png" alt="" style="width:20px;height:20px" /> music</div><div id="musicTracksList"></div><button class="music-add-btn" id="addMusicBtn">+ add your own</button><input type="file" id="musicFileInput" accept="audio/*" style="display:none" /><div class="music-hint" id="musicHint"></div></div></div>
 
 <div class="modal-overlay" id="postModal"><div class="modal"><h3>Create a post</h3><textarea id="postText" placeholder="What's happening?"></textarea><div class="post-media-row"><button class="post-media-btn" id="uploadMediaBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> upload</button><button class="post-media-btn" id="gifPickerBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> GIF</button><button class="post-media-btn" id="pollToggleBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4ca.png" alt="" /> Poll</button><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none" /></div><div class="poll-composer" id="pollComposer"><h4 style="font-size:13px;color:#717171;margin-bottom:8px">Poll options</h4><div id="pollOptionsList"></div><button class="poll-add-opt" id="pollAddOpt" type="button">+ add option</button></div><div class="media-preview" id="mediaPreview"></div><div class="modal-btns"><button class="btn btn-ghost" id="cancelPost">Cancel</button><button class="btn btn-primary" id="submitPost">Post</button></div></div></div>
+
+<div class="modal-overlay" id="chatPollModal"><div class="modal"><h3>Create a Poll</h3><input class="auth-input" id="chatPollQuestion" placeholder="Ask a question..." /><div id="chatPollOptionsList"><div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 1" class="chat-poll-opt" /></div><div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 2" class="chat-poll-opt" /></div></div><button class="poll-add-opt" id="chatPollAddOpt" type="button">+ add option</button><div class="modal-btns"><button class="btn btn-ghost" id="chatPollCancel">Cancel</button><button class="btn btn-primary" id="chatPollSend">Send</button></div></div></div>
 
 <div class="modal-overlay" id="editPostModal"><div class="modal"><h3>Edit post</h3><div style="font-size:12px;color:#717171;margin-bottom:10px">You can only edit a post once.</div><textarea id="editPostText" placeholder="What's happening?"></textarea><div class="post-media-row"><button class="post-media-btn" id="editUploadMediaBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f4f7.png" alt="" /> change media</button><button class="post-media-btn" id="editGifPickerBtn" type="button"><img class="ui-emoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/72x72/1f440.png" alt="" /> change GIF</button><input type="file" id="editMediaInput" accept="image/*,video/*" style="display:none" /></div><div class="media-preview" id="editMediaPreview"></div><div class="modal-btns"><button class="btn btn-ghost" id="cancelEditPost">Cancel</button><button class="btn btn-primary" id="saveEditPost">Save</button></div></div></div>
 
@@ -817,6 +891,7 @@ body.avatar-square .avatar { border-radius: 4px; }
       <div class="call-header-sub" id="callHeaderSub"></div>
     </div>
     <div class="call-duration" id="callDuration">0:00</div>
+    <button class="call-minimize-btn" id="callMinimizeBtn" title="Minimize Call">—</button>
   </div>
   <div class="call-videos" id="callVideos"></div>
   <div class="call-controls">
@@ -880,7 +955,6 @@ body.avatar-square .avatar { border-radius: 4px; }
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 
 <script>
 /* =====================================================================
@@ -965,7 +1039,7 @@ const DEFAULT_SETTINGS = {
   reduceMotion: false, postTTL: 24, notifications: false, fontSize: 16, radius: 12, avatarShape: "rounded", sidebarWidth: "default",
   compact: false, hideScrollbars: false, showScrollTop: true, enterToSend: true, autoPlayVideos: false, confirmDelete: true, haptics: true,
   defaultFeedTab: "foryou", mutedWords: [], mediaOnly: false, showOnline: true, readReceipts: true, notifSound: "default",
-  callSound: "default", uiSounds: true
+  callSound: "default", uiSounds: true, showNotes: false
 };
 const THEME_PRESETS = {
   midnight: { bgColor: "#161616", surfaceColor: "#1d1d1d", accentColor: "#e7e7e7", accentColor2: "#4fc3f7", accentGradient: false },
@@ -979,18 +1053,17 @@ const THEME_PRESETS = {
 };
 const FONTS = {
   system:     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-  manga:      '"Anime Ace BB", "Manga", cursive',
-  ldfcomic:   '"LDF Comic Sans", "Comic Sans MS", cursive',
+  comicneue:  '"Comic Neue", "Comic Sans MS", cursive',
   bangers:    '"Bangers", "Impact", sans-serif',
+  marker:     '"Permanent Marker", cursive',
+  londrina:   '"Londrina Solid", cursive',
   kalam:      '"Kalam", "Comic Sans MS", cursive',
   hand:       '"Patrick Hand", "Comic Sans MS", cursive',
-  comic:      '"Comic Sans MS", "Chalkboard SE", "Marker Felt", cursive',
+  manga:      '"Anime Ace BB", "Manga", cursive',
+  ldfcomic:   '"LDF Comic Sans", "Comic Sans MS", cursive',
   arial:      'Arial, Helvetica, sans-serif',
   times:      '"Times New Roman", Times, serif',
-  courier:    '"Courier New", Courier, monospace',
-  georgia:    'Georgia, "Times New Roman", serif',
-  verdana:    'Verdana, Geneva, sans-serif',
-  trebuchet:  '"Trebuchet MS", "Lucida Grande", Tahoma, sans-serif'
+  courier:    '"Courier New", Courier, monospace'
 };
 const firebaseConfig = { apiKey: "AIzaSyCisYa7HGIqKuBXH3VaywwmdSjcOgGhSyA", authDomain: "fuzzy-c18ec.firebaseapp.com", projectId: "fuzzy-c18ec", storageBucket: "fuzzy-c18ec.firebasestorage.app", messagingSenderId: "18220475527", appId: "1:18220475527:web:ddcd2af0d27c81ed680422" };
 
@@ -1062,6 +1135,7 @@ let homePage = 1;
 let profilePage = 1;
 let isUploadingMedia = false;
 let isUploadingChatMedia = false;
+let isSendingGif = false;
 let pendingMediaUrl = null;
 let pendingMediaType = null;
 let pendingLocalUrl = null;
@@ -1069,6 +1143,7 @@ let isSignup = false;
 let auth = null;
 let db = null;
 let POST_TTL = 24 * 60 * 60 * 1000;
+let currentPollMsgId = null;
 const userCache = new Map();
 const allPostsCache = new Map();
 const conversationsCache = new Map();
@@ -1085,7 +1160,19 @@ let callRingtoneTimer = null;
    FUNCTIONS
    ===================================================================== */
 function twe(code, size) { const s = size ? ' style="width:' + size + 'px;height:' + size + 'px"' : ""; return '<img class="ui-emoji" src="' + TWE + code + '.png" alt=""' + s + '/>'; }
-function toast(msg, isError) { const t = document.createElement("div"); t.className = "toast" + (isError ? " error" : ""); t.textContent = msg; const box = document.getElementById("toasts"); if (!box) return; box.appendChild(t); setTimeout(function() { t.classList.add("show"); }, 10); setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.remove(); }, 300); }, 4000); }
+
+/* ==== FIX #2: toast only shows when showNotes is true ==== */
+function toast(msg, isError) {
+  if (!settingsState.showNotes) return;
+  const t = document.createElement("div");
+  t.className = "toast" + (isError ? " error" : "");
+  t.textContent = msg;
+  const box = document.getElementById("toasts");
+  if (!box) return;
+  box.appendChild(t);
+  setTimeout(function() { t.classList.add("show"); }, 10);
+  setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.remove(); }, 300); }, 4000);
+}
 function status(msg, isError) { toast(msg, isError); }
 function haptic(ms) { try { if (!settingsState.haptics) return; if ('vibrate' in navigator && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) navigator.vibrate(ms || 10); } catch (e) {} }
 function escapeHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
@@ -1628,7 +1715,12 @@ function renderSavedInGrid() {
     const s = document.createElement("button"); s.className = "gif-star saved"; s.innerHTML = twe(EYE, 16); s.title = "Remove from saved";
     s.addEventListener("click", async function(e) { e.stopPropagation(); await unstarGif(gif.url); renderSavedInGrid(); });
     item.appendChild(s);
-    item.addEventListener("click", function() { if (typeof currentGifSelectCallback === "function") currentGifSelectCallback(gif.url); closeGifPicker(); });
+    item.addEventListener("click", function() { 
+      if (item.dataset.clicked) return;
+      item.dataset.clicked = "1";
+      if (typeof currentGifSelectCallback === "function") currentGifSelectCallback(gif.url); 
+      closeGifPicker(); 
+    });
     grid.appendChild(item);
   });
 }
@@ -1655,7 +1747,12 @@ function renderGifGrid(gifs) {
       else { await starGif({ url: fullUrl, previewUrl: previewUrl, title: gif.title }); s.classList.add("saved"); }
     });
     item.appendChild(s);
-    item.addEventListener("click", function() { if (typeof currentGifSelectCallback === "function") currentGifSelectCallback(fullUrl); closeGifPicker(); });
+    item.addEventListener("click", function() { 
+      if (item.dataset.clicked) return;
+      item.dataset.clicked = "1";
+      if (typeof currentGifSelectCallback === "function") currentGifSelectCallback(fullUrl); 
+      closeGifPicker(); 
+    });
     grid.appendChild(item);
   });
 }
@@ -1795,6 +1892,7 @@ function refreshSettingsUi() {
     else if (key === "showOnline") current = settingsState.showOnline ? "on" : "off";
     else if (key === "readReceipts") current = settingsState.readReceipts ? "on" : "off";
     else if (key === "showScrollTop") current = settingsState.showScrollTop ? "on" : "off";
+    else if (key === "showNotes") current = settingsState.showNotes ? "on" : "off";
     else if (key === "postTTL") current = String(settingsState.postTTL);
     else if (key === "notifications") current = settingsState.notifications ? "on" : "off";
     else if (key === "defaultFeedTab") current = settingsState.defaultFeedTab;
@@ -2236,8 +2334,13 @@ async function renderProfile() {
     cacheUser(profileUid, u);
     const bannerEl = document.getElementById("profileBanner");
     if (bannerEl) {
-      if (u.bannerGradient) bannerEl.style.background = "linear-gradient(" + (u.bannerAngle || 135) + "deg, " + (u.bannerColor || "#161616") + ", " + (u.bannerColor2 || "#25603a") + ")";
-      else bannerEl.style.background = u.bannerColor || "#161616";
+      if (u.bannerUrl) {
+        bannerEl.style.background = 'url(' + u.bannerUrl + ') center/cover';
+      } else if (u.bannerGradient) {
+        bannerEl.style.background = "linear-gradient(" + (u.bannerAngle || 135) + "deg, " + (u.bannerColor || "#161616") + ", " + (u.bannerColor2 || "#25603a") + ")";
+      } else {
+        bannerEl.style.background = u.bannerColor || "#161616";
+      }
     }
     const profAvatar = document.getElementById("profAvatar");
     profAvatar.dataset.uid = profileUid;
@@ -2622,7 +2725,7 @@ async function openConversation(otherUid) {
   if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
   currentMsgsSnap = null;
   const msgsEl = document.getElementById("chatMessages");
-  msgsEl.innerHTML = '<div class="chat-loading"><img src="loop.png" alt="" /><div class="chat-loading-text">loading…</div></div>';
+  msgsEl.innerHTML = '<div class="chat-skeleton"><div class="skeleton-msg"></div><div class="skeleton-msg mine"></div><div class="skeleton-msg"></div></div>';
   currentMsgUnsub = db.collection("conversations").doc(convId).collection("messages").orderBy("createdAt", "desc").limit(200).onSnapshot(function(snap) {
     currentMsgsSnap = snap; renderChatMessages(snap, otherUid);
   }, function() { msgsEl.innerHTML = '<div class="chat-empty">could not load</div>'; });
@@ -2656,7 +2759,7 @@ async function openGroupConversation(convId) {
   if (currentMsgUnsub) { currentMsgUnsub(); currentMsgUnsub = null; }
   currentMsgsSnap = null;
   const msgsEl = document.getElementById("chatMessages");
-  msgsEl.innerHTML = '<div class="chat-loading"><img src="loop.png" alt="" /><div class="chat-loading-text">loading…</div></div>';
+  msgsEl.innerHTML = '<div class="chat-skeleton"><div class="skeleton-msg"></div><div class="skeleton-msg mine"></div><div class="skeleton-msg"></div></div>';
   currentMsgUnsub = db.collection("conversations").doc(convId).collection("messages").orderBy("createdAt", "desc").limit(200).onSnapshot(function(snap) {
     currentMsgsSnap = snap; renderChatMessages(snap, null);
   }, function() { msgsEl.innerHTML = '<div class="chat-empty">could not load</div>'; });
@@ -2680,7 +2783,7 @@ function renderChatMessages(snap, otherUid) {
   else if (snap && snap.forEach) { snap.forEach(function(d) { msgs.push({ id: d.id, data: d.data() }); }); }
   const q = msgSearchQuery.toLowerCase();
   const conversationChanged = _lastConvRendered !== currentConvId;
-  const needFullRender = conversationChanged || q || msgs.length < _lastRenderedMsgCount;
+  const needFullRender = conversationChanged || q || msgs.length < _lastRenderedMsgCount || true; // Always full render for now to fix reactions/polls not updating
   const wasNearBottom = msgsEl.scrollHeight - msgsEl.scrollTop - msgsEl.clientHeight < 120;
   if (needFullRender) {
     if (msgs.length === 0) { msgsEl.innerHTML = '<div class="chat-empty">no messages yet. say hi</div>'; _lastRenderedMsgCount = 0; _lastConvRendered = currentConvId; return; }
@@ -2721,6 +2824,14 @@ function buildChatMessageRow(m, ctx) {
   const mine = m.data.from === me;
   const row = document.createElement("div"); row.className = "chat-msg-row " + (mine ? "mine" : "theirs"); row.dataset.msgId = m.id;
   const wrap = document.createElement("div"); wrap.className = "chat-bubble-wrap";
+  
+  // Hover reaction button
+  const reactBtn = document.createElement("button");
+  reactBtn.className = "chat-react-btn";
+  reactBtn.innerHTML = "＋";
+  reactBtn.addEventListener("click", function(e) { e.stopPropagation(); showReactionPicker(e, m.id, mine, m.data, isGroup); });
+  wrap.appendChild(reactBtn);
+
   const bubble = document.createElement("div"); bubble.className = "chat-bubble " + (mine ? "mine" : "theirs");
   if (isGroup && !mine) {
     const senderU = userCache.get(m.data.from) || {};
@@ -2729,7 +2840,32 @@ function buildChatMessageRow(m, ctx) {
     applyBotColor(senderEl, senderU.username || m.data.fromUsername);
     bubble.appendChild(senderEl);
   }
-  if (m.data.mediaType === "audio") {
+  
+  if (m.data.type === "poll") {
+    bubble.style.padding = "6px";
+    bubble.innerHTML = '<div style="font-weight:600;font-size:13px;margin-bottom:8px;padding:0 4px">📊 ' + escapeHtml(m.data.poll.question) + '</div><div class="chat-poll-box" data-msg-id="' + m.id + '"></div>';
+    const box = bubble.querySelector(".chat-poll-box");
+    // === FIX: read votes from conversation doc ===
+    const conv = conversationsCache.get(currentConvId) || {};
+    const pollVotes = conv.pollVotes || {};
+    const msgVotes = pollVotes[m.id] || {};
+    const myVote = msgVotes[me];
+    const voteCounts = {};
+    Object.values(msgVotes).forEach(function(idx) { voteCounts[idx] = (voteCounts[idx] || 0) + 1; });
+    const total = Object.values(msgVotes).length;
+    m.data.poll.options.forEach(function(o, i) {
+      const vc = voteCounts[i] || 0;
+      const pct = total > 0 ? Math.round((vc / total) * 100) : 0;
+      const opt = document.createElement("div");
+      opt.className = "chat-poll-opt" + (myVote === i ? " voted" : "");
+      opt.innerHTML = '<div class="bar" style="width:' + pct + '%"></div><div class="txt"><span>' + escapeHtml(o.text) + '</span><span>' + pct + '%</span></div>';
+      opt.addEventListener("click", function() { voteChatPoll(m.id, i); });
+      box.appendChild(opt);
+    });
+    const meta = document.createElement("div"); meta.className = "chat-poll-meta";
+    meta.innerHTML = '<span>' + total + ' votes</span><span>' + (myVote !== undefined ? 'You voted' : 'Tap to vote') + '</span>';
+    box.appendChild(meta);
+  } else if (m.data.mediaType === "audio") {
     const dur = m.data.duration || 0;
     const voiceEl = document.createElement("div"); voiceEl.className = "voice-bubble";
     voiceEl.innerHTML = '<button class="voice-play">▶</button><div class="voice-wave"></div><span class="voice-time">' + Math.floor(dur / 60) + ":" + String(Math.floor(dur % 60)).padStart(2, "0") + "</span>";
@@ -2771,7 +2907,7 @@ function buildChatMessageRow(m, ctx) {
   }
   const reactions = m.data.reactions || {};
   const reactionEntries = Object.entries(reactions).filter(function(e) { return Array.isArray(e[1]) && e[1].length > 0; });
-  if (reactionEntries.length > 0 && !isGroup) {
+  if (reactionEntries.length > 0) {
     const chips = document.createElement("div"); chips.className = "reaction-chips";
     reactionEntries.forEach(function(entry) {
       const hex = entry[0]; const uids = entry[1];
@@ -2794,30 +2930,41 @@ function buildChatMessageRow(m, ctx) {
     else { timeRow.textContent = timeText; }
   } else { timeRow.textContent = timeText; }
   wrap.appendChild(timeRow);
-  let pressTimer = null;
-  const openPicker = function(e) { if (e) e.preventDefault(); showReactionPicker(e, m.id, mine, m.data, isGroup); };
-  bubble.addEventListener("contextmenu", openPicker);
-  bubble.addEventListener("touchstart", function(e) { pressTimer = setTimeout(function() { haptic(15); showReactionPicker(e.touches[0], m.id, mine, m.data, isGroup); }, 500); }, { passive: true });
-  bubble.addEventListener("touchend", function() { clearTimeout(pressTimer); });
-  bubble.addEventListener("touchmove", function() { clearTimeout(pressTimer); });
+  
+  bubble.addEventListener("contextmenu", function(e) { e.preventDefault(); showReactionPicker(e, m.id, mine, m.data, isGroup); });
+  
   row.appendChild(wrap);
   return row;
+}
+async function voteChatPoll(msgId, optIdx) {
+  if (!auth || !auth.currentUser || !currentConvId) return;
+  const me = auth.currentUser.uid;
+  haptic(10);
+  try {
+    const convRef = db.collection("conversations").doc(currentConvId);
+    const update = {};
+    update["pollVotes." + msgId + "." + me] = optIdx;
+    await convRef.update(update);
+    _lastRenderedMsgCount = 0;
+  } catch (e) {
+    if (settingsState.showNotes) toast("Vote failed: " + (e.code || e.message), true);
+  }
 }
 function showReactionPicker(evt, msgId, isMine, msgData, isGroup) {
   if (!evt) return;
   reactionTargetMsgId = msgId;
   const reactionPicker = document.getElementById("reactionPicker");
   reactionPicker.innerHTML = "";
-  if (!isGroup) {
-    REACTION_EMOJI_HEX.forEach(function(hex) {
-      const b = document.createElement("button");
-      b.innerHTML = '<img class="tw-emoji" src="' + TWE + hex + '.png" alt="" />';
-      b.addEventListener("click", function() { toggleReaction(msgId, hex); reactionPicker.classList.remove("open"); });
-      reactionPicker.appendChild(b);
-    });
-  }
+  
+  REACTION_EMOJI_HEX.forEach(function(hex) {
+    const b = document.createElement("button");
+    b.innerHTML = '<img class="tw-emoji" src="' + TWE + hex + '.png" alt="" />';
+    b.addEventListener("click", function() { toggleReaction(msgId, hex); reactionPicker.classList.remove("open"); });
+    reactionPicker.appendChild(b);
+  });
+  
   if (isMine) {
-    if (!isGroup) { const divider = document.createElement("div"); divider.className = "reaction-picker-divider"; reactionPicker.appendChild(divider); }
+    const divider = document.createElement("div"); divider.className = "reaction-picker-divider"; reactionPicker.appendChild(divider);
     const editBtn = document.createElement("button"); editBtn.className = "reaction-picker-edit"; editBtn.innerHTML = twe("270f", 18); editBtn.title = "Edit";
     editBtn.addEventListener("click", function() { reactionPicker.classList.remove("open"); editChatMessage(msgId, msgData); });
     reactionPicker.appendChild(editBtn);
@@ -2864,6 +3011,7 @@ async function deleteChatMessage(msgId) {
   } catch (e) { toast("Delete failed.", true); }
 }
 async function editChatMessage(msgId, msgData) {
+  if (msgData.type === "poll") { toast("Cannot edit polls.", true); return; }
   const currentText = prompt("Edit message:", msgData.text || "");
   if (currentText === null) return;
   const newText = currentText.trim();
@@ -2934,6 +3082,8 @@ async function sendChatGif(gifUrl) {
   if (!auth || !auth.currentUser) return;
   if (!currentConvId) return;
   if (!currentConvIsGroup && !areMutual(currentConvOtherUid)) { toast("Can only chat with mutuals.", true); return; }
+  if (isSendingGif) return;
+  isSendingGif = true;
   const me = auth.currentUser.uid; const otherUid = currentConvOtherUid;
   try {
     const convRef = db.collection("conversations").doc(currentConvId);
@@ -2944,6 +3094,7 @@ async function sendChatGif(gifUrl) {
     await convRef.collection("messages").add({ from: me, text: "", mediaUrl: gifUrl, mediaType: "gif", createdAt: firebase.firestore.FieldValue.serverTimestamp(), fromUsername: myUsername });
     if (!currentConvIsGroup) notify(otherUid, "dm", { text: "GIF" });
   } catch (e) { toast("Send failed.", true); }
+  finally { isSendingGif = false; }
 }
 async function sendVoiceMessage(blob, duration) {
   if (!auth || !auth.currentUser || !currentConvId) return;
@@ -3531,6 +3682,7 @@ async function endCall() {
   try { if (currentCall.localAudioCtx && currentCall.localAudioCtx.state !== "closed") currentCall.localAudioCtx.close().catch(function(){}); } catch (e) {}
   if (currentCall.durationTimer) clearInterval(currentCall.durationTimer);
   document.getElementById("callOverlay").classList.remove("open");
+  document.getElementById("callBubble").style.display = "none";
   document.getElementById("callVideos").innerHTML = "";
   currentCall = null;
   playCallEndSound();
@@ -4181,23 +4333,6 @@ async function addMusicFile(file) {
   toast("Added " + track.name);
 }
 
-/* ==== FCM ==== */
-async function initFcm() {
-  try {
-    if (!("Notification" in window)) return;
-    if (!("serviceWorker" in navigator)) return;
-    if (!firebase.messaging) return;
-    if (Notification.permission !== "granted") return;
-    const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js", { scope: "/" }).catch(function() { return null; });
-    if (!reg) return;
-    const messaging = firebase.messaging();
-    const VAPID_KEY = "";
-    if (!VAPID_KEY) return;
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if (token && auth && auth.currentUser) { try { await db.collection("users").doc(auth.currentUser.uid).update({ fcmToken: token }); } catch (e) {} }
-  } catch (e) {}
-}
-
 /* =====================================================================
    FIREBASE INIT
    ===================================================================== */
@@ -4213,7 +4348,7 @@ myEmoji = DEFAULT_FACE;
    ===================================================================== */
 const lightboxEl = document.getElementById("lightbox");
 window.onerror = function(msg) { try { toast("ERROR: " + msg, true); } catch (e) {} };
-if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(function () {}); }
+/* ==== FIX #3: removed broken service worker registration (404 error) ==== */
 runIntro();
 updateOnlineStatus();
 document.addEventListener("play", function(e) {
@@ -4450,6 +4585,46 @@ document.getElementById("gifSearchInput").addEventListener("input", function() {
   gifSearchDebounce = setTimeout(function() { searchGifs(q); }, 300);
 });
 document.querySelectorAll(".gif-tab").forEach(function(t) { t.addEventListener("click", function() { setGifTab(t.dataset.gifTab); }); });
+
+// Chat Poll Send
+document.getElementById("chatPollBtn").addEventListener("click", function() {
+  if (!currentConvId) { toast("No conversation open.", true); return; }
+  document.getElementById("chatPollQuestion").value = "";
+  const list = document.getElementById("chatPollOptionsList");
+  list.innerHTML = '<div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 1" class="chat-poll-opt" /></div><div class="poll-input-row"><input type="text" maxlength="60" placeholder="Option 2" class="chat-poll-opt" /></div>';
+  document.getElementById("chatPollModal").classList.add("open");
+});
+document.getElementById("chatPollAddOpt").addEventListener("click", function() {
+  const list = document.getElementById("chatPollOptionsList");
+  if (list.querySelectorAll("input").length >= 6) { toast("Max 6 options.", true); return; }
+  const row = document.createElement("div"); row.className = "poll-input-row";
+  row.innerHTML = '<input type="text" maxlength="60" placeholder="Option" class="chat-poll-opt" />';
+  list.appendChild(row);
+});
+document.getElementById("chatPollCancel").addEventListener("click", function() { document.getElementById("chatPollModal").classList.remove("open"); });
+document.getElementById("chatPollSend").addEventListener("click", async function() {
+  const q = document.getElementById("chatPollQuestion").value.trim();
+  const inputs = Array.from(document.querySelectorAll(".chat-poll-opt"));
+  const opts = inputs.map(function(i) { return i.value.trim(); }).filter(Boolean);
+  if (!q) { toast("Ask a question.", true); return; }
+  if (opts.length < 2) { toast("Poll needs 2+ options.", true); return; }
+  const me = auth.currentUser.uid;
+  try {
+    const convRef = db.collection("conversations").doc(currentConvId);
+    await convRef.collection("messages").add({
+      from: me,
+      type: "poll",
+      poll: { question: q, options: opts.map(function(t) { return { text: t }; }) },
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      fromUsername: myUsername
+    });
+    await convRef.update({ lastMessage: "📊 Poll: " + q, lastMessageFrom: me, lastAt: firebase.firestore.FieldValue.serverTimestamp() });
+    document.getElementById("chatPollModal").classList.remove("open");
+    _lastRenderedMsgCount = 0;
+    status("Poll sent!");
+  } catch (e) { toast("Poll failed.", true); }
+});
+
 document.getElementById("cancelEditPost").addEventListener("click", function() { document.getElementById("editPostModal").classList.remove("open"); clearEditMediaPreview(); currentEditPostId = null; });
 document.getElementById("editPostModal").addEventListener("click", function(e) { if (e.target === document.getElementById("editPostModal")) { document.getElementById("editPostModal").classList.remove("open"); clearEditMediaPreview(); currentEditPostId = null; } });
 document.getElementById("editUploadMediaBtn").addEventListener("click", function() { document.getElementById("editMediaInput").click(); });
@@ -4507,6 +4682,7 @@ document.querySelectorAll(".setting-opt").forEach(function(btn) {
     else if (key === "showOnline") settingsState.showOnline = (val === "on");
     else if (key === "readReceipts") settingsState.readReceipts = (val === "on");
     else if (key === "showScrollTop") { settingsState.showScrollTop = (val === "on"); if (val === "off") document.getElementById("scrollTopBtn").classList.remove("show"); }
+    else if (key === "showNotes") settingsState.showNotes = (val === "on");
     else if (key === "defaultFeedTab") settingsState.defaultFeedTab = val;
     else if (key === "fontSize") settingsState.fontSize = parseInt(val, 10) || 16;
     else if (key === "radius") settingsState.radius = parseInt(val, 10) || 12;
@@ -4661,6 +4837,25 @@ document.getElementById("groupAvatarModal").addEventListener("click", function(e
 document.getElementById("adminBackBtn").addEventListener("click", function() { document.querySelectorAll(".nav-item").forEach(function(i) { i.classList.remove("active"); }); document.querySelector('.nav-item[data-nav="home"]').classList.add("active"); goHome(); });
 document.getElementById("adminLookupBtn").addEventListener("click", function() { const t = adminResolveTarget(document.getElementById("adminLookupInput").value); renderAdminLookupResult(t); });
 document.getElementById("adminLookupInput").addEventListener("keydown", function(e) { if (e.key === "Enter") document.getElementById("adminLookupBtn").click(); });
+
+// Banner Upload
+document.getElementById("bannerUploadBtn").addEventListener("click", function() { document.getElementById("bannerUploadInput").click(); });
+document.getElementById("bannerUploadInput").addEventListener("change", async function() {
+  const file = this.files && this.files[0]; this.value = "";
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { toast("Only images.", true); return; }
+  if (file.size > MAX_PFP_BYTES) { toast("Max 10MB.", true); return; }
+  showLoader("uploading banner…");
+  try {
+    const compressed = await compressImage(file);
+    const url = await uploadToImgBB(compressed);
+    await db.collection("users").doc(auth.currentUser.uid).update({ bannerUrl: url });
+    status("Banner updated!");
+    if (profileUid === auth.currentUser.uid) renderProfile();
+  } catch (err) { toast("Upload failed.", true); }
+  finally { hideLoader(); }
+});
+
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 function updateScrollTopBtn() {
   if (!settingsState.showScrollTop) { scrollTopBtn.classList.remove("show"); return; }
@@ -4682,6 +4877,8 @@ scrollTopBtn.addEventListener("click", function() { const candidates = ["feedVie
   };
   document.addEventListener("pointerdown", function(e) { if (!settingsState.haptics) return; if (isInteractive(e.target)) haptic(8); }, { passive: true });
 })();
+
+/* --- MUSIC BUBBLE --- */
 (function() {
   const bubble = document.getElementById("musicBubble");
   const popup = document.getElementById("musicPopup");
@@ -4712,6 +4909,40 @@ scrollTopBtn.addEventListener("click", function() { const candidates = ["feedVie
   window.addEventListener("resize", function() { applyBubblePos(); if (popup.classList.contains("open")) openPopupAtBubble(); });
   closeBtn.addEventListener("click", function() { popup.classList.remove("open"); bubble.style.display = "flex"; });
 })();
+
+/* --- CALL BUBBLE --- */
+(function() {
+  const bubble = document.getElementById("callBubble");
+  const overlay = document.getElementById("callOverlay");
+  const minBtn = document.getElementById("callMinimizeBtn");
+  const POS_KEY = "fuzzy-call-bubble-pos-v2";
+  const BUBBLE_SIZE = 54;
+  const MARGIN = 8;
+  function getDefaultPos() { const isMobile = window.innerWidth <= 768; return { x: window.innerWidth - BUBBLE_SIZE - 20, y: isMobile ? (window.innerHeight - 260) : (window.innerHeight - 200) }; }
+  let pos = getDefaultPos();
+  try { const raw = localStorage.getItem(POS_KEY); if (raw) { const p = JSON.parse(raw); if (typeof p.x === "number" && typeof p.y === "number") pos = p; } } catch (e) {}
+  function clampBubble() { const isMobile = window.innerWidth <= 768; const bottomReserve = isMobile ? 90 : 12; const maxX = window.innerWidth - BUBBLE_SIZE - MARGIN, maxY = window.innerHeight - BUBBLE_SIZE - bottomReserve; pos.x = Math.max(MARGIN, Math.min(maxX, pos.x)); pos.y = Math.max(MARGIN, Math.min(maxY, pos.y)); }
+  function applyBubblePos() { clampBubble(); bubble.style.left = pos.x + "px"; bubble.style.top = pos.y + "px"; bubble.style.right = "auto"; bubble.style.bottom = "auto"; }
+  
+  minBtn.addEventListener("click", function() {
+    overlay.classList.remove("open");
+    bubble.style.display = "flex";
+    applyBubblePos();
+  });
+  
+  bubble.addEventListener("click", function(e) { 
+    if (e.detail === 0) return; // ignore keyboard clicks
+    bubble.style.display = "none";
+    overlay.classList.add("open");
+  });
+  
+  let dragging = false, dragStart = null, moved = false;
+  bubble.addEventListener("pointerdown", function(e) { dragging = true; moved = false; dragStart = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y }; try { bubble.setPointerCapture(e.pointerId); } catch (err) {} });
+  bubble.addEventListener("pointermove", function(e) { if (!dragging) return; const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y; if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true; pos.x = dragStart.px + dx; pos.y = dragStart.py + dy; applyBubblePos(); });
+  bubble.addEventListener("pointerup", function(e) { if (!dragging) return; dragging = false; try { bubble.releasePointerCapture(e.pointerId); } catch (err) {} if (moved) { try { localStorage.setItem(POS_KEY, JSON.stringify(pos)); } catch (err) {} } });
+  window.addEventListener("resize", function() { applyBubblePos(); });
+})();
+
 document.getElementById("chatVoiceCallBtn").addEventListener("click", function() { startCall("voice"); });
 document.getElementById("chatVideoCallBtn").addEventListener("click", function() { startCall("video"); });
 document.getElementById("callEndBtn").addEventListener("click", endCall);
@@ -5156,5 +5387,210 @@ window.addEventListener("beforeunload", function() { try { fuzzSave(); } catch (
   });
 })();
 </script>
+<!-- ================= FUZZY MASCOT WIDGET ================= -->
+<div id="fuzzy-mascot-widget">
+  <div class="glowwrap">
+    <img id="fuzzyMascotImg" src="Mascot.png" alt="Fuzzy Mascot">
+  </div>
+  <div id="fuzzy-bubble"></div>
+  <audio id="fuzzyBoopAudio" src="boop.mp3" preload="auto"></audio>
+</div>
+
+<style>
+  #fuzzy-mascot-widget {
+    position: fixed !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    z-index: 2147483647 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    gap: 12px !important;
+    pointer-events: auto !important;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+
+  #fuzzy-mascot-widget .glowwrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    animation: fuzzy-pop .9s cubic-bezier(.34,1.56,.64,1) 0.2s backwards, fuzzy-bob 3.2s ease-in-out 1.2s infinite;
+  }
+
+  #fuzzy-mascot-widget .glowwrap::before {
+    content: "";
+    position: absolute;
+    inset: -4%;
+    border-radius: 50%;
+    z-index: 0;
+    background: radial-gradient(circle, rgba(255,255,255,.45) 0%, rgba(255,255,255,.2) 40%, rgba(255,255,255,0) 65%);
+    filter: blur(3px);
+    animation: fuzzy-glowpulse 3s ease-in-out infinite;
+  }
+
+  #fuzzy-mascot-widget img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+    display: block;
+    transition: transform .4s cubic-bezier(.22,1,.36,1);
+  }
+
+  #fuzzy-mascot-widget img:hover {
+    transform: scale(1.15) rotate(6deg);
+  }
+
+  #fuzzy-mascot-widget img:active {
+    transform: scale(.92);
+  }
+
+  #fuzzy-mascot-widget #fuzzy-bubble {
+    background: #fff;
+    color: #0a1128;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(138,224,255,.4);
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+    transition: opacity 0.3s ease, transform 0.5s cubic-bezier(.34, 1.56, .64, 1), padding 0.3s ease;
+    pointer-events: none;
+    max-width: 220px;
+    min-width: 36px;
+    text-align: center;
+    will-change: transform, opacity;
+  }
+
+  /* Bubble active state */
+  #fuzzy-mascot-widget #fuzzy-bubble.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Buttery smooth message transition pop over top of previous message */
+  #fuzzy-mascot-widget #fuzzy-bubble.pop-over {
+    animation: fuzzy-smooth-pop 0.5s cubic-bezier(.34, 1.56, .64, 1);
+  }
+
+  /* Typing dots styling */
+  #fuzzy-mascot-widget .fuzzy-typing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 2px 4px;
+  }
+
+  #fuzzy-mascot-widget .fuzzy-typing span {
+    width: 6px;
+    height: 6px;
+    background: #0a1128;
+    border-radius: 50%;
+    animation: fuzzy-dots 0.5s infinite ease-in-out;
+  }
+
+  #fuzzy-mascot-widget .fuzzy-typing span:nth-child(2) { animation-delay: 0.12s; }
+  #fuzzy-mascot-widget .fuzzy-typing span:nth-child(3) { animation-delay: 0.24s; }
+
+  @keyframes fuzzy-dots {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
+  @keyframes fuzzy-smooth-pop {
+    0% { transform: translateY(6px) scale(0.92); }
+    50% { transform: translateY(-3px) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  @keyframes fuzzy-pop { from { scale: .05; opacity: 0; } to { scale: 1; opacity: 1; } }
+  @keyframes fuzzy-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+  @keyframes fuzzy-glowpulse { 0%, 100% { opacity: .5; scale: .95; } 50% { opacity: .75; scale: 1.02; } }
+
+  @media (max-width: 768px) {
+    #fuzzy-mascot-widget { left: 12px !important; bottom: 12px !important; gap: 8px !important; }
+    #fuzzy-mascot-widget .glowwrap, #fuzzy-mascot-widget img { width: 52px; height: 52px; }
+    #fuzzy-mascot-widget #fuzzy-bubble { font-size: 13px; padding: 8px 12px; max-width: 160px; margin-bottom: 6px; }
+  }
+</style>
+
+<script>
+  (function () {
+    const says = [
+      'hi hi!', 'woohooo :OO', 'stay fuzzy', 'boop!',
+      'ayo what\'s up', 'i\'m just a lil fuzzy guy',
+      'no thoughts, just fuzz', 'you look great today',
+      'this site is clean', 'i live here now',
+      'stay hydrated, fuzzy friend', 'vibes: immaculate',
+      'woah, easy there', 'you\'re my favourite visitor',
+      'today is a good day to be fuzzy'
+    ];
+
+    const mascotImg = document.getElementById('fuzzyMascotImg');
+    const bubble = document.getElementById('fuzzy-bubble');
+    const boopAudio = document.getElementById('fuzzyBoopAudio');
+    let bubbleTimer, typingTimer, sayIndex = 0;
+
+    function squish() {
+      if (mascotImg) {
+        mascotImg.animate([
+          { transform: 'scale(1,1)' },
+          { transform: 'scale(1.15,.8)', offset: 0.35 },
+          { transform: 'scale(.92,1.12)', offset: 0.65 },
+          { transform: 'scale(1,1)' }
+        ], { duration: 500, easing: 'ease-out' });
+      }
+    }
+
+    setInterval(squish, 4000);
+
+    if (mascotImg) {
+      mascotImg.addEventListener('click', () => {
+        squish();
+
+        // Play sound
+        if (boopAudio) {
+          boopAudio.currentTime = 0;
+          boopAudio.play().catch(() => {});
+        }
+
+        // Clear existing timeouts for smooth override
+        clearTimeout(bubbleTimer);
+        clearTimeout(typingTimer);
+
+        // Instant typing dots indicator (0.5s duration)
+        bubble.classList.remove('pop-over');
+        bubble.innerHTML = '<div class="fuzzy-typing"><span></span><span></span><span></span></div>';
+        bubble.classList.add('show');
+
+        // After 0.5s typing delay, reveal message with buttery pop
+        typingTimer = setTimeout(() => {
+          bubble.textContent = says[sayIndex];
+          sayIndex = (sayIndex + 1) % says.length;
+
+          // Trigger buttery pop over previous message
+          bubble.classList.remove('pop-over');
+          void bubble.offsetWidth; // force smooth animation re-trigger
+          bubble.classList.add('pop-over');
+
+          // Auto-hide after 4 seconds
+          bubbleTimer = setTimeout(() => {
+            bubble.classList.remove('show');
+            bubble.classList.remove('pop-over');
+          }, 4000);
+        }, 500);
+      });
+    }
+  })();
+</script>
+<!-- ================= END FUZZY MASCOT ================= -->
 </body>
 </html>
